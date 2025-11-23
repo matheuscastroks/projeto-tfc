@@ -98,12 +98,12 @@ graph TB
   end
   subgraph "Backend (NestJS)"
     Main[Bootstrap]
-    Controllers[/Controladores REST/]
+    Controllers[Controladores REST]
     Guards[Guard Unificado]
     Services[Servicos de Negocio]
     Prisma[Servico Prisma]
   end
-  DB[(PostgreSQL)]
+  DB[PostgreSQL]
 
   Browser --> AppRouter
   AppRouter --> Middleware

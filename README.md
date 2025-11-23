@@ -68,20 +68,20 @@ graph TB
     SDK[Loader do SDK JS]
   end
   subgraph "Frontend (Next.js)"
-    AppRouter[App Router (RSC + Client)]
+    AppRouter[App Router RSC and Client]
     Middleware[Middleware de Autenticacao]
     Query[Cache do React Query]
   end
   subgraph "Backend (NestJS)"
     Main[Bootstrap (main.ts)]
     AppModule[AppModule]
-    Middlewares[Helmet, CORS, Compression, Cookies, Validation, Throttler]
-    Guards[UnifiedGuard (cookie JWT + X-Site-Key)]
-    Controllers[Controladores /api/*]
-    Services[Servicos (Auth/Sites/Events/Insights/SDK/Health)]
-    Prisma[PrismaService (singleton)]
+    Middlewares[Middlewares Globais]
+    Guards[UnifiedGuard cookie JWT and X-Site-Key]
+    Controllers[Controladores API]
+    Services[Servicos Auth Sites Events Insights SDK Health]
+    Prisma[PrismaService singleton]
   end
-  DB[(PostgreSQL)]
+  DB[PostgreSQL]
 
   Browser --> SDK
   Browser --> AppRouter
