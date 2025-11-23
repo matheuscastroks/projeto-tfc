@@ -243,7 +243,7 @@ class InsightHouseAnalytics {
     }
   };
 
-  // Descarrega a fila de eventos, enviando-os para o backend.
+  // Descarrega a fila de eventos, enviando para o backend.
   flushQueue = () => {
     if (!this.eventQueue.length) return;
     const toSend = this.eventQueue.slice();
@@ -404,7 +404,6 @@ class InsightHouseAnalytics {
   };
 
   // Orquestra a captura de todos os filtros no momento do submit da busca.
-  // Este é o evento principal para entender a intenção de busca do usuário.
   captureSearchSubmit = (source) => {
     const searchData = {
       source,

@@ -1,435 +1,207 @@
-# Arquitetura do Sistema InsightHouse
+# InsightHouse Analytics
 
-## Visão Geral
+Plataforma full‑stack de analytics web multi‑tenant construída com Next.js (App Router) e NestJS. Suporta acesso administrativo baseado em sessão, ingestão de eventos via SDK JavaScript e insights sobre PostgreSQL (Prisma ORM) com agregações SQL/JSONB.
 
-O InsightHouse é uma plataforma de analytics web multi-tenant construída com NestJS, que permite rastreamento de eventos, análise de comportamento de usuários e geração de insights para sites imobiliários.
+## Estrutura do Monorepo
 
-## Diagrama de Arquitetura
+```
+projeto-tfc/
+├─ back/                  # NestJS 11, Prisma, PostgreSQL, Swagger
+│  ├─ src/
+│  │  ├─ auth/           # Autenticação (login/register/me/logout)
+│  │  ├─ sites/          # Sites e domínios (multi‑tenancy)
+│  │  ├─ events/         # Ingestão de eventos (lote/único)
+│  │  ├─ insights/       # Módulos de analytics (overview/search/property/conversion)
+│  │  ├─ sdk/            # Loader do SDK JS e configuração por site
+│  │  ├─ health/         # Health checks
+│  │  ├─ prisma/         # Serviço do Prisma (ciclo de vida da conexão)
+│  │  ├─ common/         # guards, interceptors, decorators, utils
+│  │  ├─ app.module.ts   # Módulo raiz
+│  │  └─ main.ts         # Bootstrap + middlewares globais + Swagger
+│  ├─ prisma/            # schema.prisma + migrações
+│  └─ package.json
+└─ front/                 # Next.js 15.1 (React 19), Tailwind, Radix UI, TanStack Query
+   ├─ src/
+   │  ├─ app/            # App Router (RSC + componentes client)
+   │  ├─ lib/            # Cliente de API, hooks, tipos, providers, componentes
+   │  └─ middleware.ts   # Auth: valida cookie de sessão em rotas protegidas
+   └─ package.json
+```
+
+## Como Funciona (Arquitetura Lógica)
+
+- Backend (NestJS)
+  - Middlewares globais: Helmet, CORS, Compression, Cookie Parser, ValidationPipe, Throttler
+  - Camada de segurança: guard unificado valida o cookie de sessão JWT (`admin_session`) e o tenant via `X-Site-Key`
+  - Módulos de negócio: `auth`, `sites`, `events`, `insights`, `sdk`, `health`
+  - Persistência: Prisma client (PostgreSQL), migrações em `back/prisma/migrations`
+  - Documentação: Swagger UI em `/api/docs`
+
+- Frontend (Next.js)
+  - App Router com RSC por padrão; componentes client para interatividade
+  - Middleware de auth valida o cookie de sessão antes de rotas protegidas
+  - Busca/cache de dados via hooks do TanStack Query
+  - Tailwind CSS + Radix UI para o design system
+
+## Fluxos Principais
+
+- Autenticação
+  - Backend valida credenciais (hash de senha com scrypt) e emite JWT armazenado em cookie HttpOnly (`admin_session`).
+  - Middleware do frontend bloqueia rotas protegidas quando o cookie estiver ausente/inválido.
+
+- Rastreamento de Eventos
+  - SDK envia eventos para `/api/events/track` ou `/batch` com header `X-Site-Key`.
+  - Guard resolve o tenant (site) e exige status ativo; o serviço enriquece e insere em lotes.
+
+- Insights
+  - Next.js chama `/api/insights/*?site=KEY`, o guard valida o tenant e os serviços executam agregações SQL/JSONB otimizadas.
+
+- Multi‑tenancy
+  - Admin cria sites e domínios permitidos. Todas as requisições de analytics validam contra `siteKey` (header ou query param).
+
+## Diagrama de Arquitetura (Alto Nível)
 
 ```mermaid
 graph TB
-    subgraph "Cliente Externo"
-        Browser[Navegador do Usuário]
-        SDK[SDK JavaScript]
-    end
+  subgraph Cliente
+    Browser
+    SDK[Loader do SDK JS]
+  end
+  subgraph Frontend (Next.js)
+    AppRouter[App Router (RSC + Client)]
+    Middleware[Middleware de Autenticação]
+    Query[Cache do React Query]
+  end
+  subgraph Backend (NestJS)
+    Main[Bootstrap (main.ts)]
+    AppModule[AppModule]
+    Middlewares[Helmet • CORS • Compression • Cookies • Validation • Throttler]
+    Guards[UnifiedGuard (cookie JWT + X-Site-Key)]
+    Controllers[Controladores /api/*]
+    Services[Serviços (Auth/Sites/Events/Insights/SDK/Health)]
+    Prisma[PrismaService (singleton)]
+  end
+  DB[(PostgreSQL)]
 
-    subgraph "Frontend Admin"
-        NextJS[Next.js App Router]
-        ReactQuery[React Query Cache]
-    end
-
-    subgraph "Backend NestJS - Entry Point"
-        Main[main.ts<br/>Bootstrap]
-        AppModule[App Module<br/>Módulo Raiz]
-    end
-
-    subgraph "Middlewares Globais"
-        Helmet[Helmet<br/>Security Headers]
-        CORS[CORS<br/>Cross-Origin]
-        Compression[Compression<br/>Gzip]
-        CookieParser[Cookie Parser]
-        ValidationPipe[Validation Pipe<br/>DTOs]
-        Throttler[Rate Limiting<br/>100 req/min]
-    end
-
-    subgraph "Guards - Camada de Segurança"
-        AuthGuard[AuthGuard<br/>Valida Session Cookie]
-        TenantGuard[TenantGuard<br/>Valida Site Key]
-    end
-
-    subgraph "Interceptors"
-        LoggingInterceptor[Logging Interceptor<br/>Request/Response Log]
-    end
-
-    subgraph "Controllers - Camada de Roteamento"
-        AuthController[Auth Controller<br/>/api/auth/*]
-        SitesController[Sites Controller<br/>/api/sites/*]
-        EventsController[Events Controller<br/>/api/events/*]
-        OverviewController[Overview Controller<br/>/api/insights/overview/*]
-        SearchController[Search Controller<br/>/api/insights/search/*]
-        PropertyController[Property Controller<br/>/api/insights/properties/*]
-        ConversionController[Conversion Controller<br/>/api/insights/conversion/*]
-        SdkController[SDK Controller<br/>/api/sdk/*]
-        HealthController[Health Controller<br/>/api/health]
-    end
-
-    subgraph "Services - Camada de Negócio"
-        AuthService[Auth Service<br/>Login, Register, Session]
-        SitesService[Sites Service<br/>CRUD Sites & Domains]
-        EventsService[Events Service<br/>Ingestão & Enriquecimento]
-        OverviewService[Overview Service<br/>Queries SQL Diretas]
-        SearchService[Search Service<br/>Queries SQL Diretas]
-        PropertyService[Property Service<br/>Queries SQL Diretas]
-        ConversionService[Conversion Service<br/>Queries SQL Diretas]
-        SdkService[SDK Service<br/>Config & Loader]
-        HealthService[Health Service<br/>Status Checks]
-    end
-
-    subgraph "Módulos Core"
-        PrismaModule[Prisma Module<br/>Database Connection]
-        ConfigModule[Config Module<br/>Environment Vars]
-    end
-
-    subgraph "Utils & Decorators"
-        AuthUtils[Auth Utils<br/>Hash, Verify, Sign]
-        SiteKeyUtils[Site Key Utils<br/>Generate, Validate]
-        CurrentUserDec[CurrentUser<br/>Decorator]
-        SiteKeyDec[SiteKey<br/>Decorator]
-    end
-
-    subgraph "Database"
-        PostgreSQL[(PostgreSQL<br/>Events, Users, Sites)]
-    end
-
-    subgraph "Cache"
-        MemoryCache[In-Memory LRU Cache<br/>TTL: 2 min]
-    end
-
-    %% Fluxos principais
-    Browser -->|1. Carregar SDK| SDK
-    SDK -->|2. Track Events| EventsController
-    NextJS -->|3. API Calls| AuthController
-    NextJS -->|4. API Calls| SitesController
-    NextJS -->|5. API Calls| OverviewController
-    NextJS -->|5. API Calls| SearchController
-    NextJS -->|5. API Calls| PropertyController
-    NextJS -->|5. API Calls| ConversionController
-
-    %% Entry Point
-    Main --> AppModule
-    AppModule --> ConfigModule
-    AppModule --> PrismaModule
-    AppModule --> Throttler
-
-    %% Middleware Flow
-    EventsController -->|passa por| Helmet
-    Helmet --> CORS
-    CORS --> Compression
-    Compression --> CookieParser
-    CookieParser --> ValidationPipe
-    ValidationPipe --> LoggingInterceptor
-
-    %% Guard Flow
-    AuthController -.->|protegido por| AuthGuard
-    SitesController -.->|protegido por| AuthGuard
-    EventsController -.->|protegido por| TenantGuard
-    OverviewController -.->|protegido por| TenantGuard
-    SearchController -.->|protegido por| TenantGuard
-    PropertyController -.->|protegido por| TenantGuard
-    ConversionController -.->|protegido por| TenantGuard
-
-    %% Controller to Service
-    AuthController --> AuthService
-    SitesController --> SitesService
-    EventsController --> EventsService
-    OverviewController --> OverviewService
-    SearchController --> SearchService
-    PropertyController --> PropertyService
-    ConversionController --> ConversionService
-    SdkController --> SdkService
-    HealthController --> HealthService
-
-    %% Service to Database
-    AuthService --> PrismaModule
-    SitesService --> PrismaModule
-    EventsService --> PrismaModule
-    OverviewService --> PrismaModule
-    SearchService --> PrismaModule
-    PropertyService --> PrismaModule
-    ConversionService --> PrismaModule
-    SdkService --> PrismaModule
-    HealthService --> PrismaModule
-
-    %% Database Connection
-    PrismaModule --> PostgreSQL
-
-    %% Utils
-    AuthService -.->|usa| AuthUtils
-    SitesService -.->|usa| SiteKeyUtils
-    AuthGuard -.->|usa| AuthUtils
-    TenantGuard -.->|usa| PrismaModule
-
-    %% Decorators
-    AuthController -.->|usa| CurrentUserDec
-    EventsController -.->|usa| SiteKeyDec
-
-    style Main fill:#e1f5ff
-    style AuthGuard fill:#ffe1e1
-    style TenantGuard fill:#ffe1e1
-    style PostgreSQL fill:#e1ffe1
-    style MemoryCache fill:#fff3e1
+  Browser --> SDK
+  Browser --> AppRouter
+  AppRouter --> Middleware
+  AppRouter --> Controllers
+  SDK --> Controllers
+  Controllers --> Guards
+  Controllers --> Services
+  Services --> Prisma --> DB
+  Main --> AppModule --> Middlewares --> Controllers
 ```
 
-## Fluxos de Dados Principais
+## Superfície da API (Principais Endpoints)
 
-### 1. Fluxo de Autenticação
+- Auth
+  - POST `/api/auth/register`
+  - POST `/api/auth/login`
+  - POST `/api/auth/logout`
+  - GET `/api/auth/me`
 
-```mermaid
-sequenceDiagram
-    participant User as Usuário
-    participant Frontend as Next.js Frontend
-    participant AuthController as Auth Controller
-    participant AuthGuard as Auth Guard
-    participant AuthService as Auth Service
-    participant DB as PostgreSQL
+- Sites
+  - GET `/api/sites`
+  - POST `/api/sites`
+  - GET `/api/sites/:id`
+  - PUT `/api/sites/:id`
+  - DELETE `/api/sites/:id`
 
-    User->>Frontend: 1. Envia credenciais
-    Frontend->>AuthController: 2. POST /api/auth/login
-    AuthController->>AuthService: 3. login(email, password)
-    AuthService->>DB: 4. Busca usuário
-    DB-->>AuthService: 5. Retorna usuário
-    AuthService->>AuthService: 6. Verifica senha (scrypt)
-    AuthService->>AuthService: 7. Cria session assinada (HMAC-SHA256)
-    AuthService-->>AuthController: 8. Retorna session cookie
-    AuthController-->>Frontend: 9. Set-Cookie: admin_session
-    Frontend->>AuthController: 10. GET /api/auth/me (com cookie)
-    AuthController->>AuthGuard: 11. Valida session
-    AuthGuard->>AuthGuard: 12. Verifica assinatura HMAC
-    AuthGuard-->>AuthController: 13. Autorizado (userId)
-    AuthController->>AuthService: 14. me(userId)
-    AuthService->>DB: 15. Busca dados do usuário
-    DB-->>AuthService: 16. Retorna dados
-    AuthService-->>AuthController: 17. Retorna usuário
-    AuthController-->>Frontend: 18. JSON com dados
+- SDK
+  - GET `/api/sdk/loader?site=<siteKey>`
+  - GET `/api/sdk/site-config?site=<siteKey>`
+
+- Events
+  - POST `/api/events/track`
+  - POST `/api/events/track/batch`
+
+- Insights
+  - GET `/api/insights/devices`
+  - GET `/api/insights/devices/timeseries`
+  - GET `/api/insights/search/analytics`
+  - GET `/api/insights/filters/usage`
+  - GET `/api/insights/conversion/rate`
+  - GET `/api/insights/conversion/sources`
+  - GET `/api/insights/properties/popular`
+  - GET `/api/insights/properties/engagement`
+
+- Health
+  - GET `/api/health`
+  - GET `/api/health/db`
+
+Observações
+- Endpoints protegidos exigem cookie de sessão válido (`admin_session`).
+- Endpoints de event/insight exigem tenant válido via header `X-Site-Key` ou `?site=`.
+
+## Banco de Dados (Prisma)
+
+- Modelos: `User`, `Site`, `Domain`, `Setting`, `Event` (alto volume; campos JSONB).
+- Índices para consultas frequentes (site, período, tipo, etc.).
+- Migrações em `back/prisma/migrations`.
+
+## Requisitos
+
+- Node.js 20+ (imagem Docker do backend usa Node 22), pnpm 9+
+- PostgreSQL 15+
+- Portas: backend 3001, frontend 3002
+
+## Desenvolvimento Local
+
+1) Backend
+
+```bash
+cd back
+pnpm install
+cp .env.example .env
+pnpm prisma migrate dev
+pnpm prisma generate
+pnpm start:dev
 ```
 
-### 2. Fluxo de Tracking de Eventos
+2) Frontend
 
-```mermaid
-sequenceDiagram
-    participant Browser as Navegador
-    participant SDK as SDK JavaScript
-    participant EventsController as Events Controller
-    participant TenantGuard as Tenant Guard
-    participant EventsService as Events Service
-    participant DB as PostgreSQL
-
-    Browser->>SDK: 1. Usuário interage (clique, scroll, etc)
-    SDK->>SDK: 2. Adiciona evento à fila
-    SDK->>SDK: 3. Espera 3s ou 10 eventos
-    SDK->>EventsController: 4. POST /api/events/track/batch<br/>Header: X-Site-Key
-    EventsController->>TenantGuard: 5. Valida siteKey
-    TenantGuard->>DB: 6. Busca site pelo siteKey
-    DB-->>TenantGuard: 7. Retorna site e domínios
-    TenantGuard->>TenantGuard: 8. Verifica status = 'active'
-    TenantGuard-->>EventsController: 9. Autorizado (tenant info)
-    EventsController->>EventsService: 10. ingestBatch(siteKey, events)
-    EventsService->>EventsService: 11. Enriquece com dados server-side<br/>(IP anônimo, userAgent, timestamp)
-    EventsService->>DB: 12. Batch insert (chunks de 100)
-    DB-->>EventsService: 13. Confirmação
-    EventsService-->>EventsController: 14. {success: true, count: N}
-    EventsController-->>SDK: 15. 200 OK
+```bash
+cd front
+pnpm install
+cp .env.example .env # se existir
+pnpm dev
 ```
 
-### 3. Fluxo de Analytics (Insights)
+Variáveis de ambiente comuns
 
-```mermaid
-sequenceDiagram
-    participant Frontend as Next.js Frontend
-    participant OverviewController as Overview Controller
-    participant TenantGuard as Tenant Guard
-    participant OverviewService as Overview Service
-    participant DB as PostgreSQL
+- Backend
+  - `DATABASE_URL` (obrigatória)
+  - `DIRECT_URL` (exigida para migrações do Prisma)
+  - `PORT` (padrão 3001)
+  - `NODE_ENV` (development | production)
+  - `FRONTEND_URL` (origem autorizada no CORS)
+  - `NEXTAUTH_SECRET` (segredo HMAC para assinar o cookie de sessão)
+  - `API_BASE_URL`
 
-    Frontend->>OverviewController: 1. GET /api/insights/overview/devices?site=KEY
-    OverviewController->>TenantGuard: 2. Valida siteKey
-    TenantGuard->>DB: 3. Busca site
-    DB-->>TenantGuard: 4. Site válido
-    TenantGuard-->>OverviewController: 5. Autorizado
-    OverviewController->>OverviewService: 6. getDevices(siteKey)
-    OverviewService->>DB: 7. Executa queries SQL diretas<br/>(agregando JSONB da tabela Event)
-    DB-->>OverviewService: 8. Retorna resultados
-    OverviewService->>OverviewService: 9. Converte BigInt para Number
-    OverviewService-->>OverviewController: 10. Retorna dados
-    OverviewController-->>Frontend: 11. JSON com analytics
-```
+- Frontend
+  - `SITE_URL` (URL base pública, usada em fetches)
+  - `NEXTAUTH_SECRET` (deve coincidir com o backend se a validação local for necessária no middleware)
 
-### 4. Fluxo de Multi-Tenancy (Criação de Site)
+## Testes
 
-```mermaid
-sequenceDiagram
-    participant Frontend as Next.js Frontend
-    participant SitesController as Sites Controller
-    participant AuthGuard as Auth Guard
-    participant SitesService as Sites Service
-    participant DB as PostgreSQL
+- Backend: Jest configurado (`pnpm test`, `pnpm test:watch`, `pnpm test:cov`).
+- Frontend: adicionar testes conforme a stack preferida (React Testing Library, Vitest/Jest).
 
-    Frontend->>SitesController: 1. POST /api/sites<br/>{name, domain}
-    SitesController->>AuthGuard: 2. Valida session cookie
-    AuthGuard-->>SitesController: 3. Autorizado (userId)
-    SitesController->>SitesService: 4. create(userId, data)
-    SitesService->>SitesService: 5. Valida FQDN do domínio
-    SitesService->>DB: 6. Verifica se domínio já existe
-    DB-->>SitesService: 7. Domínio disponível
-    SitesService->>SitesService: 8. Gera siteKey único (nanoid)
-    SitesService->>DB: 9. Cria site + domínio (transação)
-    DB-->>SitesService: 10. Site criado
-    SitesService-->>SitesController: 11. Retorna site com siteKey
-    SitesController-->>Frontend: 12. JSON com site e loader URL
-```
+## Segurança e Performance (Destaques)
 
-## Módulos e Responsabilidades
+- Cookie JWT HttpOnly para sessão admin, validado pelo guard unificado.
+- Isolamento de tenant via `X-Site-Key`; apenas sites ativos processam eventos.
+- Validação de entrada via `class-validator` + `ValidationPipe` (whitelist + transform).
+- Limitação de taxa e cabeçalhos de segurança via Throttler + Helmet.
+- Cache em memória para insights; inserts em lote e chunking para eventos.
 
-### Módulos Core
+## Referências (Docs)
 
-| Módulo | Responsabilidade | Dependências |
-|--------|-----------------|--------------|
-| **AppModule** | Módulo raiz, orquestra todos os outros | Todos os módulos |
-| **ConfigModule** | Gerencia variáveis de ambiente | Nenhuma |
-| **PrismaModule** | Conexão singleton com PostgreSQL | ConfigModule |
-
-### Módulos de Negócio
-
-| Módulo | Responsabilidade | Dependências |
-|--------|-----------------|--------------|
-| **AuthModule** | Autenticação, registro, sessões | PrismaModule, ConfigModule |
-| **SitesModule** | CRUD de sites e domínios, multi-tenancy | PrismaModule |
-| **EventsModule** | Ingestão de eventos, enriquecimento | PrismaModule |
-| **InsightsModule** | Analytics modular (overview, search, property, conversion), queries SQL diretas | PrismaModule |
-| **SdkModule** | Servir SDK JavaScript e configurações | SitesModule |
-| **HealthModule** | Health checks e monitoramento | PrismaModule |
-
-### Guards (Segurança)
-
-| Guard | Quando Aplica | O Que Faz |
-|-------|---------------|-----------|
-| **AuthGuard** | Rotas protegidas do admin | Valida session cookie HMAC-SHA256 |
-| **TenantGuard** | Rotas multi-tenant (events, insights) | Valida siteKey e verifica status do site |
-
-### Interceptors
-
-| Interceptor | Função |
-|-------------|--------|
-| **LoggingInterceptor** | Loga todas as requests/responses com duração |
-
-### Decorators Customizados
-
-| Decorator | Função |
-|-----------|--------|
-| **@CurrentUser()** | Extrai `userId` da session no request |
-| **@SiteKey()** | Extrai `siteKey` do tenant info no request |
-
-## Camadas da Aplicação
-
-```
-┌─────────────────────────────────────────┐
-│         Entry Point (main.ts)           │
-│  - Bootstrap da aplicação               │
-│  - Configuração de middlewares          │
-│  - Swagger setup                        │
-└─────────────────────────────────────────┘
-                   ↓
-┌─────────────────────────────────────────┐
-│      Middlewares Globais                │
-│  - Helmet (security headers)            │
-│  - CORS (cross-origin)                  │
-│  - Compression (gzip)                   │
-│  - Cookie Parser                        │
-│  - Validation Pipe (DTOs)               │
-│  - Rate Limiting (throttler)            │
-└─────────────────────────────────────────┘
-                   ↓
-┌─────────────────────────────────────────┐
-│      Guards (Segurança)                 │
-│  - AuthGuard: valida sessão             │
-│  - TenantGuard: valida siteKey          │
-└─────────────────────────────────────────┘
-                   ↓
-┌─────────────────────────────────────────┐
-│      Interceptors                       │
-│  - Logging: registra req/res            │
-└─────────────────────────────────────────┘
-                   ↓
-┌─────────────────────────────────────────┐
-│      Controllers (Rotas REST)           │
-│  - Recebe requisições HTTP              │
-│  - Valida DTOs                          │
-│  - Chama services                       │
-│  - Retorna respostas                    │
-└─────────────────────────────────────────┘
-                   ↓
-┌─────────────────────────────────────────┐
-│      Services (Lógica de Negócio)       │
-│  - Processa dados                       │
-│  - Aplica regras de negócio             │
-│  - Interage com banco                   │
-│  - Cache e otimizações                  │
-└─────────────────────────────────────────┘
-                   ↓
-┌─────────────────────────────────────────┐
-│      Prisma (ORM)                       │
-│  - Type-safe database client            │
-│  - Migrations                           │
-│  - Query builder                        │
-└─────────────────────────────────────────┘
-                   ↓
-┌─────────────────────────────────────────┐
-│      PostgreSQL Database                │
-│  - Users, Sites, Domains                │
-│  - Events (JSONB para flexibilidade)    │
-│  - Settings                             │
-└─────────────────────────────────────────┘
-```
-
-## Segurança
-
-### Autenticação
-- **Método**: Session cookies assinados com HMAC-SHA256
-- **Storage**: Cookie `admin_session` HttpOnly
-- **Hashing**: Senhas com scrypt (Node.js built-in)
-- **Validação**: Comparação constant-time (timingSafeEqual)
-
-### Multi-Tenancy
-- **Identificação**: Header `X-Site-Key` ou query param `site`
-- **Validação**: TenantGuard verifica existência e status
-- **Isolamento**: Todos os dados filtrados por `siteKey`
-
-### Rate Limiting
-- **Global**: 100 requests/minuto por IP
-- **Events**: 1000 requests/minuto por siteKey
-
-### Proteção de Dados
-- **IP Anonymization**: Último octeto IPv4 zerado (LGPD/GDPR)
-- **CORS**: Apenas origins autorizados
-- **Helmet**: Security headers automáticos
-- **Validation**: DTOs com class-validator
-
-## Performance
-
-### Cache
-- **Tipo**: In-memory LRU
-- **TTL**: 2 minutos para insights
-- **Limpeza**: Automática quando > 1000 entradas
-
-### Batch Processing
-- **Events**: Aceita até 500 eventos por batch
-- **Chunking**: Inserções em blocos de 100
-- **Otimização**: Queries SQL paralelas (Promise.all)
-
-### Database
-- **Indexes**: Otimizados para queries frequentes
-- **JSONB**: Busca eficiente em propriedades dinâmicas
-- **Connection Pool**: Gerenciado automaticamente pelo Prisma
-
-## Tecnologias
-
-- **Framework**: NestJS 10.x
-- **Language**: TypeScript 5.x (strict mode)
-- **ORM**: Prisma 5.x
-- **Database**: PostgreSQL 16
-- **Validation**: class-validator + class-transformer
-- **Documentation**: Swagger/OpenAPI 3.0
-- **Security**: Helmet, CORS, Rate Limiting
-- **Authentication**: Session cookies (HMAC-SHA256)
-- **Password Hashing**: scrypt (Node.js built-in)
-
-## Próximos Passos (Escalabilidade)
-
-1. **Redis Cache**: Substituir in-memory por Redis distribuído
-2. **Queue System**: Bull/BullMQ para processamento assíncrono de eventos
-3. **Database Partitioning**: Particionar tabela Events por data
-4. **Read Replicas**: Separar leitura (insights) de escrita (events)
-5. **CDN**: Servir SDK JavaScript via CDN
-6. **WebSockets**: Real-time analytics dashboard
-7. **Aggregations**: Tabelas pré-calculadas para queries pesadas
+- Next.js: `/vercel/next.js` (Context7)
+- NestJS: `/nestjs/docs.nestjs.com` e `/nestjs/nest` (Context7)
+- Prisma: `/prisma/docs` e `/prisma/prisma` (Context7)
+- TanStack Query: `/websites/tanstack_query_v5` (Context7)
+- Tailwind CSS: `/tailwindlabs/tailwindcss.com` (Context7)
 
