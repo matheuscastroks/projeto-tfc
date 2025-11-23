@@ -86,17 +86,17 @@ Guards e Decorators
 ## 4. Diagrama Arquitetural (Alto Nível)
 
 ```mermaid
-graph TB
-  subgraph "Cliente"
+flowchart TB
+  subgraph client[Cliente]
     Browser
     SDK[Loader do SDK JS]
   end
-  subgraph "Frontend (Next.js)"
+  subgraph frontend[Frontend Next.js]
     Middleware[Middleware de Autenticacao]
     AppRouter[App Router]
     Query[Cache do React Query]
   end
-  subgraph "Backend (NestJS)"
+  subgraph backend[Backend NestJS]
     Main[Bootstrap]
     Controllers[Controladores REST]
     Guards[Guard Unificado]

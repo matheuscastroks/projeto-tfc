@@ -62,18 +62,18 @@ projeto-tfc/
 ## Diagrama de Arquitetura (Alto Nível)
 
 ```mermaid
-graph TB
-  subgraph "Cliente"
+flowchart TB
+  subgraph client[Cliente]
     Browser
     SDK[Loader do SDK JS]
   end
-  subgraph "Frontend (Next.js)"
+  subgraph frontend[Frontend Next.js]
     AppRouter[App Router RSC and Client]
     Middleware[Middleware de Autenticacao]
     Query[Cache do React Query]
   end
-  subgraph "Backend (NestJS)"
-    Main[Bootstrap (main.ts)]
+  subgraph backend[Backend NestJS]
+    Main[Bootstrap main.ts]
     AppModule[AppModule]
     Middlewares[Middlewares Globais]
     Guards[UnifiedGuard cookie JWT and X-Site-Key]
