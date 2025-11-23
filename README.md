@@ -63,22 +63,22 @@ projeto-tfc/
 
 ```mermaid
 graph TB
-  subgraph Cliente
+  subgraph "Cliente"
     Browser
     SDK[Loader do SDK JS]
   end
-  subgraph Frontend (Next.js)
+  subgraph "Frontend (Next.js)"
     AppRouter[App Router (RSC + Client)]
-    Middleware[Middleware de Autenticação]
+    Middleware[Middleware de Autenticacao]
     Query[Cache do React Query]
   end
-  subgraph Backend (NestJS)
+  subgraph "Backend (NestJS)"
     Main[Bootstrap (main.ts)]
     AppModule[AppModule]
-    Middlewares[Helmet • CORS • Compression • Cookies • Validation • Throttler]
+    Middlewares[Helmet, CORS, Compression, Cookies, Validation, Throttler]
     Guards[UnifiedGuard (cookie JWT + X-Site-Key)]
     Controllers[Controladores /api/*]
-    Services[Serviços (Auth/Sites/Events/Insights/SDK/Health)]
+    Services[Servicos (Auth/Sites/Events/Insights/SDK/Health)]
     Prisma[PrismaService (singleton)]
   end
   DB[(PostgreSQL)]

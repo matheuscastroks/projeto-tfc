@@ -87,21 +87,21 @@ Guards e Decorators
 
 ```mermaid
 graph TB
-  subgraph Cliente
+  subgraph "Cliente"
     Browser
     SDK[Loader do SDK JS]
   end
-  subgraph Frontend (Next.js)
-    Middleware[Middleware de Autenticação]
+  subgraph "Frontend (Next.js)"
+    Middleware[Middleware de Autenticacao]
     AppRouter[App Router]
     Query[Cache do React Query]
   end
-  subgraph Backend (NestJS)
+  subgraph "Backend (NestJS)"
     Main[Bootstrap]
     Controllers[/Controladores REST/]
     Guards[Guard Unificado]
-    Services[Serviços de Negócio]
-    Prisma[Serviço Prisma]
+    Services[Servicos de Negocio]
+    Prisma[Servico Prisma]
   end
   DB[(PostgreSQL)]
 
