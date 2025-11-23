@@ -18,8 +18,8 @@ import {
 } from '@/lib/hooks/useInsights'
 import { Alert, AlertDescription } from '@ui/alert'
 import { ConversionDistributionChart } from './_components/ConversionDistributionChart'
+import { ConversionSourcesChart } from './_components/ConversionSourcesChart'
 import { LeadProfileSection } from './_components/LeadProfileSection'
-import { Skeleton } from '@/lib/components/ui/skeleton'
 import {
   DetailsModal,
   type DetailsDataItem,
@@ -34,16 +34,29 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import type { InsightsQuery } from '@/lib/types/insights'
+import { formatDateToISO } from 'src/utils/utils'
 
 export default function ConversionAnalyticsPage() {
   const { selectedSiteKey } = useSiteContext()
-  const [dateQuery, setDateQuery] = useState<InsightsQuery>({})
+  const [dateQuery, setDateQuery] = useState<InsightsQuery>(() => {
+    // Initialize with default 30 days period
+    const end = new Date()
+    end.setHours(23, 59, 59, 999)
+    const start = new Date()
+    start.setDate(start.getDate() - 30)
+    start.setHours(0, 0, 0, 0)
+    return {
+      dateFilter: 'CUSTOM',
+      startDate: formatDateToISO(start),
+      endDate: formatDateToISO(end),
+    }
+  })
 
   const handlePeriodChange = (start: Date, end: Date) => {
     setDateQuery({
       dateFilter: 'CUSTOM',
-      startDate: start.toISOString().split('T')[0],
-      endDate: end.toISOString().split('T')[0],
+      startDate: formatDateToISO(start),
+      endDate: formatDateToISO(end),
     })
   }
 
@@ -239,130 +252,94 @@ export default function ConversionAnalyticsPage() {
         </Card>
       </div>
 
-      {/* Conversion Distribution */}
-      <Card className="shadow-inner-4">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Conversões por Tipo</CardTitle>
-            <CardDescription>
-              Distribuição dos eventos de conversão
-            </CardDescription>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const types = summaryData?.conversionsByType || []
-              openDetailsModal(
-                'Conversões Detalhadas por Tipo',
-                types.map((t) => ({
-                  label: t.type,
-                  value: t.count,
-                  percentage:
-                    (t.count / (summaryData?.totalConversions || 1)) * 100,
-                })),
-                'Análise completa de todos os tipos de conversão',
-                [
-                  `O tipo mais comum é ${types[0]?.type || 'N/A'}`,
-                  'Otimize os CTAs dos tipos com menor volume',
-                  'Considere A/B tests para melhorar conversões',
-                ]
-              )
-            }}
-          >
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <ConversionDistributionChart
-            data={summaryData}
-            isLoading={summaryLoading}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Conversion Sources */}
-      <Card className="shadow-inner-3">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Fontes de Conversão</CardTitle>
-            <CardDescription>De onde vêm as suas conversões</CardDescription>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const sources = sourcesData?.sources || []
-              openDetailsModal(
-                'Fontes de Conversão Detalhadas',
-                sources.map((s) => ({
-                  label: s.source,
-                  value: s.conversions,
-                  subValue: `Percentual: ${s.percentage.toFixed(2)}%`,
-                  percentage: s.percentage,
-                })),
-                'Análise completa de todas as fontes de tráfego',
-                [
-                  'Invista mais nas fontes com maior taxa de conversão',
-                  'Analise fontes com alto tráfego mas baixa conversão',
-                  'Crie campanhas específicas para cada fonte',
-                ],
-                'list'
-              )
-            }}
-          >
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {sourcesLoading ? (
-            <div className="space-y-2">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
+      {/* Conversion Charts */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* Conversion Distribution */}
+        <Card className="shadow-inner-5">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Conversões por Tipo</CardTitle>
+              <CardDescription>
+                Distribuição dos eventos de conversão
+              </CardDescription>
             </div>
-          ) : sourcesData?.sources && sourcesData.sources.length > 0 ? (
-            <div className="space-y-4">
-              {sourcesData.sources.map((source, index) => {
-                const maxConversions = sourcesData.sources[0]?.conversions || 1
-                const widthPercent = (source.conversions / maxConversions) * 100
-
-                return (
-                  <div key={index} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-sm">{source.source}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {source.conversions.toLocaleString()} conversões •
-                          {source.percentage.toFixed(2)}%
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold">
-                          {source.conversions.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary transition-all duration-500"
-                        style={{ width: `${widthPercent}%` }}
-                      />
-                    </div>
-                  </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const types = summaryData?.conversionsByType || []
+                openDetailsModal(
+                  'Conversões Detalhadas por Tipo',
+                  types.map((t) => ({
+                    label: t.type,
+                    value: t.count,
+                    percentage:
+                      (t.count / (summaryData?.totalConversions || 1)) * 100,
+                  })),
+                  'Análise completa de todos os tipos de conversão',
+                  [
+                    `O tipo mais comum é ${types[0]?.type || 'N/A'}`,
+                    'Otimize os CTAs dos tipos com menor volume',
+                    'Considere A/B tests para melhorar conversões',
+                  ]
                 )
-              })}
+              }}
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <ConversionDistributionChart
+              data={summaryData}
+              isLoading={summaryLoading}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Conversion Sources */}
+        <Card className="shadow-inner-5">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Fontes de Conversão</CardTitle>
+              <CardDescription>De onde vêm as suas conversões</CardDescription>
             </div>
-          ) : (
-            <p className="text-center text-muted-foreground py-8">
-              Nenhum dado disponível
-            </p>
-          )}
-        </CardContent>
-      </Card>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const sources = sourcesData?.sources || []
+                openDetailsModal(
+                  'Fontes de Conversão Detalhadas',
+                  sources.map((s) => ({
+                    label: s.source,
+                    value: s.conversions,
+                    subValue: `Percentual: ${s.percentage.toFixed(2)}%`,
+                    percentage: s.percentage,
+                  })),
+                  'Análise completa de todas as fontes de tráfego',
+                  [
+                    'Invista mais nas fontes com maior taxa de conversão',
+                    'Analise fontes com alto tráfego mas baixa conversão',
+                    'Crie campanhas específicas para cada fonte',
+                  ],
+                  'list'
+                )
+              }}
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <ConversionSourcesChart
+              data={sourcesData}
+              isLoading={sourcesLoading}
+            />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Lead Profile Section */}
-      <Card className="shadow-inner-3">
+      <Card className="shadow-inner-5">
         <CardHeader>
           <CardTitle>Perfil dos Leads</CardTitle>
           <CardDescription>

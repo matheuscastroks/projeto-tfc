@@ -15,6 +15,41 @@ export class SearchService {
 
   constructor(private readonly prisma: PrismaService) {}
 
+  //Formata um valor de filtro capitalizando e tratando hífens
+  private formatFilterValue(value: string): string {
+    if (!value) return value;
+
+    const normalized = value.toLowerCase().replace(/[-_]/g, ' ').trim();
+
+    // Divide por espaços e capitaliza cada palavra
+    return normalized
+      .split(/\s+/)
+      .map((word) => {
+        if (!word) return word;
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ');
+  }
+
+  /**
+   * Formata os valores de uma combinação de filtros
+   */
+  private formatFilterCombination(
+    combination: Record<string, string | string[]>,
+  ): Record<string, string | string[]> {
+    const formatted: Record<string, string | string[]> = {};
+
+    for (const [key, value] of Object.entries(combination)) {
+      if (Array.isArray(value)) {
+        formatted[key] = value.map((v) => this.formatFilterValue(v));
+      } else {
+        formatted[key] = this.formatFilterValue(value);
+      }
+    }
+
+    return formatted;
+  }
+
   private getDateRange(
     dateFilter?: DateFilter,
     startDate?: string,
@@ -23,9 +58,17 @@ export class SearchService {
     const now = new Date();
 
     if (dateFilter === DateFilter.CUSTOM && startDate && endDate) {
+      // Ensure dates are interpreted as start/end of day in local timezone
+      // If date is in YYYY-MM-DD format, add time component
+      const startStr = startDate.includes('T')
+        ? startDate
+        : `${startDate}T00:00:00`;
+      const endStr = endDate.includes('T')
+        ? endDate
+        : `${endDate}T23:59:59.999`;
       return {
-        start: new Date(startDate),
-        end: new Date(endDate),
+        start: new Date(startStr),
+        end: new Date(endStr),
       };
     }
 
@@ -687,19 +730,19 @@ export class SearchService {
     return {
       totalSearches,
       topFinalidades: finalidades.map((f) => ({
-        finalidade: f.finalidade || 'unknown',
+        finalidade: this.formatFilterValue(f.finalidade || 'unknown'),
         count: Number(f.count),
       })),
       topTipos: tipos.map((t) => ({
-        tipo: t.tipo,
+        tipo: this.formatFilterValue(t.tipo),
         count: Number(t.count),
       })),
       topCidades: cidades.map((c) => ({
-        cidade: c.cidade,
+        cidade: this.formatFilterValue(c.cidade),
         count: Number(c.count),
       })),
       topBairros: bairros.map((b) => ({
-        bairro: b.bairro,
+        bairro: this.formatFilterValue(b.bairro),
         count: Number(b.count),
       })),
       topQuartos: quartos.map((q) => ({
@@ -753,15 +796,15 @@ export class SearchService {
             : 0,
       })),
       topComodidades: comodidades.map((c) => ({
-        comodidade: c.comodidade,
+        comodidade: this.formatFilterValue(c.comodidade),
         count: Number(c.count),
       })),
       topLazer: lazer.map((l) => ({
-        lazer: l.lazer,
+        lazer: this.formatFilterValue(l.lazer),
         count: Number(l.count),
       })),
       topSeguranca: seguranca.map((s) => ({
-        seguranca: s.seguranca,
+        seguranca: this.formatFilterValue(s.seguranca),
         count: Number(s.count),
       })),
       avgFiltersUsed: Math.round(avgFiltersResult[0]?.avg_filters || 0),
@@ -977,7 +1020,9 @@ export class SearchService {
 
     return {
       filters: results.map((r) => ({
-        combination: r.combination as Record<string, string | string[]>,
+        combination: this.formatFilterCombination(
+          r.combination as Record<string, string | string[]>,
+        ),
         conversions: Number(r.conversions),
       })),
       period: {

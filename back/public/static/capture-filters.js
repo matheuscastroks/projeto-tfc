@@ -36,7 +36,7 @@ class InsightHouseAnalytics {
 
   // O construtor inicializa o SDK, valida a siteKey e define o endpoint.
   // Se a siteKey não for encontrada, o SDK é desabilitado.
-  constructor({ apiUrl, siteKey, debug = true } = {}) {
+  constructor({ apiUrl, siteKey, debug = false } = {}) {
     const MyAnalytics = (window.MyAnalytics = window.MyAnalytics || {});
     this.debug = debug ?? MyAnalytics.debug ?? false;
 
@@ -705,7 +705,7 @@ class InsightHouseAnalytics {
   const analytics = new InsightHouseAnalytics({
     apiUrl: window.IH_API_URL,
     siteKey: window.IH_SITE_KEY,
-    debug: true,
+    debug: false,
   });
 
   // Helper para executar o init() quando o DOM estiver pronto.

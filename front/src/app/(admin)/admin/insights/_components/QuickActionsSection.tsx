@@ -11,7 +11,7 @@ import { Search, Building2, TrendingUp, ArrowRight } from 'lucide-react'
 
 export function QuickActionsSection() {
   return (
-    <Card>
+    <Card className="shadow-layer-5">
       <CardHeader>
         <CardTitle>Análises Avançadas</CardTitle>
         <CardDescription>

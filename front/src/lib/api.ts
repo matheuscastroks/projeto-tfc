@@ -22,24 +22,65 @@ class ApiClient {
    */
   async get<T>(
     path: string,
-    options?: RequestInit & { siteKey?: string }
+    options?: RequestInit & { siteKey?: string; [key: string]: any }
   ): Promise<T> {
-    const url = `${this.baseUrl}${path}`
-    const headers: Record<string, string> = {
+    const { siteKey, ...restOptions } = options || {}
+    const {
+      headers,
+      method,
+      body,
+      cache,
+      credentials,
+      mode,
+      redirect,
+      referrer,
+      referrerPolicy,
+      integrity,
+      keepalive,
+      signal,
+      ...queryParams
+    } = restOptions
+
+    // Build query string from queryParams
+    const queryString = new URLSearchParams()
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        // Convert dateFilter from uppercase to lowercase (backend expects lowercase)
+        if (key === 'dateFilter' && typeof value === 'string') {
+          queryString.append(key, value.toLowerCase())
+        } else if (Array.isArray(value)) {
+          value.forEach((v) => queryString.append(key, String(v)))
+        } else {
+          queryString.append(key, String(value))
+        }
+      }
+    })
+
+    const queryStringStr = queryString.toString()
+    const url = `${this.baseUrl}${path}${queryStringStr ? `?${queryStringStr}` : ''}`
+
+    const requestHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(options?.headers as Record<string, string>),
+      ...(headers as Record<string, string>),
     }
 
     // Add X-Site-Key header if siteKey is provided
-    if (options?.siteKey) {
-      headers['X-Site-Key'] = options.siteKey
+    if (siteKey) {
+      requestHeaders['X-Site-Key'] = siteKey
     }
 
     const response = await fetch(url, {
-      ...options,
       method: 'GET',
       credentials: 'include', // Include cookies for session
-      headers,
+      headers: requestHeaders,
+      cache,
+      mode,
+      redirect,
+      referrer,
+      referrerPolicy,
+      integrity,
+      keepalive,
+      signal,
     })
 
     if (!response.ok) {

@@ -22,10 +22,17 @@ export class PropertyService {
     const now = new Date();
 
     if (dateFilter === DateFilter.CUSTOM && startDate && endDate) {
-      // Filtro customizado com datas fornecidas
+      // Ensure dates are interpreted as start/end of day in local timezone
+      // If date is in YYYY-MM-DD format, add time component
+      const startStr = startDate.includes('T')
+        ? startDate
+        : `${startDate}T00:00:00`;
+      const endStr = endDate.includes('T')
+        ? endDate
+        : `${endDate}T23:59:59.999`;
       return {
-        start: new Date(startDate),
-        end: new Date(endDate),
+        start: new Date(startStr),
+        end: new Date(endStr),
       };
     }
 

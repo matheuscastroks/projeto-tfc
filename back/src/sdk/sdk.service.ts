@@ -123,12 +123,12 @@ export class SdkService {
       var script = document.createElement('script');
       script.src = API_URL + '/api/sdk/capture-filters.js';
       script.async = true;
-      script.onload = function() {
-        console.log('InsightHouse SDK carregado com sucesso');
-      };
-      script.onerror = function() {
-        console.error('Falha ao carregar o InsightHouse SDK');
-      };
+      // script.onload = function() {
+      //   console.log('[InsightHouse] SDK carregado');
+      // };
+      // script.onerror = function() {
+      //   console.error('[InsightHouse] Falha ao carregar o SDK');
+      // };
       document.head.appendChild(script);
     })
     .catch(function(err) {

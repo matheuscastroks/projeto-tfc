@@ -26,16 +26,29 @@ import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
 import { Eye, Heart, TrendingUp, ArrowLeft, MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 import type { InsightsQuery } from '@/lib/types/insights'
+import { formatDateToISO } from 'src/utils/utils'
 
 export default function PropertiesAnalyticsPage() {
   const { selectedSiteKey } = useSiteContext()
-  const [dateQuery, setDateQuery] = useState<InsightsQuery>({})
+  const [dateQuery, setDateQuery] = useState<InsightsQuery>(() => {
+    // Initialize with default 30 days period
+    const end = new Date()
+    end.setHours(23, 59, 59, 999)
+    const start = new Date()
+    start.setDate(start.getDate() - 30)
+    start.setHours(0, 0, 0, 0)
+    return {
+      dateFilter: 'CUSTOM',
+      startDate: formatDateToISO(start),
+      endDate: formatDateToISO(end),
+    }
+  })
 
   const handlePeriodChange = (start: Date, end: Date) => {
     setDateQuery({
       dateFilter: 'CUSTOM',
-      startDate: start.toISOString().split('T')[0],
-      endDate: end.toISOString().split('T')[0],
+      startDate: formatDateToISO(start),
+      endDate: formatDateToISO(end),
     })
   }
 

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Card,
   CardContent,
@@ -22,6 +23,7 @@ import {
   Activity,
 } from 'lucide-react'
 import { ThemeToggle } from '@/lib/components/ThemeToggle'
+import logo from '@/assets/logo-insighthouse-fundo-preto.png'
 
 export default function HomePage() {
   return (
@@ -31,8 +33,14 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-8">
-              <Link href="/" className="text-xl font-semibold text-foreground">
-                Insight House
+              <Link href="/" className="flex items-center">
+                <Image
+                  src={logo}
+                  alt="Insighthouse"
+                  width={200}
+                  height={50}
+                  className="h-12 w-auto dark:invert-0 invert"
+                />
               </Link>
               <div className="hidden md:flex items-center space-x-8">
                 <Link

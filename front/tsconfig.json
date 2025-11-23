@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@/lib/*": ["src/lib/*"],
-      "@ui/*": ["src/lib/components/ui/*"]
+      "@ui/*": ["src/lib/components/ui/*"],
+      "@/assets/*": ["src/assets/*"]
     },
     "types": ["node"],
     "incremental": true,

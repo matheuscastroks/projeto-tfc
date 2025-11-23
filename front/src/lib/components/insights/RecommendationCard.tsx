@@ -68,7 +68,7 @@ export function RecommendationCard({
     : undefined
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="shadow-layer-5">
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3 flex-1">

@@ -42,7 +42,7 @@ function ChartCard({
   children,
 }: ChartCardProps) {
   return (
-    <Card className="shadow-inner-3">
+    <Card className="shadow-inner-5">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Icon className="h-5 w-5 text-primary" />

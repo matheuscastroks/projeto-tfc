@@ -6,34 +6,41 @@ import {
   useSearchSummary,
   useConversionSummary,
   usePopularProperties,
-  useDevices,
   useTopConvertingFilters,
+  useDevicesTimeSeries,
 } from '@/lib/hooks/useInsights'
 import { useCampaignRecommendations } from '@/lib/hooks/useCampaignRecommendations'
 import { QuickMetricsGrid } from './_components/QuickMetricsGrid'
-import { InsightsSummaryCharts } from './_components/InsightsSummaryCharts'
 import { QuickActionsSection } from './_components/QuickActionsSection'
 import { RecommendationCard } from '@/lib/components/insights/RecommendationCard'
 import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@ui/card'
+
 import { Lightbulb } from 'lucide-react'
 import type { InsightsQuery } from '@/lib/types/insights'
+import { DevicesChart } from './search/_components/DevicesChart'
+import { formatDateToISO } from 'src/utils/utils'
 
 export default function InsightsOverviewPage() {
   const { selectedSiteKey } = useSiteContext()
-  const [dateQuery, setDateQuery] = useState<InsightsQuery>({})
+  const [dateQuery, setDateQuery] = useState<InsightsQuery>(() => {
+    // Initialize with default 30 days period
+    const end = new Date()
+    end.setHours(23, 59, 59, 999)
+    const start = new Date()
+    start.setDate(start.getDate() - 30)
+    start.setHours(0, 0, 0, 0)
+    return {
+      dateFilter: 'CUSTOM',
+      startDate: formatDateToISO(start),
+      endDate: formatDateToISO(end),
+    }
+  })
 
   const handlePeriodChange = (start: Date, end: Date) => {
     setDateQuery({
       dateFilter: 'CUSTOM',
-      startDate: start.toISOString().split('T')[0],
-      endDate: end.toISOString().split('T')[0],
+      startDate: formatDateToISO(start),
+      endDate: formatDateToISO(end),
     })
   }
 
@@ -49,22 +56,19 @@ export default function InsightsOverviewPage() {
   const { data: propertiesData, isLoading: isLoadingProperty } =
     usePopularProperties(selectedSiteKey || '', { limit: 10, ...dateQuery })
 
-  const { data: devicesData, isLoading: isLoadingDevices } = useDevices(
-    selectedSiteKey || '',
-    { limit: 10, ...dateQuery }
-  )
-
   const { data: topFiltersData } = useTopConvertingFilters(
     selectedSiteKey || '',
     { limit: 10, ...dateQuery }
   )
+
+  const { data: devicesData, isLoading: isLoadingDevices } =
+    useDevicesTimeSeries(selectedSiteKey || '', dateQuery)
 
   // Generate campaign recommendations
   const recommendations = useCampaignRecommendations({
     searchData,
     conversionData,
     propertiesData,
-    devicesData,
     topFiltersData,
   })
 
@@ -80,12 +84,14 @@ export default function InsightsOverviewPage() {
     favorites: prop.favorites,
   }))
 
+  // Calculate mobile percentage from devices time series data
   const totalDevices =
-    devicesData?.devices?.reduce((sum, d) => sum + (d.count || 0), 0) || 0
+    devicesData?.data?.reduce(
+      (sum, item) => sum + (item.mobile || 0) + (item.desktop || 0),
+      0
+    ) || 0
   const mobileCount =
-    devicesData?.devices
-      ?.filter((d) => d.deviceType.toLowerCase() === 'mobile')
-      ?.reduce((sum, d) => sum + (d.count || 0), 0) || 0
+    devicesData?.data?.reduce((sum, item) => sum + (item.mobile || 0), 0) || 0
   const mobilePercent =
     totalDevices > 0 ? (mobileCount / totalDevices) * 100 : 0
 
@@ -104,12 +110,9 @@ export default function InsightsOverviewPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Visão Geral - Insights
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight">Visão Geral</h1>
           <p className="text-muted-foreground text-lg mt-2">
-            Dashboard consolidado com métricas principais e recomendações de
-            campanhas
+            Métricas principais e recomendações de campanhas
           </p>
         </div>
         <PeriodSelector onPeriodChange={handlePeriodChange} />
@@ -126,6 +129,9 @@ export default function InsightsOverviewPage() {
         isLoadingProperty={isLoadingProperty}
         isLoadingDevices={isLoadingDevices}
       />
+
+      {/* Devices Chart */}
+      <DevicesChart data={devicesData} isLoading={isLoadingDevices} />
 
       {/* Campaign Recommendations */}
       {recommendations.length > 0 && (
@@ -150,26 +156,6 @@ export default function InsightsOverviewPage() {
           </div>
         </div>
       )}
-
-      {/* Summary Charts */}
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-2xl font-semibold">Resumo das Análises</h2>
-          <p className="text-muted-foreground mt-1">
-            Visualização rápida dos dados principais de cada categoria
-          </p>
-        </div>
-        <InsightsSummaryCharts
-          topCities={searchData?.topCidades}
-          conversionsByType={conversionData?.conversionsByType}
-          topProperties={transformedProperties}
-          topDevices={devicesData?.devices}
-          isLoadingSearch={isLoadingSearch}
-          isLoadingConversion={isLoadingConversion}
-          isLoadingProperty={isLoadingProperty}
-          isLoadingDevices={isLoadingDevices}
-        />
-      </div>
 
       {/* Quick Actions */}
       <QuickActionsSection />

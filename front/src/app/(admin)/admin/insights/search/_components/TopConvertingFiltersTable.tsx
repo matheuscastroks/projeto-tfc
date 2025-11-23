@@ -47,18 +47,58 @@ const formatFilterCombination = (
   combination: Record<string, string | string[]>
 ): string => {
   const parts: string[] = []
-  for (const [key, value] of Object.entries(combination)) {
+
+  // Função para extrair valor (primeiro item se for array)
+  // Os valores já vêm formatados do backend (capitalizados e sem hífens)
+  const getValue = (value: string | string[]): string | null => {
+    if (!value) return null
+    if (Array.isArray(value)) {
+      return value.length > 0 ? value[0] : null
+    }
+    return value
+  }
+
+  // Ordem de exibição preferencial
+  const displayOrder = [
+    'tipo',
+    'quartos',
+    'suites',
+    'banheiros',
+    'vagas',
+    'finalidade',
+    'cidade',
+    'bairro',
+  ]
+
+  // Processar campos na ordem preferencial
+  for (const key of displayOrder) {
+    const value = getValue(combination[key])
     if (value) {
-      if (Array.isArray(value)) {
-        if (value.length > 0) {
-          parts.push(`${key}: ${value.join(', ')}`)
-        }
+      if (key === 'quartos') {
+        parts.push(`${value} quartos`)
+      } else if (key === 'suites') {
+        parts.push(`${value} suítes`)
+      } else if (key === 'banheiros') {
+        parts.push(`${value} banheiros`)
+      } else if (key === 'vagas') {
+        parts.push(`${value} vagas`)
       } else {
-        parts.push(`${key}: ${value}`)
+        parts.push(value)
       }
     }
   }
-  return parts.join(' | ')
+
+  // Processar outros campos que não estão na ordem preferencial
+  for (const [key, value] of Object.entries(combination)) {
+    if (!displayOrder.includes(key)) {
+      const extractedValue = getValue(value)
+      if (extractedValue) {
+        parts.push(extractedValue)
+      }
+    }
+  }
+
+  return parts.join(', ')
 }
 
 const columns: ColumnDef<FilterItem>[] = [

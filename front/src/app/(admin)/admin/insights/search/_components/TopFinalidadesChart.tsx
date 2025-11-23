@@ -1,6 +1,6 @@
 'use client'
 
-import { PieChart, Pie, LabelList } from 'recharts'
+import { PieChart, Pie, Cell } from 'recharts'
 import {
   ChartContainer,
   ChartTooltip,
@@ -14,6 +14,14 @@ interface TopFinalidadesChartProps {
   data: SearchAnalyticsResponse | undefined
   isLoading?: boolean
 }
+
+const COLORS = [
+  'hsl(var(--chart-1))',
+  'hsl(var(--chart-2))',
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
+]
 
 const chartConfig = {
   count: {
@@ -68,35 +76,32 @@ export function TopFinalidadesChart({
     return 'venda'
   }
 
-  // Map finalidades to chart data with proper colors
+  // Map finalidades to chart data
   const chartData = data.topFinalidades.map((item) => {
     const normalized = normalizeFinalidade(item.finalidade)
     return {
       finalidade: normalized,
       count: item.count,
-      fill: `var(--color-${normalized})`,
     }
   })
 
   return (
     <ChartContainer
       config={chartConfig}
-      className="[&_.recharts-text]:fill-background mx-auto aspect-square max-h-[300px]"
+      className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[250px]"
     >
       <PieChart>
-        <ChartTooltip
-          content={<ChartTooltipContent nameKey="count" hideLabel />}
-        />
-        <Pie data={chartData} dataKey="count" nameKey="finalidade" stroke="0">
-          <LabelList
-            dataKey="finalidade"
-            className="fill-background"
-            stroke="none"
-            fontSize={12}
-            formatter={(value: keyof typeof chartConfig) =>
-              chartConfig[value]?.label
-            }
-          />
+        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+        <Pie
+          data={chartData}
+          dataKey="count"
+          label
+          nameKey="finalidade"
+          stroke="0"
+        >
+          {chartData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
         </Pie>
       </PieChart>
     </ChartContainer>

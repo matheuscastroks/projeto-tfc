@@ -10,7 +10,7 @@ import {
 import { Spinner } from '@ui/spinner'
 import type { SearchAnalyticsResponse } from '@/lib/types/insights'
 
-interface TopCidadesChartProps {
+interface TopBairrosChartProps {
   data: SearchAnalyticsResponse | undefined
   isLoading?: boolean
 }
@@ -23,9 +23,9 @@ const COLORS = [
   'hsl(var(--chart-5))',
 ]
 
-// Generate chart config dynamically for up to 5 cities
+// Generate chart config dynamically for neighborhoods
 const generateChartConfig = (
-  cidades: Array<{ cidade: string }>
+  bairros: Array<{ bairro: string }>
 ): ChartConfig => {
   const config: ChartConfig = {
     count: {
@@ -33,10 +33,10 @@ const generateChartConfig = (
     },
   }
 
-  cidades.forEach((item, index) => {
-    const key = item.cidade.toLowerCase().replace(/\s+/g, '_')
+  bairros.forEach((item, index) => {
+    const key = item.bairro.toLowerCase().replace(/\s+/g, '_')
     config[key] = {
-      label: item.cidade,
+      label: item.bairro,
       color: COLORS[index % COLORS.length],
     }
   })
@@ -44,7 +44,7 @@ const generateChartConfig = (
   return config
 }
 
-export function TopCidadesChart({ data, isLoading }: TopCidadesChartProps) {
+export function TopBairrosChart({ data, isLoading }: TopBairrosChartProps) {
   if (isLoading) {
     return (
       <div className="flex h-[300px] items-center justify-center">
@@ -53,7 +53,7 @@ export function TopCidadesChart({ data, isLoading }: TopCidadesChartProps) {
     )
   }
 
-  if (!data || !data.topCidades.length) {
+  if (!data || !data.topBairros.length) {
     return (
       <div className="flex h-[300px] items-center justify-center">
         <p className="text-sm text-muted-foreground">Sem dados disponíveis</p>
@@ -61,14 +61,14 @@ export function TopCidadesChart({ data, isLoading }: TopCidadesChartProps) {
     )
   }
 
-  const topCidades = data.topCidades.slice(0, 5)
-  const chartConfig = generateChartConfig(topCidades)
+  const topBairros = data.topBairros.slice(0, 5)
+  const chartConfig = generateChartConfig(topBairros)
 
-  const chartData = topCidades.map((item) => {
-    const key = item.cidade.toLowerCase().replace(/\s+/g, '_')
+  const chartData = topBairros.map((item) => {
+    const key = item.bairro.toLowerCase().replace(/\s+/g, '_')
     return {
-      cidade: key,
-      cidadeLabel: item.cidade,
+      bairro: key,
+      bairroLabel: item.bairro,
       count: item.count,
     }
   })
@@ -80,7 +80,13 @@ export function TopCidadesChart({ data, isLoading }: TopCidadesChartProps) {
     >
       <PieChart>
         <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-        <Pie data={chartData} dataKey="count" label nameKey="cidade" stroke="0">
+        <Pie
+          data={chartData}
+          dataKey="count"
+          label
+          nameKey="bairro"
+          stroke="0"
+        >
           {chartData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
@@ -89,3 +95,4 @@ export function TopCidadesChart({ data, isLoading }: TopCidadesChartProps) {
     </ChartContainer>
   )
 }
+

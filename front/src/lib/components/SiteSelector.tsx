@@ -50,6 +50,17 @@ export function SiteSelector({
     )
   }
 
+  const getSiteDisplayDomain = (site: (typeof sites)[0]): string => {
+    const primaryDomain = site.domains?.find((d) => d.isPrimary)
+    if (primaryDomain) {
+      return primaryDomain.host
+    }
+    if (site.domains && site.domains.length > 0) {
+      return site.domains[0].host
+    }
+    return site.name
+  }
+
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className={className}>
@@ -58,7 +69,7 @@ export function SiteSelector({
       <SelectContent>
         {sites.map((site) => (
           <SelectItem key={site.id} value={site.siteKey}>
-            {site.name}
+            {getSiteDisplayDomain(site)}
           </SelectItem>
         ))}
       </SelectContent>
