@@ -10,6 +10,7 @@ import {
 } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@ui/chart'
 import { Spinner } from '@ui/spinner'
+import { Building2 } from 'lucide-react'
 import type { PopularPropertiesResponse } from '@/lib/types/insights'
 
 interface PopularPropertiesChartProps {
@@ -38,8 +39,13 @@ export function PopularPropertiesChart({
 
   if (!data || !data.properties.length) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
-        <p className="text-sm text-muted-foreground">Sem dados disponíveis</p>
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+          <Building2 className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Nenhum imóvel visualizado no período selecionado
+        </p>
       </div>
     )
   }

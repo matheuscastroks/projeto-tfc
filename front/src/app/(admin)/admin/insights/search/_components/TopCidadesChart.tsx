@@ -8,6 +8,7 @@ import {
   type ChartConfig,
 } from '@ui/chart'
 import { Spinner } from '@ui/spinner'
+import { MapPin } from 'lucide-react'
 import type { SearchAnalyticsResponse } from '@/lib/types/insights'
 
 interface TopCidadesChartProps {
@@ -55,8 +56,13 @@ export function TopCidadesChart({ data, isLoading }: TopCidadesChartProps) {
 
   if (!data || !data.topCidades.length) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
-        <p className="text-sm text-muted-foreground">Sem dados disponíveis</p>
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+          <MapPin className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Nenhuma cidade buscada no período selecionado
+        </p>
       </div>
     )
   }

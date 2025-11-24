@@ -8,6 +8,7 @@ import {
   type ChartConfig,
 } from '@ui/chart'
 import { Spinner } from '@ui/spinner'
+import { Target } from 'lucide-react'
 import type { SearchAnalyticsResponse } from '@/lib/types/insights'
 
 interface TopFinalidadesChartProps {
@@ -55,8 +56,13 @@ export function TopFinalidadesChart({
 
   if (!data || !data.topFinalidades.length) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
-        <p className="text-sm text-muted-foreground">Sem dados disponíveis</p>
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+          <Target className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Nenhuma finalidade buscada no período selecionado
+        </p>
       </div>
     )
   }

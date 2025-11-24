@@ -8,6 +8,7 @@ import {
   type ChartConfig,
 } from '@ui/chart'
 import { Spinner } from '@ui/spinner'
+import { MapPin } from 'lucide-react'
 import type { SearchAnalyticsResponse } from '@/lib/types/insights'
 
 interface TopBairrosChartProps {
@@ -55,8 +56,13 @@ export function TopBairrosChart({ data, isLoading }: TopBairrosChartProps) {
 
   if (!data || !data.topBairros.length) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
-        <p className="text-sm text-muted-foreground">Sem dados disponíveis</p>
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+          <MapPin className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Nenhum bairro buscado no período selecionado
+        </p>
       </div>
     )
   }
@@ -80,13 +86,7 @@ export function TopBairrosChart({ data, isLoading }: TopBairrosChartProps) {
     >
       <PieChart>
         <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-        <Pie
-          data={chartData}
-          dataKey="count"
-          label
-          nameKey="bairro"
-          stroke="0"
-        >
+        <Pie data={chartData} dataKey="count" label nameKey="bairro" stroke="0">
           {chartData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
@@ -95,4 +95,3 @@ export function TopBairrosChart({ data, isLoading }: TopBairrosChartProps) {
     </ChartContainer>
   )
 }
-

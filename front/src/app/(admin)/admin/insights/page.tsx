@@ -14,8 +14,10 @@ import { QuickMetricsGrid } from './_components/QuickMetricsGrid'
 import { QuickActionsSection } from './_components/QuickActionsSection'
 import { RecommendationCard } from '@/lib/components/insights/RecommendationCard'
 import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
+import { SectionHeader } from '@/lib/components/dashboard'
+import { Badge } from '@ui/badge'
 
-import { Lightbulb } from 'lucide-react'
+import { Lightbulb, BarChart3 } from 'lucide-react'
 import type { InsightsQuery } from '@/lib/types/insights'
 import { DevicesChart } from './search/_components/DevicesChart'
 import { formatDateToISO } from 'src/utils/utils'
@@ -106,13 +108,20 @@ export default function InsightsOverviewPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Visão Geral</h1>
-          <p className="text-muted-foreground text-lg mt-2">
-            Métricas principais e recomendações de campanhas
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-2">
+          <Badge variant="secondary" className="px-3 py-1">
+            <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
+            Dashboard Analytics
+          </Badge>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Entenda o que seus clientes procuram
+          </h1>
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+            Use estes insights para ajustar seu inventário, criar campanhas
+            segmentadas e aumentar suas vendas
           </p>
         </div>
         <PeriodSelector onPeriodChange={handlePeriodChange} />
@@ -136,16 +145,11 @@ export default function InsightsOverviewPage() {
       {/* Campaign Recommendations */}
       {recommendations.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Lightbulb className="h-5 w-5 text-primary" />
-            <h2 className="text-2xl font-semibold">
-              Recomendações de Campanhas
-            </h2>
-          </div>
-          <p className="text-muted-foreground">
-            Insights acionáveis baseados no comportamento dos visitantes do seu
-            site
-          </p>
+          <SectionHeader
+            icon={Lightbulb}
+            title="Recomendações de Campanhas"
+            description="Insights acionáveis baseados no comportamento dos visitantes do seu site"
+          />
           <div className="grid gap-4 md:grid-cols-2">
             {recommendations.map((recommendation) => (
               <RecommendationCard

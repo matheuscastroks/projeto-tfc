@@ -71,17 +71,17 @@ const columns: ColumnDef<Property>[] = [
       const url = row.original.url
 
       return (
-        <div className="space-y-1.5">
-          <div className="font-semibold text-base">#{codigo}</div>
+        <div className="space-y-1">
+          <div className="font-semibold text-sm">#{codigo}</div>
           {url ? (
             <a
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-primary hover:underline flex items-center gap-1.5 transition-colors"
+              className="text-xs text-primary hover:underline flex items-center gap-1 transition-colors"
             >
               <span className="truncate max-w-xs">{url}</span>
-              <ExternalLink className="h-3.5 w-3.5 flex-shrink-0" />
+              <ExternalLink className="h-3 w-3 flex-shrink-0" />
             </a>
           ) : (
             <span className="text-xs text-muted-foreground">
@@ -229,10 +229,11 @@ export function PopularPropertiesTable({ data }: PopularPropertiesTableProps) {
 
   if (data.length === 0) {
     return (
-      <div className="rounded-md border">
-        <div className="p-8 text-center text-muted-foreground">
-          Nenhum dado disponível
+      <div className="flex flex-col items-center justify-center py-8 text-center">
+        <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-3">
+          <Search className="h-6 w-6 text-muted-foreground" />
         </div>
+        <p className="text-sm text-muted-foreground">Nenhum dado disponível</p>
       </div>
     )
   }
@@ -247,16 +248,16 @@ export function PopularPropertiesTable({ data }: PopularPropertiesTableProps) {
   const totalPages = table.getPageCount()
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Filtro Global */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input
             placeholder="Buscar em todas as colunas..."
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="pl-9 h-10"
+            className="pl-8 h-9 text-sm"
           />
         </div>
         {globalFilter && (
@@ -264,7 +265,7 @@ export function PopularPropertiesTable({ data }: PopularPropertiesTableProps) {
             variant="ghost"
             size="sm"
             onClick={() => setGlobalFilter('')}
-            className="h-10"
+            className="h-9"
           >
             Limpar
           </Button>
@@ -272,7 +273,7 @@ export function PopularPropertiesTable({ data }: PopularPropertiesTableProps) {
       </div>
 
       {/* Tabela */}
-      <div className="rounded-xl border bg-card overflow-hidden">
+      <div className="rounded-lg border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -282,7 +283,7 @@ export function PopularPropertiesTable({ data }: PopularPropertiesTableProps) {
                     return (
                       <TableHead
                         key={header.id}
-                        className="h-12 px-6 font-semibold"
+                        className="h-10 px-4 font-semibold text-sm"
                       >
                         {header.isPlaceholder
                           ? null
@@ -301,10 +302,10 @@ export function PopularPropertiesTable({ data }: PopularPropertiesTableProps) {
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-32 text-center"
+                    className="h-24 text-center"
                   >
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <p className="text-muted-foreground font-medium">
+                    <div className="flex flex-col items-center justify-center gap-1.5">
+                      <p className="text-muted-foreground font-medium text-sm">
                         Nenhum resultado encontrado
                       </p>
                       {globalFilter && (
@@ -322,7 +323,7 @@ export function PopularPropertiesTable({ data }: PopularPropertiesTableProps) {
                     className="border-b transition-colors hover:bg-muted/50"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="px-6 py-4">
+                      <TableCell key={cell.id} className="px-4 py-2.5">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -338,7 +339,7 @@ export function PopularPropertiesTable({ data }: PopularPropertiesTableProps) {
       </div>
 
       {/* Controles de Paginação */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-1">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-1">
         <div className="text-sm text-muted-foreground">
           Mostrando{' '}
           <span className="font-medium text-foreground">{pageStart}</span> -{' '}

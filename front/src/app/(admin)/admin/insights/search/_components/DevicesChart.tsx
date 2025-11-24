@@ -16,6 +16,7 @@ import {
   ChartTooltipContent,
 } from '@ui/chart'
 import { Spinner } from '@ui/spinner'
+import { Smartphone } from 'lucide-react'
 import type { DevicesTimeSeriesResponse } from '@/lib/types/insights'
 
 interface DevicesChartProps {
@@ -41,35 +42,57 @@ export function DevicesChart({ data, isLoading }: DevicesChartProps) {
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>('desktop')
 
-  const total = React.useMemo(
-    () => {
-      if (!data?.data) return { desktop: 0, mobile: 0 }
-      return {
-        desktop: data.data.reduce((acc, curr) => acc + curr.desktop, 0),
-        mobile: data.data.reduce((acc, curr) => acc + curr.mobile, 0),
-      }
-    },
-    [data]
-  )
+  const total = React.useMemo(() => {
+    if (!data?.data) return { desktop: 0, mobile: 0 }
+    return {
+      desktop: data.data.reduce((acc, curr) => acc + curr.desktop, 0),
+      mobile: data.data.reduce((acc, curr) => acc + curr.mobile, 0),
+    }
+  }, [data])
 
   if (isLoading) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
-        <Spinner className="h-8 w-8" />
-      </div>
+      <Card className="border-2">
+        <CardHeader>
+          <CardTitle>Dispositivos</CardTitle>
+          <CardDescription>
+            Acessos por tipo de dispositivo ao longo do tempo
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex h-[300px] items-center justify-center">
+            <Spinner className="h-8 w-8" />
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
   if (!data || !data.data.length) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
-        <p className="text-sm text-muted-foreground">Sem dados disponíveis</p>
-      </div>
+      <Card className="border-2">
+        <CardHeader>
+          <CardTitle>Dispositivos</CardTitle>
+          <CardDescription>
+            Acessos por tipo de dispositivo ao longo do tempo
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+              <Smartphone className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Sem dados de dispositivos disponíveis para o período selecionado
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <Card className="py-0 shadow-inner-5">
+    <Card className="py-0 border-2 hover:border-primary/50 transition-all duration-200">
       <CardHeader className="flex flex-col items-stretch border-b !p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:!py-0">
           <CardTitle>Dispositivos</CardTitle>
@@ -148,4 +171,3 @@ export function DevicesChart({ data, isLoading }: DevicesChartProps) {
     </Card>
   )
 }
-

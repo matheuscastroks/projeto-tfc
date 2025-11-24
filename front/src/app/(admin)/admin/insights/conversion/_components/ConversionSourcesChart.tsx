@@ -3,6 +3,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@ui/chart'
 import { Spinner } from '@ui/spinner'
+import { Globe } from 'lucide-react'
 import type { ConversionSourcesResponse } from '@/lib/types/insights'
 
 interface ConversionSourcesChartProps {
@@ -38,8 +39,13 @@ export function ConversionSourcesChart({
 
   if (!data || !data.sources.length) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
-        <p className="text-sm text-muted-foreground">Sem dados disponíveis</p>
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+          <Globe className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Nenhuma fonte de conversão identificada no período
+        </p>
       </div>
     )
   }
@@ -80,4 +86,3 @@ export function ConversionSourcesChart({
     </ChartContainer>
   )
 }
-

@@ -23,8 +23,9 @@ import {
   type DetailsDataItem,
 } from '@/lib/components/insights/DetailsModal'
 import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
-import { Eye, Heart, TrendingUp, ArrowLeft, MoreHorizontal } from 'lucide-react'
-import Link from 'next/link'
+import { EnhancedMetricCard, SectionHeader } from '@/lib/components/dashboard'
+import { Badge } from '@ui/badge'
+import { Eye, Heart, TrendingUp, MoreHorizontal, Building2 } from 'lucide-react'
 import type { InsightsQuery } from '@/lib/types/insights'
 import { formatDateToISO } from 'src/utils/utils'
 
@@ -100,21 +101,20 @@ export default function PropertiesAnalyticsPage() {
     totalViews > 0 ? ((totalFavorites / totalViews) * 100).toFixed(2) : '0'
 
   return (
-    <div className="space-y-6">
-      {/* Header with back button */}
+    <div className="space-y-5">
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <Button variant="ghost" size="sm" asChild className="mb-2">
-            <Link href="/admin/insights">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar para Visão Geral
-            </Link>
-          </Button>
-          <h1 className="text-3xl font-bold tracking-tight">
+        <div className="space-y-2">
+          <Badge variant="secondary" className="px-3 py-1">
+            <Building2 className="w-3.5 h-3.5 mr-1.5" />
             Análise de Imóveis
+          </Badge>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Descubra seus imóveis mais populares
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Descubra quais imóveis geram mais engajamento e oportunidades
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+            Identifique quais imóveis geram mais interesse, visualizações e
+            favoritos para priorizar suas estratégias de venda
           </p>
         </div>
         <PeriodSelector onPeriodChange={handlePeriodChange} />
@@ -124,82 +124,45 @@ export default function PropertiesAnalyticsPage() {
       <div className="grid gap-4 md:grid-cols-3">
         {/* Left Column: Metrics Cards */}
         <div className="space-y-4 col-span-1">
-          <Card className="shadow-layer-5">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total de Visualizações
-              </CardTitle>
-              <Eye className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {engagementLoading ? (
-                <div className="flex items-center justify-center h-20">
-                  <Spinner className="h-6 w-6" />
-                </div>
-              ) : (
-                <>
-                  <div className="text-2xl font-bold">
-                    {totalViews.toLocaleString()}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Visualizações realizadas
-                  </p>
-                </>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-layer-4">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total de Favoritos
-              </CardTitle>
-              <Heart className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {engagementLoading ? (
-                <div className="flex items-center justify-center h-20">
-                  <Spinner className="h-6 w-6" />
-                </div>
-              ) : (
-                <>
-                  <div className="text-2xl font-bold">
-                    {totalFavorites.toLocaleString()}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Favoritos salvos
-                  </p>
-                </>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-layer-3">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Taxa de Favoritos
-              </CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {engagementLoading ? (
-                <div className="flex items-center justify-center h-20">
-                  <Spinner className="h-6 w-6" />
-                </div>
-              ) : (
-                <>
-                  <div className="text-2xl font-bold">{favoriteRate}%</div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Favoritos por visualização
-                  </p>
-                </>
-              )}
-            </CardContent>
-          </Card>
+          <EnhancedMetricCard
+            title="Total de Visualizações"
+            value={totalViews.toLocaleString()}
+            subtitle="Visualizações realizadas"
+            icon={Eye}
+            isLoading={engagementLoading}
+          />
+          <EnhancedMetricCard
+            title="Total de Favoritos"
+            value={totalFavorites.toLocaleString()}
+            subtitle="Favoritos salvos"
+            icon={Heart}
+            isLoading={engagementLoading}
+          />
+          <EnhancedMetricCard
+            title="Taxa de Favoritos"
+            value={`${favoriteRate}%`}
+            subtitle="Favoritos por visualização"
+            icon={TrendingUp}
+            isLoading={engagementLoading}
+            trend={
+              parseFloat(favoriteRate) > 5
+                ? 'up'
+                : parseFloat(favoriteRate) < 2
+                  ? 'down'
+                  : 'neutral'
+            }
+            trendValue={
+              parseFloat(favoriteRate) > 5
+                ? 'Alto engajamento'
+                : parseFloat(favoriteRate) < 2
+                  ? 'Baixo engajamento'
+                  : 'Engajamento médio'
+            }
+          />
         </div>
 
         {/* Right Column: Top Properties Chart */}
-        <Card className="shadow-inner-5 col-span-2">
+        <Card className="border-2 hover:border-primary/50 transition-all duration-200 col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle>Top 5 Imóveis Mais Populares</CardTitle>
@@ -245,29 +208,29 @@ export default function PropertiesAnalyticsPage() {
       </div>
 
       {/* Properties Table with Funnel */}
-      <Card className="shadow-inner-5">
-        <CardHeader>
-          <CardTitle>Lista Completa de Imóveis</CardTitle>
-          <CardDescription>
-            Lista completa de imóveis com métricas de engajamento e leads
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {popularLoading ? (
-            <div className="space-y-2">
-              {[...Array(10)].map((_, i) => (
-                <Skeleton key={i} className="h-16 w-full" />
-              ))}
-            </div>
-          ) : popularData?.properties && popularData.properties.length > 0 ? (
-            <PopularPropertiesTable data={popularData.properties} />
-          ) : (
-            <p className="text-center text-muted-foreground py-8">
-              Nenhum dado disponível
-            </p>
-          )}
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <SectionHeader
+          title="Lista Completa de Imóveis"
+          description="Todos os imóveis com métricas de engajamento e leads"
+        />
+        <Card className="border-2 hover:border-primary/50 transition-all duration-200">
+          <CardContent>
+            {popularLoading ? (
+              <div className="space-y-2">
+                {[...Array(10)].map((_, i) => (
+                  <Skeleton key={i} className="h-16 w-full" />
+                ))}
+              </div>
+            ) : popularData?.properties && popularData.properties.length > 0 ? (
+              <PopularPropertiesTable data={popularData.properties} />
+            ) : (
+              <p className="text-center text-muted-foreground py-8">
+                Nenhum dado disponível
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Details Modal */}
       <DetailsModal

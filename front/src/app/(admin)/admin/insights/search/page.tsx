@@ -24,10 +24,8 @@ import {
   Target,
   Filter,
   DollarSign,
-  Maximize2,
   MoreHorizontal,
-  ArrowLeft,
-  Smartphone,
+  Search,
 } from 'lucide-react'
 import { TopFinalidadesChart } from './_components/TopFinalidadesChart'
 import { TopCidadesChart } from './_components/TopCidadesChart'
@@ -39,7 +37,8 @@ import {
   type DetailsDataItem,
 } from '@/lib/components/insights/DetailsModal'
 import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
-import Link from 'next/link'
+import { EnhancedMetricCard, SectionHeader } from '@/lib/components/dashboard'
+import { Badge } from '@ui/badge'
 import type { InsightsQuery } from '@/lib/types/insights'
 import { formatDateToISO } from 'src/utils/utils'
 
@@ -119,21 +118,20 @@ export default function SearchAnalyticsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header with back button */}
+    <div className="space-y-5">
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <Button variant="ghost" size="sm" asChild className="mb-2">
-            <Link href="/admin/insights">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar para Visão Geral
-            </Link>
-          </Button>
-          <h1 className="text-3xl font-bold tracking-tight">
+        <div className="space-y-2">
+          <Badge variant="secondary" className="px-3 py-1">
+            <Search className="w-3.5 h-3.5 mr-1.5" />
             Análise de Buscas
+          </Badge>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Descubra o que seus clientes procuram
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Entenda o que seus clientes procuram e otimize seu inventário
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+            Use estes insights para ajustar seu inventário e criar campanhas
+            segmentadas para as localidades e características mais procuradas
           </p>
         </div>
         <PeriodSelector onPeriodChange={handlePeriodChange} />
@@ -141,111 +139,45 @@ export default function SearchAnalyticsPage() {
 
       {/* Quick Metrics Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-layer-5">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total de Buscas
-            </CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {searchLoading ? (
-              <div className="flex items-center justify-center h-20">
-                <Spinner className="h-6 w-6" />
-              </div>
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {searchData?.totalSearches.toLocaleString() || 0}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Pesquisas realizadas
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-layer-4">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Filtros por Busca
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {searchLoading ? (
-              <div className="flex items-center justify-center h-20">
-                <Spinner className="h-6 w-6" />
-              </div>
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {searchData?.avgFiltersUsed.toFixed(1) || 0}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Média de filtros utilizados
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-layer-3">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total de Mudanças
-            </CardTitle>
-            <Filter className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {filtersLoading ? (
-              <div className="flex items-center justify-center h-20">
-                <Spinner className="h-6 w-6" />
-              </div>
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {filtersData?.totalFilterChanges.toLocaleString() || 0}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Mudanças de filtro
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-layer-2">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Filtros que Convertem
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {topConvertingFiltersLoading ? (
-              <div className="flex items-center justify-center h-20">
-                <Spinner className="h-6 w-6" />
-              </div>
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {topConvertingFiltersData?.filters?.length || 0}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Combinações identificadas
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
+        <EnhancedMetricCard
+          title="Total de Buscas"
+          value={searchData?.totalSearches.toLocaleString() || '0'}
+          subtitle="Pesquisas realizadas no período"
+          icon={Target}
+          isLoading={searchLoading}
+        />
+        <EnhancedMetricCard
+          title="Filtros por Busca"
+          value={searchData?.avgFiltersUsed.toFixed(1) || '0'}
+          subtitle="Média de filtros utilizados"
+          icon={TrendingUp}
+          isLoading={searchLoading}
+        />
+        <EnhancedMetricCard
+          title="Total de Mudanças"
+          value={filtersData?.totalFilterChanges.toLocaleString() || '0'}
+          subtitle="Mudanças de filtro"
+          icon={Filter}
+          isLoading={filtersLoading}
+        />
+        <EnhancedMetricCard
+          title="Filtros que Convertem"
+          value={topConvertingFiltersData?.filters?.length || '0'}
+          subtitle="Combinações identificadas"
+          icon={TrendingUp}
+          isLoading={topConvertingFiltersLoading}
+        />
       </div>
 
       {/* Section: Location Analysis */}
       <div className="space-y-4">
+        <SectionHeader
+          icon={MapPin}
+          title="Análise Geográfica"
+          description="Entenda quais cidades e bairros seus visitantes mais procuram"
+        />
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="shadow-inner-5">
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Cidades Mais Buscadas</CardTitle>
@@ -289,7 +221,7 @@ export default function SearchAnalyticsPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-inner-5">
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Bairros Mais Buscados</CardTitle>
@@ -326,7 +258,7 @@ export default function SearchAnalyticsPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-inner-5">
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between">
               <div className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-primary" />
@@ -380,13 +312,14 @@ export default function SearchAnalyticsPage() {
 
       {/* Section: Property Features */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Home className="h-5 w-5 text-primary" />
-          <h2 className="text-2xl font-semibold">Características de Imóveis</h2>
-        </div>
+        <SectionHeader
+          icon={Home}
+          title="Características de Imóveis"
+          description="Perfil dos imóveis mais procurados pelos seus visitantes"
+        />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {/* Quartos */}
-          <Card className="shadow-layer-5">
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Quartos</CardTitle>
               <Button
@@ -428,7 +361,7 @@ export default function SearchAnalyticsPage() {
           </Card>
 
           {/* Suites */}
-          <Card className="shadow-layer-5">
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Suítes</CardTitle>
               <Button
@@ -466,7 +399,7 @@ export default function SearchAnalyticsPage() {
           </Card>
 
           {/* Banheiros */}
-          <Card className="shadow-layer-5">
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Banheiros</CardTitle>
               <Button
@@ -505,7 +438,7 @@ export default function SearchAnalyticsPage() {
           </Card>
 
           {/* Vagas */}
-          <Card className="shadow-layer-5">
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Vagas</CardTitle>
               <Button
@@ -545,13 +478,14 @@ export default function SearchAnalyticsPage() {
       </div>
 
       {/* Section: Price & Area Ranges */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <DollarSign className="h-5 w-5 text-primary" />
-          <h2 className="text-2xl font-semibold">Faixas de Preço e Área</h2>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card className="shadow-layer-5">
+      <div className="space-y-6">
+        <SectionHeader
+          icon={DollarSign}
+          title="Faixas de Preço e Área"
+          description="Poder de compra e preferências de tamanho dos seus visitantes"
+        />
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Faixas de Preço</CardTitle>
@@ -626,7 +560,7 @@ export default function SearchAnalyticsPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-layer-5">
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Faixas de Área</CardTitle>
@@ -693,31 +627,27 @@ export default function SearchAnalyticsPage() {
       </div>
 
       {/* Section: Top Converting Filters */}
-      <Card className="shadow-inner-5">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <div>
-              <CardTitle>Filtros que Mais Convertem</CardTitle>
-              <CardDescription>
-                Combinações de filtros com maior taxa de conversão
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {topConvertingFiltersLoading ? (
-            <div className="flex items-center justify-center h-48">
-              <Spinner className="h-8 w-8" />
-            </div>
-          ) : (
-            <TopConvertingFiltersTable
-              data={topConvertingFiltersData}
-              isLoading={topConvertingFiltersLoading}
-            />
-          )}
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <SectionHeader
+          icon={TrendingUp}
+          title="Filtros que Mais Convertem"
+          description="Combinações de filtros com maior taxa de conversão"
+        />
+        <Card className="border-2 hover:border-primary/50 transition-all duration-200">
+          <CardContent>
+            {topConvertingFiltersLoading ? (
+              <div className="flex items-center justify-center h-48">
+                <Spinner className="h-8 w-8" />
+              </div>
+            ) : (
+              <TopConvertingFiltersTable
+                data={topConvertingFiltersData}
+                isLoading={topConvertingFiltersLoading}
+              />
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Details Modal */}
       <DetailsModal

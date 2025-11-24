@@ -25,14 +25,9 @@ import {
   type DetailsDataItem,
 } from '@/lib/components/insights/DetailsModal'
 import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
-import {
-  TrendingUp,
-  Target,
-  Users,
-  ArrowLeft,
-  MoreHorizontal,
-} from 'lucide-react'
-import Link from 'next/link'
+import { EnhancedMetricCard, SectionHeader } from '@/lib/components/dashboard'
+import { Badge } from '@ui/badge'
+import { TrendingUp, Target, Users, MoreHorizontal } from 'lucide-react'
 import type { InsightsQuery } from '@/lib/types/insights'
 import { formatDateToISO } from 'src/utils/utils'
 
@@ -119,21 +114,20 @@ export default function ConversionAnalyticsPage() {
   const totalSessions = summaryData?.totalSessions || 0
 
   return (
-    <div className="space-y-6">
-      {/* Header with back button */}
+    <div className="space-y-5">
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <Button variant="ghost" size="sm" asChild className="mb-2">
-            <Link href="/admin/insights">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar para Visão Geral
-            </Link>
-          </Button>
-          <h1 className="text-3xl font-bold tracking-tight">
+        <div className="space-y-2">
+          <Badge variant="secondary" className="px-3 py-1">
+            <Target className="w-3.5 h-3.5 mr-1.5" />
             Análise de Conversões
+          </Badge>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Acompanhe suas conversões e leads
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Acompanhe taxas de conversão, desempenho do funil e fontes de leads
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+            Entenda de onde vêm seus leads, quais ações geram mais conversões e
+            o perfil dos seus visitantes que se tornam clientes
           </p>
         </div>
         <PeriodSelector onPeriodChange={handlePeriodChange} />
@@ -151,208 +145,160 @@ export default function ConversionAnalyticsPage() {
 
       {/* Quick Metrics Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-layer-5">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Taxa de Conversão
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {summaryLoading ? (
-              <div className="flex items-center justify-center h-20">
-                <Spinner className="h-6 w-6" />
-              </div>
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {conversionRate.toFixed(2)}%
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {totalConversions} / {totalSessions} sessões
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-layer-4">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total de Conversões
-            </CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {summaryLoading ? (
-              <div className="flex items-center justify-center h-20">
-                <Spinner className="h-6 w-6" />
-              </div>
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {totalConversions.toLocaleString()}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Conversões registradas
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-layer-3">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total de Sessões
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {summaryLoading ? (
-              <div className="flex items-center justify-center h-20">
-                <Spinner className="h-6 w-6" />
-              </div>
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {totalSessions.toLocaleString()}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Sessões rastreadas
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-layer-2">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Tipos de Conversão
-            </CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {summaryLoading ? (
-              <div className="flex items-center justify-center h-20">
-                <Spinner className="h-6 w-6" />
-              </div>
-            ) : (
-              <>
-                <div className="text-2xl font-bold">
-                  {summaryData?.conversionsByType?.length || 0}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Tipos identificados
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
+        <EnhancedMetricCard
+          title="Taxa de Conversão"
+          value={`${conversionRate.toFixed(2)}%`}
+          subtitle={`${totalConversions} / ${totalSessions} sessões`}
+          icon={TrendingUp}
+          isLoading={summaryLoading}
+          trend={
+            conversionRate > 3
+              ? 'up'
+              : conversionRate < 1.5
+                ? 'down'
+                : 'neutral'
+          }
+          trendValue={
+            conversionRate > 3
+              ? 'Excelente'
+              : conversionRate < 1.5
+                ? 'Precisa melhorar'
+                : 'Na média'
+          }
+        />
+        <EnhancedMetricCard
+          title="Total de Conversões"
+          value={totalConversions.toLocaleString()}
+          subtitle="Conversões registradas"
+          icon={Target}
+          isLoading={summaryLoading}
+        />
+        <EnhancedMetricCard
+          title="Total de Sessões"
+          value={totalSessions.toLocaleString()}
+          subtitle="Sessões rastreadas"
+          icon={Users}
+          isLoading={summaryLoading}
+        />
+        <EnhancedMetricCard
+          title="Tipos de Conversão"
+          value={summaryData?.conversionsByType?.length || 0}
+          subtitle="Tipos identificados"
+          icon={Target}
+          isLoading={summaryLoading}
+        />
       </div>
 
       {/* Conversion Charts */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Conversion Distribution */}
-        <Card className="shadow-inner-5">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>Conversões por Tipo</CardTitle>
-              <CardDescription>
-                Distribuição dos eventos de conversão
-              </CardDescription>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const types = summaryData?.conversionsByType || []
-                openDetailsModal(
-                  'Conversões Detalhadas por Tipo',
-                  types.map((t) => ({
-                    label: t.type,
-                    value: t.count,
-                    percentage:
-                      (t.count / (summaryData?.totalConversions || 1)) * 100,
-                  })),
-                  'Análise completa de todos os tipos de conversão',
-                  [
-                    `O tipo mais comum é ${types[0]?.type || 'N/A'}`,
-                    'Otimize os CTAs dos tipos com menor volume',
-                    'Considere A/B tests para melhorar conversões',
-                  ]
-                )
-              }}
-            >
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <ConversionDistributionChart
-              data={summaryData}
-              isLoading={summaryLoading}
-            />
-          </CardContent>
-        </Card>
+      <div className="space-y-4">
+        <SectionHeader
+          title="Análise de Conversões"
+          description="Entenda quais tipos de conversão e fontes de tráfego geram mais resultados"
+        />
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* Conversion Distribution */}
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Conversões por Tipo</CardTitle>
+                <CardDescription>
+                  Distribuição dos eventos de conversão
+                </CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const types = summaryData?.conversionsByType || []
+                  openDetailsModal(
+                    'Conversões Detalhadas por Tipo',
+                    types.map((t) => ({
+                      label: t.type,
+                      value: t.count,
+                      percentage:
+                        (t.count / (summaryData?.totalConversions || 1)) * 100,
+                    })),
+                    'Análise completa de todos os tipos de conversão',
+                    [
+                      `O tipo mais comum é ${types[0]?.type || 'N/A'}`,
+                      'Otimize os CTAs dos tipos com menor volume',
+                      'Considere A/B tests para melhorar conversões',
+                    ]
+                  )
+                }}
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <ConversionDistributionChart
+                data={summaryData}
+                isLoading={summaryLoading}
+              />
+            </CardContent>
+          </Card>
 
-        {/* Conversion Sources */}
-        <Card className="shadow-inner-5">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>Fontes de Conversão</CardTitle>
-              <CardDescription>De onde vêm as suas conversões</CardDescription>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const sources = sourcesData?.sources || []
-                openDetailsModal(
-                  'Fontes de Conversão Detalhadas',
-                  sources.map((s) => ({
-                    label: s.source,
-                    value: s.conversions,
-                    subValue: `Percentual: ${s.percentage.toFixed(2)}%`,
-                    percentage: s.percentage,
-                  })),
-                  'Análise completa de todas as fontes de tráfego',
-                  [
-                    'Invista mais nas fontes com maior taxa de conversão',
-                    'Analise fontes com alto tráfego mas baixa conversão',
-                    'Crie campanhas específicas para cada fonte',
-                  ],
-                  'list'
-                )
-              }}
-            >
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </CardHeader>
+          {/* Conversion Sources */}
+          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Fontes de Conversão</CardTitle>
+                <CardDescription>
+                  De onde vêm as suas conversões
+                </CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const sources = sourcesData?.sources || []
+                  openDetailsModal(
+                    'Fontes de Conversão Detalhadas',
+                    sources.map((s) => ({
+                      label: s.source,
+                      value: s.conversions,
+                      subValue: `Percentual: ${s.percentage.toFixed(2)}%`,
+                      percentage: s.percentage,
+                    })),
+                    'Análise completa de todas as fontes de tráfego',
+                    [
+                      'Invista mais nas fontes com maior taxa de conversão',
+                      'Analise fontes com alto tráfego mas baixa conversão',
+                      'Crie campanhas específicas para cada fonte',
+                    ],
+                    'list'
+                  )
+                }}
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <ConversionSourcesChart
+                data={sourcesData}
+                isLoading={sourcesLoading}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Lead Profile Section */}
+      <div className="space-y-6">
+        <SectionHeader
+          icon={Users}
+          title="Perfil dos Leads"
+          description="Características demográficas e comportamentais dos seus leads"
+        />
+        <Card className="border-2 hover:border-primary/50 transition-all duration-200">
           <CardContent>
-            <ConversionSourcesChart
-              data={sourcesData}
-              isLoading={sourcesLoading}
+            <LeadProfileSection
+              data={leadProfileData}
+              isLoading={leadProfileLoading}
             />
           </CardContent>
         </Card>
       </div>
-
-      {/* Lead Profile Section */}
-      <Card className="shadow-inner-5">
-        <CardHeader>
-          <CardTitle>Perfil dos Leads</CardTitle>
-          <CardDescription>
-            Características demográficas e comportamentais dos leads
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <LeadProfileSection
-            data={leadProfileData}
-            isLoading={leadProfileLoading}
-          />
-        </CardContent>
-      </Card>
 
       {/* Details Modal */}
       <DetailsModal

@@ -12,7 +12,16 @@ import {
 import { Button } from '@ui/button'
 import { Badge } from '@ui/badge'
 import { Alert, AlertDescription } from '@ui/alert'
-import { Pencil, Globe, Key, Plus, ExternalLink } from 'lucide-react'
+import { EmptyState } from '@/lib/components/dashboard'
+import {
+  Pencil,
+  Globe,
+  Key,
+  Plus,
+  ExternalLink,
+  BarChart3,
+  CheckCircle2,
+} from 'lucide-react'
 import { Skeleton } from '@ui/skeleton'
 import { useSites } from '@/lib/hooks'
 
@@ -71,74 +80,84 @@ export function SitesClient() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="space-y-2">
+          <Badge variant="secondary" className="px-3 py-1">
+            <Globe className="w-3.5 h-3.5 mr-1.5" />
+            Gerenciamento de Sites
+          </Badge>
           <h1 className="text-3xl font-bold tracking-tight">Gerenciar Sites</h1>
-          <p className="text-muted-foreground text-lg">
-            Configure e monitore seus sites imobiliários
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+            Cadastre seus domínios e comece a rastrear visitantes para gerar
+            insights poderosos sobre suas campanhas
           </p>
         </div>
-        <Button asChild>
+        <Button asChild size="default" className="font-semibold">
           <Link href="/admin/sites/new">
             <Plus className="h-4 w-4 mr-2" />
-            Novo Site
+            Adicionar Novo Site
           </Link>
         </Button>
       </div>
 
       {sites?.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Globe className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">
-                Nenhum site configurado
-              </h3>
-              <p className="text-sm text-muted-foreground mb-4 max-w-sm">
-                Comece adicionando seu primeiro site para começar a rastrear
-                visitantes e gerar insights sobre suas campanhas.
-              </p>
-              <Button asChild>
-                <Link href="/admin/sites/new">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Adicionar Primeiro Site
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={Globe}
+          title="Nenhum site configurado"
+          description="Comece adicionando seu primeiro site para começar a rastrear visitantes e gerar insights sobre suas campanhas imobiliárias"
+          action={{
+            label: 'Adicionar Primeiro Site',
+            href: '/admin/sites/new',
+          }}
+        />
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-6">
           {sites?.map((s) => (
-            <Card key={s.id} className="hover:shadow-md transition-shadow">
+            <Card
+              key={s.id}
+              className="border-2 hover:border-primary/50 transition-all duration-200 hover:shadow-lg"
+            >
               <CardHeader>
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Globe className="h-5 w-5 text-muted-foreground" />
-                      <CardTitle className="text-xl">{s.name}</CardTitle>
-                      <Badge
-                        variant={
-                          s.status === 'active' ? 'default' : 'secondary'
-                        }
-                      >
-                        {s.status === 'active' ? 'Ativo' : 'Inativo'}
-                      </Badge>
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <Globe className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <CardTitle className="text-2xl">{s.name}</CardTitle>
+                          <Badge
+                            variant={
+                              s.status === 'active' ? 'default' : 'secondary'
+                            }
+                            className="flex items-center gap-1"
+                          >
+                            <CheckCircle2 className="h-3 w-3" />
+                            {s.status === 'active' ? 'Ativo' : 'Inativo'}
+                          </Badge>
+                        </div>
+                        <CardDescription className="flex items-center gap-2 text-sm">
+                          <Key className="h-3.5 w-3.5" />
+                          <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
+                            {s.siteKey}
+                          </code>
+                        </CardDescription>
+                      </div>
                     </div>
-                    <CardDescription className="flex items-center gap-2">
-                      <Key className="h-3 w-3" />
-                      <code className="text-xs bg-muted px-2 py-1 rounded">
-                        {s.siteKey}
-                      </code>
-                    </CardDescription>
                     {s.domains && s.domains.length > 0 && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <ExternalLink className="h-3 w-3" />
-                        <span>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground pl-[60px]">
+                        <ExternalLink className="h-4 w-4" />
+                        <a
+                          href={`https://${s.domains.find((d) => d.isPrimary)?.host || s.domains[0]?.host}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-primary transition-colors"
+                        >
                           {s.domains.find((d) => d.isPrimary)?.host ||
                             s.domains[0]?.host}
-                        </span>
+                        </a>
                         {s.domains.length > 1 && (
                           <Badge variant="outline" className="text-xs">
                             +{s.domains.length - 1} domínios
@@ -166,10 +185,22 @@ export function SitesClient() {
               <CardContent>
                 <div className="flex gap-2">
                   <Button asChild variant="outline" size="sm">
-                    <Link href="/admin/install">Ver Código de Instalação</Link>
+                    <Link
+                      href="/admin/install"
+                      className="flex items-center gap-2"
+                    >
+                      <Key className="h-4 w-4" />
+                      Ver Código de Instalação
+                    </Link>
                   </Button>
-                  <Button asChild variant="outline" size="sm">
-                    <Link href="/admin/insights">Ver Análises</Link>
+                  <Button asChild variant="default" size="sm">
+                    <Link
+                      href="/admin/insights"
+                      className="flex items-center gap-2"
+                    >
+                      <BarChart3 className="h-4 w-4" />
+                      Ver Análises
+                    </Link>
                   </Button>
                 </div>
               </CardContent>

@@ -3,6 +3,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@ui/chart'
 import { Spinner } from '@ui/spinner'
+import { TrendingUp } from 'lucide-react'
 import type { ConversionRateResponse } from '@/lib/types/insights'
 
 interface ConversionDistributionChartProps {
@@ -38,8 +39,13 @@ export function ConversionDistributionChart({
 
   if (!data || !data.conversionsByType.length) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
-        <p className="text-sm text-muted-foreground">Sem dados disponíveis</p>
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+          <TrendingUp className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Nenhuma conversão registrada no período selecionado
+        </p>
       </div>
     )
   }
