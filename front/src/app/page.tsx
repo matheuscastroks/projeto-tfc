@@ -31,7 +31,7 @@ import logo from '@/assets/logo-insighthouse-fundo-preto.png'
 async function getEventsCount() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/events/stats`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/events/stats`,
       {
         next: { revalidate: 300 }, // Revalidate every 5 minutes
       }
@@ -57,7 +57,7 @@ function formatNumber(num: number): string {
 
 export default async function HomePage() {
   const eventsCount = await getEventsCount()
-  const displayCount = eventsCount ? formatNumber(eventsCount) : '2.5M+'
+  const displayCount = eventsCount ?? formatNumber(eventsCount)
 
   return (
     <main className="min-h-screen bg-background text-foreground">
