@@ -12,6 +12,19 @@ export class EventsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
+   * Retorna estatísticas globais do sistema
+   * @returns Estatísticas globais
+   */
+  async getGlobalStats() {
+    const totalEvents = await this.prisma.event.count();
+
+    return {
+      totalEvents,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  /**
    * Ingere um único evento
    * @param siteKey Chave do site (tenant)
    * @param eventDto Dados do evento

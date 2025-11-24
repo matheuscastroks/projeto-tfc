@@ -23,10 +23,26 @@ import { SiteKey } from '../common/decorators/site-key.decorator';
 
 @ApiTags('Events')
 @Controller('events')
-@UseGuards(UnifiedGuard)
-@RequireTenant()
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
+
+  /**
+   * Retorna estatísticas globais públicas
+   * @returns Estatísticas gerais (público)
+   */
+  @Get('stats')
+  @ApiOperation({
+    summary: 'Obter estatísticas globais',
+    description: 'Retorna estatísticas gerais do sistema (endpoint público).',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Estatísticas retornadas com sucesso.',
+  })
+  @Throttle({ default: { limit: 60, ttl: 60000 } }) // 60 requisições por minuto
+  async getStats(): Promise<{ totalEvents: number; timestamp: string }> {
+    return this.eventsService.getGlobalStats();
+  }
 
   /**
    * Retorna eventos filtrados e paginados para um site
@@ -35,6 +51,8 @@ export class EventsController {
    * @returns Lista de eventos paginados
    */
   @Get()
+  @UseGuards(UnifiedGuard)
+  @RequireTenant()
   @ApiOperation({
     summary: 'Obter eventos do site',
     description: 'Retorna eventos de um site com filtros e paginação.',
@@ -61,6 +79,8 @@ export class EventsController {
    * @returns Resultado do registro
    */
   @Post('track')
+  @UseGuards(UnifiedGuard)
+  @RequireTenant()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Rastrear evento único',
@@ -94,6 +114,8 @@ export class EventsController {
    * @returns Resultado do registro em lote
    */
   @Post('track/batch')
+  @UseGuards(UnifiedGuard)
+  @RequireTenant()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Rastrear múltiplos eventos em lote',
