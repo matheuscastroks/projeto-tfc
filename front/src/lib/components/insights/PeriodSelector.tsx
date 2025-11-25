@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@ui/select'
-import { cn } from 'src/utils/utils'
+import { cn } from '@/lib/utils'
 
 interface PeriodSelectorProps {
   onPeriodChange?: (start: Date, end: Date) => void

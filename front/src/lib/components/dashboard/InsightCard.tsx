@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@ui/card'
 import { Badge } from '@ui/badge'
 import { Button } from '@ui/button'
 import { LucideIcon, Lightbulb } from 'lucide-react'
-import { cn } from 'src/utils/utils'
+import { cn } from '@/lib/utils'
 
 interface InsightCardProps {
   category: string

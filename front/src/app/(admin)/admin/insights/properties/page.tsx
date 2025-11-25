@@ -27,7 +27,7 @@ import { EnhancedMetricCard, SectionHeader } from '@/lib/components/dashboard'
 import { Badge } from '@ui/badge'
 import { Eye, Heart, TrendingUp, MoreHorizontal, Building2 } from 'lucide-react'
 import type { InsightsQuery } from '@/lib/types/insights'
-import { formatDateToISO } from 'src/utils/utils'
+import { formatDateToISO } from '@/lib/utils'
 
 export default function PropertiesAnalyticsPage() {
   const { selectedSiteKey } = useSiteContext()

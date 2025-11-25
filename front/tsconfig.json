@@ -17,7 +17,8 @@
     "paths": {
       "@/lib/*": ["src/lib/*"],
       "@ui/*": ["src/lib/components/ui/*"],
-      "@/assets/*": ["src/assets/*"]
+      "@/assets/*": ["src/assets/*"],
+      "@/utils/*": ["src/lib/utils/*"]
     },
     "types": ["node"],
     "incremental": true,
@@ -32,8 +33,7 @@
     "**/*.tsx",
     "next-env.d.ts",
     "src/**/*",
-    ".next/types/**/*.ts",
-    "src/utils"
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

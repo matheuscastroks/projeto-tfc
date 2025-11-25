@@ -40,7 +40,7 @@ import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
 import { EnhancedMetricCard, SectionHeader } from '@/lib/components/dashboard'
 import { Badge } from '@ui/badge'
 import type { InsightsQuery } from '@/lib/types/insights'
-import { formatDateToISO } from 'src/utils/utils'
+import { formatDateToISO } from '@/lib/utils'
 
 export default function SearchAnalyticsPage() {
   const { selectedSiteKey } = useSiteContext()

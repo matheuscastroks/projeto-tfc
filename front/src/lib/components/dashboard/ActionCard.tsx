@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Card } from '@ui/card'
 import { ArrowRight, LucideIcon } from 'lucide-react'
-import { cn } from 'src/utils/utils'
+import { cn } from '@/lib/utils'
 
 interface ActionCardProps {
   href: string

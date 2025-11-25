@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/card'
 import { Skeleton } from '@ui/skeleton'
-import { cn } from 'src/utils/utils'
+import { cn } from '@/lib/utils'
 import { LucideIcon, ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react'
 
 interface EnhancedMetricCardProps {

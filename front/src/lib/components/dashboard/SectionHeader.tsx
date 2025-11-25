@@ -1,5 +1,5 @@
 import { LucideIcon } from 'lucide-react'
-import { cn } from 'src/utils/utils'
+import { cn } from '@/lib/utils'
 
 interface SectionHeaderProps {
   icon?: LucideIcon

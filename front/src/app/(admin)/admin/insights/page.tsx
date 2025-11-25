@@ -20,7 +20,7 @@ import { Badge } from '@ui/badge'
 import { Lightbulb, BarChart3 } from 'lucide-react'
 import type { InsightsQuery } from '@/lib/types/insights'
 import { DevicesChart } from './search/_components/DevicesChart'
-import { formatDateToISO } from 'src/utils/utils'
+import { formatDateToISO } from '@/lib/utils'
 
 export default function InsightsOverviewPage() {
   const { selectedSiteKey } = useSiteContext()
