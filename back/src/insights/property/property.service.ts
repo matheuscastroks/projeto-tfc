@@ -128,6 +128,7 @@ export class PropertyService {
           AND name = 'property_page_view'
           AND properties->>'codigo' IS NOT NULL
           AND properties->>'url' IS NOT NULL
+          AND properties->>'url' NOT LIKE '%/obrigado%'
         ORDER BY properties->>'codigo', ts DESC
       )
       SELECT
@@ -323,6 +324,7 @@ export class PropertyService {
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
           AND properties->>'codigo' IS NOT NULL
+          AND properties->>'url' NOT LIKE '%/obrigado%'
         GROUP BY properties->>'codigo'
       )
       SELECT *
@@ -389,6 +391,7 @@ export class PropertyService {
         FROM "Event"
         WHERE "siteKey" = ${siteKey}
           AND properties->>'codigo' IS NOT NULL
+          AND properties->>'url' NOT LIKE '%/obrigado%'
         GROUP BY properties->>'codigo'
       )
       SELECT *

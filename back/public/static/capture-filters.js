@@ -36,7 +36,7 @@ class InsightHouseAnalytics {
 
   // O construtor inicializa o SDK, valida a siteKey e define o endpoint.
   // Se a siteKey não for encontrada, o SDK é desabilitado.
-  constructor({ apiUrl, siteKey, debug = false } = {}) {
+  constructor({ apiUrl, siteKey, debug = true } = {}) {
     const MyAnalytics = (window.MyAnalytics = window.MyAnalytics || {});
     this.debug = debug ?? MyAnalytics.debug ?? false;
 
@@ -583,6 +583,9 @@ class InsightHouseAnalytics {
 
   // Adiciona listeners específicos para a página de um imóvel.
   bindPropertyPage = () => {
+    // Evita capturar visualização de imóvel na página de obrigado
+    if (/\/obrigado\/?/.test(location.pathname)) return;
+
     const propertyCode = this.getPropertyCodeFromPage();
     if (!propertyCode) return;
 
