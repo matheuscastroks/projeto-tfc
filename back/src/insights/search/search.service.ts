@@ -6,8 +6,10 @@ import {
   SearchAnalyticsResponse,
   FiltersUsageResponse,
   TopConvertingFiltersResponse,
+  DemandVsSupplyResponse,
 } from '../interfaces/categorized-insights.interface';
 import { Prisma } from '@prisma/client';
+import { XMLParser } from 'fast-xml-parser';
 
 @Injectable()
 export class SearchService {
@@ -1025,6 +1027,248 @@ export class SearchService {
         ),
         conversions: Number(r.conversions),
       })),
+      period: {
+        start: dateRange.start.toISOString(),
+        end: dateRange.end.toISOString(),
+      },
+    };
+  }
+
+  /**
+   * Fetches and parses the XML sitemap to get current stock.
+   */
+  private async fetchStockFromSitemap(siteKey: string): Promise<string[]> {
+    try {
+      // 1. Get Site Domain
+      const site = await this.prisma.site.findUnique({
+        where: { siteKey },
+        include: { domains: { where: { isPrimary: true } } },
+      });
+
+      if (!site || !site.domains || site.domains.length === 0) {
+        this.logger.warn(`No primary domain found for site ${siteKey}`);
+        return [];
+      }
+
+      const domain = site.domains[0].host;
+      // Extract domain name (between . and .com.br or just the host)
+      // Example: www.aepatrimonio.com.br -> aepatrimonio
+      // Example: aepatrimonio.com.br -> aepatrimonio
+      const domainParts = domain.split('.');
+      let domainName = domainParts[0];
+      if (domainName === 'www' && domainParts.length > 1) {
+        domainName = domainParts[1];
+      }
+
+      const sitemapUrl = `https://${domain}/xml/${domainName}/sitemap-imoveis.xml`;
+      this.logger.log(`Fetching sitemap from: ${sitemapUrl}`);
+
+      // 2. Fetch XML
+      const response = await fetch(sitemapUrl);
+      if (!response.ok) {
+        this.logger.warn(
+          `Failed to fetch sitemap: ${response.status} ${response.statusText}`,
+        );
+        return [];
+      }
+      const xmlData = await response.text();
+
+      // 3. Parse XML
+      const parser = new XMLParser();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const jObj = parser.parse(xmlData);
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (!jObj.urlset || !jObj.urlset.url) {
+        this.logger.warn('Invalid sitemap format');
+        return [];
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const urls: any[] = Array.isArray(jObj.urlset.url)
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          jObj.urlset.url
+        : // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          [jObj.urlset.url];
+
+      // 4. Extract Property Codes
+      // URL format: https://domain.com.br/imovel/CODE/slug
+      const propertyCodes: string[] = [];
+      const regex = /\/imovel\/(\d+)\//;
+
+      for (const urlObj of urls) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        const loc: string = urlObj.loc;
+        if (loc) {
+          const match = loc.match(regex);
+          if (match && match[1]) {
+            propertyCodes.push(match[1]);
+          }
+        }
+      }
+
+      return propertyCodes;
+    } catch (error) {
+      this.logger.error(
+        `Error fetching stock for ${siteKey}:`,
+        error instanceof Error ? error.stack : error,
+      );
+      return [];
+    }
+  }
+
+  async getDemandVsSupply(
+    siteKey: string,
+    queryDto: InsightsQueryDto,
+  ): Promise<DemandVsSupplyResponse> {
+    const dateRange = this.getDateRange(
+      queryDto.dateFilter,
+      queryDto.startDate,
+      queryDto.endDate,
+    );
+
+    // 1. Get Demand (Search Events)
+    // We'll focus on "Quartos" as a key category for comparison for now,
+    // as it's a common filter and easy to map if we had property details.
+    // However, since we ONLY have property CODES from the sitemap, we can't know the features of the stock
+    // unless we fetch each property page or have that data indexed.
+    //
+    // WAIT: The user said "Use o código para comparar".
+    // But comparing codes doesn't give me "Demand vs Supply" by category (e.g. "3 bedrooms").
+    // It only tells me if specific properties are being searched? No, search is by criteria.
+    //
+    // If I only have the list of active property codes, I can't know if I have "3 bedroom houses" in stock
+    // unless I have that metadata stored.
+    //
+    // Assumption: The `Event` table might have `property_page_view` events that contain property details (quartos, etc.)
+    // stored in `properties` JSON. I can use the *latest* view event for each property code to infer its attributes.
+    // This is a heuristic.
+    //
+    // Let's try to build a "Virtual Stock" based on the attributes seen in `property_page_view` events
+    // for the codes present in the sitemap.
+
+    // Step A: Get Active Codes from Sitemap
+    const activeCodes = await this.fetchStockFromSitemap(siteKey);
+    const activeCodesSet = new Set(activeCodes);
+
+    // Step B: Get Attributes of these codes from historical events
+    // We look for the most recent `property_page_view` for each code to get its current state (quartos, type, etc)
+    const stockAttributes = await this.prisma.$queryRaw<
+      Array<{
+        codigo: string;
+        quartos: string;
+        tipo: string;
+      }>
+    >`
+      SELECT DISTINCT ON (properties->>'codigo')
+        properties->>'codigo' as codigo,
+        properties->>'quartos' as quartos,
+        properties->>'tipo' as tipo
+      FROM "Event"
+      WHERE "siteKey" = ${siteKey}
+        AND name = 'property_page_view'
+        AND properties->>'codigo' IS NOT NULL
+      ORDER BY properties->>'codigo', ts DESC
+    `;
+
+    // Filter stock by active codes
+    const activeStock = stockAttributes.filter((p) =>
+      activeCodesSet.has(p.codigo),
+    );
+
+    // Step C: Aggregate Supply by Category (e.g., Quartos)
+    const supplyMap = new Map<string, number>();
+    let totalSupply = 0;
+
+    for (const item of activeStock) {
+      // Normalize Quartos
+      const q = item.quartos || 'N/A';
+      const key = `${q} Quartos`;
+      supplyMap.set(key, (supplyMap.get(key) || 0) + 1);
+      totalSupply++;
+    }
+
+    // Step D: Aggregate Demand by Category (Quartos from Search)
+    const demandResult = await this.prisma.$queryRaw<
+      Array<{ quartos: string; count: bigint }>
+    >`
+      SELECT
+        jsonb_array_elements_text(properties->'quartos') as quartos,
+        COUNT(*) as count
+      FROM "Event"
+      WHERE "siteKey" = ${siteKey}
+        AND name = 'search_submit'
+        AND ts >= ${dateRange.start}
+        AND ts <= ${dateRange.end}
+        AND properties->'quartos' IS NOT NULL
+      GROUP BY quartos
+    `;
+
+    const demandMap = new Map<string, number>();
+    let totalDemand = 0;
+
+    for (const item of demandResult) {
+      const key = `${item.quartos} Quartos`;
+      const count = Number(item.count);
+      demandMap.set(key, count);
+      totalDemand += count;
+    }
+
+    // Step E: Build Response
+    // We'll use the keys from both maps
+    const allCategories = new Set([...supplyMap.keys(), ...demandMap.keys()]);
+
+    const demandList: {
+      category: string;
+      count: number;
+      percentage: number;
+    }[] = [];
+    const supplyList: {
+      category: string;
+      count: number;
+      percentage: number;
+    }[] = [];
+    const gapList: { category: string; gapScore: number }[] = [];
+
+    for (const cat of allCategories) {
+      if (cat === 'N/A Quartos') continue; // Skip undefined
+
+      const dCount = demandMap.get(cat) || 0;
+      const sCount = supplyMap.get(cat) || 0;
+
+      const dPct = totalDemand > 0 ? (dCount / totalDemand) * 100 : 0;
+      const sPct = totalSupply > 0 ? (sCount / totalSupply) * 100 : 0;
+
+      demandList.push({
+        category: cat,
+        count: dCount,
+        percentage: Math.round(dPct * 10) / 10,
+      });
+
+      supplyList.push({
+        category: cat,
+        count: sCount,
+        percentage: Math.round(sPct * 10) / 10,
+      });
+
+      // Gap Score: Difference in percentage points
+      // Positive = Demand > Supply (Opportunity)
+      // Negative = Supply > Demand (Oversupply)
+      gapList.push({
+        category: cat,
+        gapScore: Math.round((dPct - sPct) * 10) / 10,
+      });
+    }
+
+    // Sort by Gap Score descending
+    gapList.sort((a, b) => b.gapScore - a.gapScore);
+    demandList.sort((a, b) => b.count - a.count);
+    supplyList.sort((a, b) => b.count - a.count);
+
+    return {
+      demand: demandList,
+      supply: supplyList,
+      gap: gapList,
       period: {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),

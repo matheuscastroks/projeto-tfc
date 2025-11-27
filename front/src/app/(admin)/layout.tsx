@@ -129,10 +129,10 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Buscas">
-                    <Link href="/admin/insights/search">
-                      <Search className="w-4 h-4" />
-                      <span>Buscas</span>
+                  <SidebarMenuButton asChild tooltip="Funil de Vendas">
+                    <Link href="/admin/insights/funnel">
+                      <Target className="w-4 h-4" />
+                      <span>Funil de Vendas</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -141,6 +141,22 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
                     <Link href="/admin/insights/properties">
                       <Building2 className="w-4 h-4" />
                       <span>Imóveis</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Demanda">
+                    <Link href="/admin/insights/demand">
+                      <Search className="w-4 h-4" />
+                      <span>Demanda</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Jornada">
+                    <Link href="/admin/insights/journey">
+                      <Globe className="w-4 h-4" />
+                      <span>Jornada</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

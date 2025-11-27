@@ -237,3 +237,93 @@ export interface DevicesTimeSeriesResponse {
     end: string
   }
 }
+
+// ===== NEW DASHBOARD TYPES =====
+
+export interface GlobalKPIsResponse {
+  uniqueVisitors: number
+  leadsGenerated: number
+  conversionRate: number
+  avgPropertiesViewed: number
+  totalFavorites: number
+  period: {
+    start: string
+    end: string
+  }
+}
+
+export interface GlobalFunnelResponse {
+  searches: number
+  resultsClicks: number
+  propertyViews: number
+  favorites: number
+  leads: number
+  dropoffRates: {
+    searchToClick: number
+    clickToView: number
+    viewToFavorite: number
+    favoriteToLead: number
+  }
+  period: {
+    start: string
+    end: string
+  }
+}
+
+export interface UnderperformingPropertiesResponse {
+  properties: Array<{
+    codigo: string
+    url: string
+    views: number
+    leads: number
+    conversionRate: number
+  }>
+  period: {
+    start: string
+    end: string
+  }
+}
+
+export interface StagnantPropertiesResponse {
+  properties: Array<{
+    codigo: string
+    url: string
+    views: number
+    daysSinceFirstView: number
+  }>
+  period: {
+    start: string
+    end: string
+  }
+}
+
+export interface JourneyResponse {
+  avgTimeOnSite: number // em segundos
+  avgPageDepth: number
+  recurrentVisitorsPercentage: number
+  period: {
+    start: string
+    end: string
+  }
+}
+
+export interface DemandVsSupplyResponse {
+  demand: Array<{
+    category: string
+    count: number
+    percentage: number
+  }>
+  supply: Array<{
+    category: string
+    count: number
+    percentage: number
+  }>
+  gap: Array<{
+    category: string
+    gapScore: number
+  }>
+  period: {
+    start: string
+    end: string
+  }
+}

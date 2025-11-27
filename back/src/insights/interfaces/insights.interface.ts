@@ -18,3 +18,33 @@ export interface DevicesTimeSeriesResponse {
     end: string; // fim do período
   };
 }
+
+export interface GlobalKPIsResponse {
+  uniqueVisitors: number;
+  leadsGenerated: number;
+  conversionRate: number;
+  avgPropertiesViewed: number;
+  totalFavorites: number;
+  period: {
+    start: string;
+    end: string;
+  };
+}
+
+export interface GlobalFunnelResponse {
+  searches: number;
+  resultsClicks: number;
+  propertyViews: number;
+  favorites: number;
+  leads: number;
+  dropoffRates: {
+    searchToClick: number;
+    clickToView: number;
+    viewToFavorite: number;
+    favoriteToLead: number;
+  };
+  period: {
+    start: string;
+    end: string;
+  };
+}

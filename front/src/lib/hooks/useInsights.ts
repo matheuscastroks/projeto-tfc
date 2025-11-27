@@ -14,6 +14,12 @@ import type {
   LeadProfileResponse,
   PropertyFunnelResponse,
   TopConvertingFiltersResponse,
+  GlobalKPIsResponse,
+  GlobalFunnelResponse,
+  UnderperformingPropertiesResponse,
+  StagnantPropertiesResponse,
+  JourneyResponse,
+  DemandVsSupplyResponse,
 } from '../types/insights'
 
 // =====================================================
@@ -43,6 +49,30 @@ export function useDevicesTimeSeries(siteKey: string, query?: InsightsQuery) {
           ...query,
         }
       ),
+    enabled: !!siteKey,
+  })
+}
+
+export function useGlobalKPIs(siteKey: string, query?: InsightsQuery) {
+  return useQuery<GlobalKPIsResponse>({
+    queryKey: queryKeys.insights.overview.kpis(siteKey, query),
+    queryFn: () =>
+      apiClient.get<GlobalKPIsResponse>(`/api/insights/overview/kpis`, {
+        siteKey,
+        ...query,
+      }),
+    enabled: !!siteKey,
+  })
+}
+
+export function useGlobalFunnel(siteKey: string, query?: InsightsQuery) {
+  return useQuery<GlobalFunnelResponse>({
+    queryKey: queryKeys.insights.overview.funnel(siteKey, query),
+    queryFn: () =>
+      apiClient.get<GlobalFunnelResponse>(`/api/insights/overview/funnel`, {
+        siteKey,
+        ...query,
+      }),
     enabled: !!siteKey,
   })
 }
@@ -87,6 +117,21 @@ export function useTopConvertingFilters(
     queryFn: () =>
       apiClient.get<TopConvertingFiltersResponse>(
         `/api/insights/search/top-converting-filters`,
+        {
+          siteKey,
+          ...query,
+        }
+      ),
+    enabled: !!siteKey,
+  })
+}
+
+export function useDemandVsSupply(siteKey: string, query?: InsightsQuery) {
+  return useQuery<DemandVsSupplyResponse>({
+    queryKey: queryKeys.insights.search.demandVsSupply(siteKey, query),
+    queryFn: () =>
+      apiClient.get<DemandVsSupplyResponse>(
+        `/api/insights/search/demand-vs-supply`,
         {
           siteKey,
           ...query,
@@ -149,6 +194,39 @@ export function usePropertyFunnel(
   })
 }
 
+export function useUnderperformingProperties(
+  siteKey: string,
+  query?: InsightsQuery
+) {
+  return useQuery<UnderperformingPropertiesResponse>({
+    queryKey: queryKeys.insights.property.underperforming(siteKey, query),
+    queryFn: () =>
+      apiClient.get<UnderperformingPropertiesResponse>(
+        `/api/insights/properties/underperforming`,
+        {
+          siteKey,
+          ...query,
+        }
+      ),
+    enabled: !!siteKey,
+  })
+}
+
+export function useStagnantProperties(siteKey: string, query?: InsightsQuery) {
+  return useQuery<StagnantPropertiesResponse>({
+    queryKey: queryKeys.insights.property.stagnant(siteKey, query),
+    queryFn: () =>
+      apiClient.get<StagnantPropertiesResponse>(
+        `/api/insights/properties/stagnant`,
+        {
+          siteKey,
+          ...query,
+        }
+      ),
+    enabled: !!siteKey,
+  })
+}
+
 // =====================================================
 // CONVERSION INSIGHTS
 // =====================================================
@@ -194,6 +272,22 @@ export function useLeadProfile(siteKey: string, query?: InsightsQuery) {
           ...query,
         }
       ),
+    enabled: !!siteKey,
+  })
+}
+
+// =====================================================
+// JOURNEY INSIGHTS
+// =====================================================
+
+export function useJourneyStats(siteKey: string, query?: InsightsQuery) {
+  return useQuery<JourneyResponse>({
+    queryKey: queryKeys.insights.journey.stats(siteKey, query),
+    queryFn: () =>
+      apiClient.get<JourneyResponse>(`/api/insights/journey/stats`, {
+        siteKey,
+        ...query,
+      }),
     enabled: !!siteKey,
   })
 }

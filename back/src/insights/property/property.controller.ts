@@ -8,6 +8,8 @@ import {
   PopularPropertiesResponse,
   PropertyEngagementResponse,
   PropertyFunnelResponse,
+  UnderperformingPropertiesResponse,
+  StagnantPropertiesResponse,
 } from '../interfaces/categorized-insights.interface';
 import { PropertyService } from './property.service';
 
@@ -78,5 +80,38 @@ export class PropertyController {
       propertyCode,
       queryDto,
     );
+  }
+
+  @Get('underperforming')
+  @ApiOperation({
+    summary: 'Obter imóveis com baixo desempenho',
+    description: 'Retorna imóveis com muitas visualizações mas poucos leads.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Imóveis retornados com sucesso.',
+  })
+  async getUnderperformingProperties(
+    @SiteKey() siteKey: string,
+    @Query() queryDto: InsightsQueryDto,
+  ): Promise<UnderperformingPropertiesResponse> {
+    return this.propertyService.getUnderperformingProperties(siteKey, queryDto);
+  }
+
+  @Get('stagnant')
+  @ApiOperation({
+    summary: 'Obter imóveis estagnados',
+    description:
+      'Retorna imóveis com poucas visualizações e muito tempo no ar.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Imóveis retornados com sucesso.',
+  })
+  async getStagnantProperties(
+    @SiteKey() siteKey: string,
+    @Query() queryDto: InsightsQueryDto,
+  ): Promise<StagnantPropertiesResponse> {
+    return this.propertyService.getStagnantProperties(siteKey, queryDto);
   }
 }

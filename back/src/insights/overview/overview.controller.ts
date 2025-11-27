@@ -7,6 +7,8 @@ import { InsightsQueryDto } from '../dto/insights-query.dto';
 import {
   DevicesResponse,
   DevicesTimeSeriesResponse,
+  GlobalKPIsResponse,
+  GlobalFunnelResponse,
 } from '../interfaces/insights.interface';
 import { OverviewService } from './overview.service';
 
@@ -53,5 +55,37 @@ export class OverviewController {
     @Query() queryDto: InsightsQueryDto,
   ): Promise<DevicesTimeSeriesResponse> {
     return await this.overviewService.getDevicesTimeSeries(siteKey, queryDto);
+  }
+
+  @Get('kpis')
+  @ApiOperation({
+    summary: 'Obter KPIs globais',
+    description: 'Retorna KPIs principais (visitantes, leads, conversão, etc).',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'KPIs retornados com sucesso.',
+  })
+  async getGlobalKPIs(
+    @SiteKey() siteKey: string,
+    @Query() queryDto: InsightsQueryDto,
+  ): Promise<GlobalKPIsResponse> {
+    return this.overviewService.getGlobalKPIs(siteKey, queryDto);
+  }
+
+  @Get('funnel')
+  @ApiOperation({
+    summary: 'Obter funil global',
+    description: 'Retorna o funil de conversão do site.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Funil retornado com sucesso.',
+  })
+  async getGlobalFunnel(
+    @SiteKey() siteKey: string,
+    @Query() queryDto: InsightsQueryDto,
+  ): Promise<GlobalFunnelResponse> {
+    return this.overviewService.getGlobalFunnel(siteKey, queryDto);
   }
 }

@@ -6,6 +6,8 @@ import {
   PopularPropertiesResponse,
   PropertyEngagementResponse,
   PropertyFunnelResponse,
+  UnderperformingPropertiesResponse,
+  StagnantPropertiesResponse,
 } from '../interfaces/categorized-insights.interface';
 
 @Injectable()
@@ -278,6 +280,139 @@ export class PropertyService {
       favorites: Number(data.favorites),
       leads,
       viewToLeadRate,
+      period: {
+        start: dateRange.start.toISOString(),
+        end: dateRange.end.toISOString(),
+      },
+    };
+  }
+
+  async getUnderperformingProperties(
+    siteKey: string,
+    queryDto: InsightsQueryDto,
+  ): Promise<UnderperformingPropertiesResponse> {
+    const site = await this.prisma.site.findUnique({
+      where: { siteKey },
+      select: { id: true },
+    });
+    if (!site) throw new NotFoundException('Site não encontrado');
+
+    const dateRange = this.getDateRange(
+      queryDto.dateFilter,
+      queryDto.startDate,
+      queryDto.endDate,
+    );
+
+    // Find properties with high views but low leads
+    const properties = await this.prisma.$queryRaw<
+      Array<{
+        property_code: string;
+        property_url: string;
+        views: bigint;
+        leads: bigint;
+      }>
+    >`
+      WITH property_stats AS (
+        SELECT
+          properties->>'codigo' as property_code,
+          MAX(properties->>'url') as property_url,
+          COUNT(CASE WHEN name = 'property_page_view' THEN 1 END) as views,
+          COUNT(CASE WHEN name IN ('conversion_whatsapp_click', 'thank_you_view') THEN 1 END) as leads
+        FROM "Event"
+        WHERE "siteKey" = ${siteKey}
+          AND ts >= ${dateRange.start}
+          AND ts <= ${dateRange.end}
+          AND properties->>'codigo' IS NOT NULL
+        GROUP BY properties->>'codigo'
+      )
+      SELECT *
+      FROM property_stats
+      WHERE views > 10 -- Minimum threshold to be considered "underperforming"
+      ORDER BY leads ASC, views DESC
+      LIMIT ${queryDto.limit || 10}
+    `;
+
+    return {
+      properties: properties.map((p) => {
+        const views = Number(p.views);
+        const leads = Number(p.leads);
+        const conversionRate =
+          views > 0 ? Math.round((leads / views) * 100 * 100) / 100 : 0;
+
+        return {
+          codigo: p.property_code,
+          url: p.property_url || '',
+          views,
+          leads,
+          conversionRate,
+        };
+      }),
+      period: {
+        start: dateRange.start.toISOString(),
+        end: dateRange.end.toISOString(),
+      },
+    };
+  }
+
+  async getStagnantProperties(
+    siteKey: string,
+    queryDto: InsightsQueryDto,
+  ): Promise<StagnantPropertiesResponse> {
+    const site = await this.prisma.site.findUnique({
+      where: { siteKey },
+      select: { id: true },
+    });
+    if (!site) throw new NotFoundException('Site não encontrado');
+
+    const dateRange = this.getDateRange(
+      queryDto.dateFilter,
+      queryDto.startDate,
+      queryDto.endDate,
+    );
+
+    // Find properties with low views that have been seen a long time ago (stagnant)
+    // "Stagnant" here means: First seen > 30 days ago AND Total Views < Threshold
+    const stagnantProps = await this.prisma.$queryRaw<
+      Array<{
+        property_code: string;
+        property_url: string;
+        views: bigint;
+        first_seen: Date;
+      }>
+    >`
+      WITH property_stats AS (
+        SELECT
+          properties->>'codigo' as property_code,
+          MAX(properties->>'url') as property_url,
+          COUNT(CASE WHEN name = 'property_page_view' THEN 1 END) as views,
+          MIN(ts) as first_seen
+        FROM "Event"
+        WHERE "siteKey" = ${siteKey}
+          AND properties->>'codigo' IS NOT NULL
+        GROUP BY properties->>'codigo'
+      )
+      SELECT *
+      FROM property_stats
+      WHERE views < 50 -- Low views threshold
+        AND first_seen < NOW() - INTERVAL '30 days' -- Old properties
+      ORDER BY views ASC, first_seen ASC
+      LIMIT ${queryDto.limit || 10}
+    `;
+
+    return {
+      properties: stagnantProps.map((p) => {
+        const firstSeen = new Date(p.first_seen);
+        const now = new Date();
+        const diffTime = Math.abs(now.getTime() - firstSeen.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return {
+          codigo: p.property_code,
+          url: p.property_url || '',
+          views: Number(p.views),
+          daysSinceFirstView: diffDays,
+        };
+      }),
       period: {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),

@@ -558,6 +558,8 @@ class InsightHouseAnalytics {
         () => this.captureSearchSubmit('main_form'),
         { passive: true },
       );
+    // Note: 'submit-main-search-form' ID was not found on the results page during validation (2025-11-27).
+    // It might be present on the Home page. If not, this code block is safe to remove or ignore.
 
     const codeSubmit = this.byId('submit-main-search-form-codigo');
     if (codeSubmit)

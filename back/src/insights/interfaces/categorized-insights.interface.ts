@@ -212,3 +212,65 @@ export interface PropertyFunnelResponse {
     end: string;
   };
 }
+
+export interface UnderperformingPropertiesResponse {
+  properties: Array<{
+    codigo: string;
+    url: string;
+    views: number;
+    leads: number;
+    conversionRate: number;
+  }>;
+  period: {
+    start: string;
+    end: string;
+  };
+}
+
+export interface StagnantPropertiesResponse {
+  properties: Array<{
+    codigo: string;
+    url: string;
+    views: number;
+    daysSinceFirstView: number;
+  }>;
+  period: {
+    start: string;
+    end: string;
+  };
+}
+
+// =====================
+// JORNADA
+// =====================
+
+export interface JourneyResponse {
+  avgTimeOnSite: number; // em segundos
+  avgPageDepth: number;
+  recurrentVisitorsPercentage: number;
+  period: {
+    start: string;
+    end: string;
+  };
+}
+
+export interface DemandVsSupplyResponse {
+  demand: Array<{
+    category: string; // e.g., '3 quartos', 'Casa', 'Centro'
+    count: number;
+    percentage: number;
+  }>;
+  supply: Array<{
+    category: string;
+    count: number;
+    percentage: number;
+  }>;
+  gap: Array<{
+    category: string;
+    gapScore: number; // Positive = High Demand/Low Supply
+  }>;
+  period: {
+    start: string;
+    end: string;
+  };
+}

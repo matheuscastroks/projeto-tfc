@@ -5,6 +5,8 @@ import { DateFilter } from '../../events/dto/get-events.dto';
 import {
   DevicesResponse,
   DevicesTimeSeriesResponse,
+  GlobalKPIsResponse,
+  GlobalFunnelResponse,
 } from '../interfaces/insights.interface';
 
 @Injectable()
@@ -231,6 +233,179 @@ export class OverviewService {
     // Retorna série temporal e período usado
     return {
       data,
+      period: {
+        start: dateRange.start.toISOString(),
+        end: dateRange.end.toISOString(),
+      },
+    };
+  }
+
+  async getGlobalKPIs(
+    siteKey: string,
+    queryDto: InsightsQueryDto,
+  ): Promise<GlobalKPIsResponse> {
+    const site = await this.prisma.site.findUnique({
+      where: { siteKey },
+      select: { id: true },
+    });
+
+    if (!site) throw new NotFoundException('Site não encontrado');
+
+    const dateRange = this.getDateRange(
+      queryDto.dateFilter,
+      queryDto.startDate,
+      queryDto.endDate,
+    );
+
+    // 1. Unique Visitors (Sessions)
+    const uniqueVisitorsResult = await this.prisma.$queryRaw<
+      Array<{ count: bigint }>
+    >`
+      SELECT COUNT(DISTINCT "sessionId") as count
+      FROM "Event"
+      WHERE "siteKey" = ${siteKey}
+        AND ts >= ${dateRange.start}
+        AND ts <= ${dateRange.end}
+    `;
+    const uniqueVisitors = Number(uniqueVisitorsResult[0]?.count || 0);
+
+    // 2. Leads Generated
+    const leadsGenerated = await this.prisma.event.count({
+      where: {
+        siteKey,
+        name: {
+          in: [
+            'conversion_whatsapp_click',
+            'thank_you_view',
+            'conversion_generate_lead',
+          ],
+        },
+        ts: { gte: dateRange.start, lte: dateRange.end },
+      },
+    });
+
+    // 3. Conversion Rate
+    const conversionRate =
+      uniqueVisitors > 0
+        ? Math.round((leadsGenerated / uniqueVisitors) * 100 * 100) / 100
+        : 0;
+
+    // 4. Avg Views per Session
+    const totalViews = await this.prisma.event.count({
+      where: {
+        siteKey,
+        name: 'property_page_view',
+        ts: { gte: dateRange.start, lte: dateRange.end },
+      },
+    });
+
+    const avgPropertiesViewed =
+      uniqueVisitors > 0
+        ? Math.round((totalViews / uniqueVisitors) * 100) / 100
+        : 0;
+
+    // 5. Total Favorites
+    const totalFavorites = await this.prisma.event.count({
+      where: {
+        siteKey,
+        name: 'favorite_toggle',
+        ts: { gte: dateRange.start, lte: dateRange.end },
+        properties: {
+          path: ['action'],
+          equals: 'add',
+        },
+      },
+    });
+
+    return {
+      uniqueVisitors,
+      leadsGenerated,
+      conversionRate,
+      avgPropertiesViewed,
+      totalFavorites,
+      period: {
+        start: dateRange.start.toISOString(),
+        end: dateRange.end.toISOString(),
+      },
+    };
+  }
+
+  async getGlobalFunnel(
+    siteKey: string,
+    queryDto: InsightsQueryDto,
+  ): Promise<GlobalFunnelResponse> {
+    const site = await this.prisma.site.findUnique({
+      where: { siteKey },
+      select: { id: true },
+    });
+
+    if (!site) throw new NotFoundException('Site não encontrado');
+
+    const dateRange = this.getDateRange(
+      queryDto.dateFilter,
+      queryDto.startDate,
+      queryDto.endDate,
+    );
+
+    // Funnel Steps:
+    // 1. Search (search_submit)
+    // 2. Click Result (results_item_click)
+    // 3. View Property (property_page_view)
+    // 4. Favorite (favorite_toggle add)
+    // 5. Lead (conversion_whatsapp_click, thank_you_view)
+
+    const funnelCounts = await this.prisma.$queryRaw<
+      Array<{
+        searches: bigint;
+        clicks: bigint;
+        views: bigint;
+        favorites: bigint;
+        leads: bigint;
+      }>
+    >`
+      SELECT
+        COUNT(CASE WHEN name = 'search_submit' THEN 1 END) as searches,
+        COUNT(CASE WHEN name = 'results_item_click' THEN 1 END) as clicks,
+        COUNT(CASE WHEN name = 'property_page_view' THEN 1 END) as views,
+        COUNT(CASE WHEN name = 'favorite_toggle' AND properties->>'action' = 'add' THEN 1 END) as favorites,
+        COUNT(CASE WHEN name IN ('conversion_whatsapp_click', 'thank_you_view', 'conversion_generate_lead') THEN 1 END) as leads
+      FROM "Event"
+      WHERE "siteKey" = ${siteKey}
+        AND ts >= ${dateRange.start}
+        AND ts <= ${dateRange.end}
+    `;
+
+    const counts = funnelCounts[0] || {
+      searches: BigInt(0),
+      clicks: BigInt(0),
+      views: BigInt(0),
+      favorites: BigInt(0),
+      leads: BigInt(0),
+    };
+
+    const searches = Number(counts.searches);
+    const clicks = Number(counts.clicks);
+    const views = Number(counts.views);
+    const favorites = Number(counts.favorites);
+    const leads = Number(counts.leads);
+
+    const calcDropoff = (prev: number, current: number) => {
+      if (prev === 0) return 0;
+      return Math.round(((prev - current) / prev) * 100 * 10) / 10;
+    };
+
+    return {
+      searches,
+      resultsClicks: clicks,
+      propertyViews: views,
+      favorites,
+      leads,
+      dropoffRates: {
+        searchToClick: calcDropoff(searches, clicks),
+        clickToView: calcDropoff(clicks, views),
+        viewToFavorite: calcDropoff(views, favorites),
+        favoriteToLead: calcDropoff(favorites, leads),
+      },
       period: {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),

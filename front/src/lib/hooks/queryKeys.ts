@@ -25,6 +25,15 @@ export const queryKeys = {
           siteKey,
           params,
         ] as const,
+      kpis: (siteKey: string, params?: any) =>
+        [...queryKeys.insights.overview.all(), 'kpis', siteKey, params] as const,
+      funnel: (siteKey: string, params?: any) =>
+        [
+          ...queryKeys.insights.overview.all(),
+          'funnel',
+          siteKey,
+          params,
+        ] as const,
     },
     search: {
       all: () => [...queryKeys.insights.all, 'search'] as const,
@@ -46,6 +55,13 @@ export const queryKeys = {
         [
           ...queryKeys.insights.search.all(),
           'topConvertingFilters',
+          siteKey,
+          params,
+        ] as const,
+      demandVsSupply: (siteKey: string, params?: any) =>
+        [
+          ...queryKeys.insights.search.all(),
+          'demandVsSupply',
           siteKey,
           params,
         ] as const,
@@ -74,6 +90,20 @@ export const queryKeys = {
           propertyCode,
           params,
         ] as const,
+      underperforming: (siteKey: string, params?: any) =>
+        [
+          ...queryKeys.insights.property.all(),
+          'underperforming',
+          siteKey,
+          params,
+        ] as const,
+      stagnant: (siteKey: string, params?: any) =>
+        [
+          ...queryKeys.insights.property.all(),
+          'stagnant',
+          siteKey,
+          params,
+        ] as const,
     },
     conversion: {
       all: () => [...queryKeys.insights.all, 'conversion'] as const,
@@ -96,8 +126,12 @@ export const queryKeys = {
           ...queryKeys.insights.conversion.all(),
           'leadProfile',
           siteKey,
-          params,
         ] as const,
+    },
+    journey: {
+      all: () => [...queryKeys.insights.all, 'journey'] as const,
+      stats: (siteKey: string, params?: any) =>
+        [...queryKeys.insights.journey.all(), 'stats', siteKey, params] as const,
     },
   },
   auth: {
