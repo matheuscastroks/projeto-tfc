@@ -83,28 +83,11 @@ export interface SearchAnalyticsResponse {
     seguranca: string;
     count: number;
   }>;
-  avgFiltersUsed: number;
   period: {
     start: string;
     end: string;
   };
-}
 
-export interface FiltersUsageResponse {
-  totalFilterChanges: number;
-  filtersByType: Array<{
-    filterType: string;
-    count: number;
-    percentage: number;
-  }>;
-  topFilterCombinations: Array<{
-    combination: string[];
-    count: number;
-  }>;
-  period: {
-    start: string;
-    end: string;
-  };
 }
 
 export interface TopConvertingFiltersResponse {

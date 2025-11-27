@@ -13,7 +13,7 @@ import { Spinner } from '@ui/spinner'
 import { useSiteContext } from '@/lib/providers/SiteProvider'
 import {
   useSearchSummary,
-  useFiltersUsage,
+
   useTopConvertingFilters,
   useDevicesTimeSeries,
 } from '@/lib/hooks/useInsights'
@@ -22,7 +22,7 @@ import {
   MapPin,
   Home,
   Target,
-  Filter,
+
   DollarSign,
   MoreHorizontal,
   Search,
@@ -70,10 +70,7 @@ export default function SearchAnalyticsPage() {
     selectedSiteKey || '',
     dateQuery
   )
-  const { data: filtersData, isLoading: filtersLoading } = useFiltersUsage(
-    selectedSiteKey || '',
-    dateQuery
-  )
+
   const {
     data: topConvertingFiltersData,
     isLoading: topConvertingFiltersLoading,
@@ -146,20 +143,7 @@ export default function SearchAnalyticsPage() {
           icon={Target}
           isLoading={searchLoading}
         />
-        <EnhancedMetricCard
-          title="Filtros por Busca"
-          value={searchData?.avgFiltersUsed.toFixed(1) || '0'}
-          subtitle="Média de filtros utilizados"
-          icon={TrendingUp}
-          isLoading={searchLoading}
-        />
-        <EnhancedMetricCard
-          title="Total de Mudanças"
-          value={filtersData?.totalFilterChanges.toLocaleString() || '0'}
-          subtitle="Mudanças de filtro"
-          icon={Filter}
-          isLoading={filtersLoading}
-        />
+
         <EnhancedMetricCard
           title="Filtros que Convertem"
           value={topConvertingFiltersData?.filters?.length || '0'}

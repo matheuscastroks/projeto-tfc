@@ -6,7 +6,6 @@ import { SiteKey } from '../../common/decorators/site-key.decorator';
 import { InsightsQueryDto } from '../dto/insights-query.dto';
 import {
   SearchAnalyticsResponse,
-  FiltersUsageResponse,
   TopConvertingFiltersResponse,
   DemandVsSupplyResponse,
 } from '../interfaces/categorized-insights.interface';
@@ -38,24 +37,7 @@ export class SearchController {
     return this.searchService.getSearchAnalytics(siteKey, queryDto);
   }
 
-  @Get('filters-usage')
-  @ApiOperation({
-    summary: 'Obter analytics de uso de filtros',
-    description:
-      'Retorna analytics sobre como os filtros de busca são utilizados.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Analytics de uso de filtros retornados com sucesso.',
-  })
-  @ApiResponse({ status: 400, description: 'Requisição inválida.' })
-  @ApiResponse({ status: 401, description: 'Não autorizado.' })
-  async getFiltersUsage(
-    @SiteKey() siteKey: string,
-    @Query() queryDto: InsightsQueryDto,
-  ): Promise<FiltersUsageResponse> {
-    return this.searchService.getFiltersUsage(siteKey, queryDto);
-  }
+
 
   @Get('top-converting-filters')
   @ApiOperation({

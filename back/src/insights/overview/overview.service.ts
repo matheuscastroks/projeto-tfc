@@ -132,7 +132,7 @@ export class OverviewService {
             THEN 'mobile'
           ELSE 'desktop'
         END as device_type,
-        COUNT(*) as count
+        COUNT(DISTINCT "sessionId") as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND ts >= ${dateRange.start}
@@ -193,7 +193,7 @@ export class OverviewService {
             THEN 'mobile'
           ELSE 'desktop'
         END as device_type,
-        COUNT(*) as count
+        COUNT(DISTINCT "sessionId") as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND ts >= ${dateRange.start}
@@ -275,9 +275,8 @@ export class OverviewService {
         siteKey,
         name: {
           in: [
-            'conversion_whatsapp_click',
-            'thank_you_view',
-            'conversion_generate_lead',
+            'click_contact',
+            'submit_lead_form',
           ],
         },
         ts: { gte: dateRange.start, lte: dateRange.end },
@@ -294,7 +293,7 @@ export class OverviewService {
     const totalViews = await this.prisma.event.count({
       where: {
         siteKey,
-        name: 'property_page_view',
+        name: 'view_property',
         ts: { gte: dateRange.start, lte: dateRange.end },
       },
     });
@@ -308,7 +307,7 @@ export class OverviewService {
     const totalFavorites = await this.prisma.event.count({
       where: {
         siteKey,
-        name: 'favorite_toggle',
+        name: 'toggle_favorite',
         ts: { gte: dateRange.start, lte: dateRange.end },
         properties: {
           path: ['action'],
@@ -364,11 +363,11 @@ export class OverviewService {
       }>
     >`
       SELECT
-        COUNT(CASE WHEN name = 'search_submit' THEN 1 END) as searches,
-        COUNT(CASE WHEN name = 'results_item_click' THEN 1 END) as clicks,
-        COUNT(CASE WHEN name = 'property_page_view' THEN 1 END) as views,
-        COUNT(CASE WHEN name = 'favorite_toggle' AND properties->>'action' = 'add' THEN 1 END) as favorites,
-        COUNT(CASE WHEN name IN ('conversion_whatsapp_click', 'thank_you_view', 'conversion_generate_lead') THEN 1 END) as leads
+        COUNT(CASE WHEN name = 'search' THEN 1 END) as searches,
+        COUNT(CASE WHEN name = 'click_property_card' THEN 1 END) as clicks,
+        COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
+        COUNT(CASE WHEN name = 'toggle_favorite' AND properties->>'action' = 'add' THEN 1 END) as favorites,
+        COUNT(CASE WHEN name IN ('click_contact', 'submit_lead_form') THEN 1 END) as leads
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND ts >= ${dateRange.start}

@@ -19,8 +19,8 @@ export class ConversionService {
    */
   private formatConversionType(type: string): string {
     const conversionTypeMap: Record<string, string> = {
-      thank_you_view: 'Formulário da página do imóvel',
-      conversion_whatsapp_click: 'Botão de WhatsApp',
+      submit_lead_form: 'Formulário da página do imóvel',
+      click_contact: 'Botão de WhatsApp',
     };
 
     return conversionTypeMap[type] || type;
@@ -122,7 +122,7 @@ export class ConversionService {
       SELECT COUNT(*) as total
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name IN ('conversion_whatsapp_click', 'thank_you_view', 'conversion_generate_lead')
+        AND name IN ('conversion_whatsapp_click', 'click_contact', 'thank_you_view', 'submit_lead_form', 'conversion_generate_lead')
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
     `;
@@ -151,7 +151,7 @@ export class ConversionService {
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name IN ('conversion_whatsapp_click', 'thank_you_view', 'conversion_generate_lead')
+        AND name IN ('conversion_whatsapp_click', 'click_contact', 'thank_you_view', 'submit_lead_form', 'conversion_generate_lead')
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
       GROUP BY name
@@ -217,7 +217,7 @@ export class ConversionService {
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name IN ('conversion_whatsapp_click', 'thank_you_view', 'conversion_generate_lead')
+        AND name IN ('conversion_whatsapp_click', 'click_contact', 'thank_you_view', 'submit_lead_form', 'conversion_generate_lead')
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
       GROUP BY COALESCE(properties->>'source', 'Site')
@@ -273,9 +273,9 @@ export class ConversionService {
     const interests = this.prisma.$queryRaw<
       Array<{ interest: string; count: bigint }>
     >`
-      SELECT properties->>'interesse' as interest, COUNT(*) as count
+      SELECT properties->>'interest' as interest, COUNT(*) as count
       FROM "Event"
-      WHERE "siteKey" = ${siteKey} AND name = 'thank_you_view' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND properties->>'interesse' IS NOT NULL
+      WHERE "siteKey" = ${siteKey} AND name = 'submit_lead_form' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND properties->>'interest' IS NOT NULL
       GROUP BY interest ORDER BY count DESC LIMIT 5
     `;
 
@@ -283,9 +283,9 @@ export class ConversionService {
     const categories = this.prisma.$queryRaw<
       Array<{ category: string; count: bigint }>
     >`
-      SELECT properties->>'categoria' as category, COUNT(*) as count
+      SELECT properties->>'category' as category, COUNT(*) as count
       FROM "Event"
-      WHERE "siteKey" = ${siteKey} AND name = 'thank_you_view' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND properties->>'categoria' IS NOT NULL
+      WHERE "siteKey" = ${siteKey} AND name = 'submit_lead_form' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND properties->>'category' IS NOT NULL
       GROUP BY category ORDER BY count DESC LIMIT 5
     `;
 
@@ -293,9 +293,9 @@ export class ConversionService {
     const propertyTypes = this.prisma.$queryRaw<
       Array<{ type: string; count: bigint }>
     >`
-      SELECT properties->>'tipo' as type, COUNT(*) as count
+      SELECT properties->>'type' as type, COUNT(*) as count
       FROM "Event"
-      WHERE "siteKey" = ${siteKey} AND name = 'thank_you_view' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND properties->>'tipo' IS NOT NULL
+      WHERE "siteKey" = ${siteKey} AND name = 'submit_lead_form' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND properties->>'type' IS NOT NULL
       GROUP BY type ORDER BY count DESC LIMIT 5
     `;
 
@@ -303,24 +303,24 @@ export class ConversionService {
     const cities = this.prisma.$queryRaw<
       Array<{ city: string; count: bigint }>
     >`
-      SELECT properties->>'cidade' as city, COUNT(*) as count
+      SELECT properties->>'city' as city, COUNT(*) as count
       FROM "Event"
-      WHERE "siteKey" = ${siteKey} AND name = 'thank_you_view' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND properties->>'cidade' IS NOT NULL
+      WHERE "siteKey" = ${siteKey} AND name = 'submit_lead_form' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND properties->>'city' IS NOT NULL
       GROUP BY city ORDER BY count DESC LIMIT 5
     `;
 
     // Busca valor médio de venda
     const avgSale = this.prisma.$queryRaw<Array<{ avg_sale: number }>>`
-      SELECT AVG((properties->>'valor_venda')::numeric) as avg_sale
+      SELECT AVG((properties->>'value')::numeric) as avg_sale
       FROM "Event"
-      WHERE "siteKey" = ${siteKey} AND name = 'thank_you_view' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND (properties->>'valor_venda')::numeric > 0
+      WHERE "siteKey" = ${siteKey} AND name = 'submit_lead_form' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND (properties->>'value')::numeric > 0
     `;
 
     // Busca valor médio de aluguel
     const avgRental = this.prisma.$queryRaw<Array<{ avg_rental: number }>>`
-      SELECT AVG((properties->>'valor_aluguel')::numeric) as avg_rental
+      SELECT AVG((properties->>'rental_value')::numeric) as avg_rental
       FROM "Event"
-      WHERE "siteKey" = ${siteKey} AND name = 'thank_you_view' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND (properties->>'valor_aluguel')::numeric > 0
+      WHERE "siteKey" = ${siteKey} AND name = 'submit_lead_form' AND ts >= ${dateRange.start} AND ts <= ${dateRange.end} AND (properties->>'rental_value')::numeric > 0
     `;
 
     const [

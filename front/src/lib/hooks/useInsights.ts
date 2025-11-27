@@ -4,7 +4,7 @@ import { apiClient } from '../api'
 import type {
   InsightsQuery,
   SearchAnalyticsResponse,
-  FiltersUsageResponse,
+
   ConversionRateResponse,
   ConversionSourcesResponse,
   PopularPropertiesResponse,
@@ -93,20 +93,7 @@ export function useSearchSummary(siteKey: string, query?: InsightsQuery) {
   })
 }
 
-export function useFiltersUsage(siteKey: string, query?: InsightsQuery) {
-  return useQuery<FiltersUsageResponse>({
-    queryKey: queryKeys.insights.search.filtersUsage(siteKey, query),
-    queryFn: () =>
-      apiClient.get<FiltersUsageResponse>(
-        `/api/insights/search/filters-usage`,
-        {
-          siteKey,
-          ...query,
-        }
-      ),
-    enabled: !!siteKey,
-  })
-}
+
 
 export function useTopConvertingFilters(
   siteKey: string,

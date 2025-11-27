@@ -130,7 +130,7 @@ export class JourneyService {
         WHERE "siteKey" = ${siteKey}
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND name IN ('property_page_view', 'search_submit', 'home_view', 'results_view') -- Page view events
+          AND name IN ('view_property', 'search') -- Page view events
           AND "sessionId" IS NOT NULL
         GROUP BY "sessionId"
       )
