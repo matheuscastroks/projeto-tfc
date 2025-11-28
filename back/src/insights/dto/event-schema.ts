@@ -8,10 +8,7 @@ export enum EventName {
 
 }
 
-export interface UserContext {
-  anonymousId: string;
-  sessionId: string;
-}
+
 
 export interface PageContext {
   url: string;
@@ -39,10 +36,11 @@ export interface AnalyticsContext {
 
 export interface AnalyticsEvent<T = Record<string, any>> {
   name: EventName;
-  timestamp: number;
-  user: UserContext;
+  ts: number;
+  userId: string;
+  sessionId: string;
   context: AnalyticsContext;
-  payload: T;
+  properties: T;
 }
 
 // Payload Definitions

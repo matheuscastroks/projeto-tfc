@@ -200,11 +200,9 @@
       const utms = UserSession.getUTMs();
       return {
         name: eventName,
-        timestamp: Date.now(),
-        user: {
-          anonymousId: UserSession.getUserId(),
-          sessionId: UserSession.getSessionId(),
-        },
+        ts: Date.now(),
+        userId: UserSession.getUserId(),
+        sessionId: UserSession.getSessionId(),
         context: {
           page: {
             url: location.href,
@@ -218,7 +216,7 @@
           },
           journey: UserSession.getJourneyContext(),
         },
-        payload: {
+        properties: {
           ...payload,
           ...utms, // Attach UTMs to payload properties
         },
