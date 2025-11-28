@@ -9,6 +9,8 @@ import {
 } from '../interfaces/categorized-insights.interface';
 import { Prisma } from '@prisma/client';
 import { XMLParser } from 'fast-xml-parser';
+import { EventName } from '../dto/event-schema';
+import { PropertyKeys } from '../constants/property-keys.constant';
 
 @Injectable()
 export class SearchService {
@@ -145,7 +147,7 @@ export class SearchService {
       SELECT COUNT(*) as total
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
     `;
@@ -157,15 +159,15 @@ export class SearchService {
       Array<{ finalidade: string; count: bigint }>
     >`
       SELECT
-        properties->>'status' as finalidade,
+        properties->>${PropertyKeys.STATUS} as finalidade,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->>'status' IS NOT NULL
-      GROUP BY properties->>'status'
+        AND properties->>${PropertyKeys.STATUS} IS NOT NULL
+      GROUP BY properties->>${PropertyKeys.STATUS}
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
     `;
@@ -175,14 +177,14 @@ export class SearchService {
       Array<{ tipo: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'type') as tipo,
+        jsonb_array_elements_text(properties->${PropertyKeys.TYPE}) as tipo,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'type' IS NOT NULL
+        AND properties->${PropertyKeys.TYPE} IS NOT NULL
       GROUP BY tipo
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -193,14 +195,14 @@ export class SearchService {
       Array<{ cidade: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'city') as cidade,
+        jsonb_array_elements_text(properties->${PropertyKeys.CITY}) as cidade,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'city' IS NOT NULL
+        AND properties->${PropertyKeys.CITY} IS NOT NULL
       GROUP BY cidade
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -211,14 +213,14 @@ export class SearchService {
       Array<{ bairro: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'neighborhood') as bairro,
+        jsonb_array_elements_text(properties->${PropertyKeys.NEIGHBORHOOD}) as bairro,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'neighborhood' IS NOT NULL
+        AND properties->${PropertyKeys.NEIGHBORHOOD} IS NOT NULL
       GROUP BY bairro
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -229,14 +231,14 @@ export class SearchService {
       Array<{ quartos: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'bedrooms') as quartos,
+        jsonb_array_elements_text(properties->${PropertyKeys.BEDROOMS}) as quartos,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'bedrooms' IS NOT NULL
+        AND properties->${PropertyKeys.BEDROOMS} IS NOT NULL
       GROUP BY quartos
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -247,14 +249,14 @@ export class SearchService {
       Array<{ suites: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'suites') as suites,
+        jsonb_array_elements_text(properties->${PropertyKeys.SUITES}) as suites,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'suites' IS NOT NULL
+        AND properties->${PropertyKeys.SUITES} IS NOT NULL
       GROUP BY suites
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -265,14 +267,14 @@ export class SearchService {
       Array<{ banheiros: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'bathrooms') as banheiros,
+        jsonb_array_elements_text(properties->${PropertyKeys.BATHROOMS}) as banheiros,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'bathrooms' IS NOT NULL
+        AND properties->${PropertyKeys.BATHROOMS} IS NOT NULL
       GROUP BY banheiros
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -283,14 +285,14 @@ export class SearchService {
       Array<{ vagas: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'parking') as vagas,
+        jsonb_array_elements_text(properties->${PropertyKeys.GARAGE}) as vagas,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'parking' IS NOT NULL
+        AND properties->${PropertyKeys.GARAGE} IS NOT NULL
       GROUP BY vagas
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -301,14 +303,14 @@ export class SearchService {
       Array<{ salas: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'salas') as salas,
+        jsonb_array_elements_text(properties->${PropertyKeys.LIVING_ROOMS}) as salas,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'salas' IS NOT NULL
+        AND properties->${PropertyKeys.LIVING_ROOMS} IS NOT NULL
       GROUP BY salas
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -319,14 +321,14 @@ export class SearchService {
       Array<{ galpoes: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'galpoes') as galpoes,
+        jsonb_array_elements_text(properties->${PropertyKeys.WAREHOUSES}) as galpoes,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND name = 'search'
+        AND name = ${EventName.SEARCH}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'galpoes' IS NOT NULL
+        AND properties->${PropertyKeys.WAREHOUSES} IS NOT NULL
       GROUP BY galpoes
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -527,50 +529,16 @@ export class SearchService {
     const comodidades = await this.prisma.$queryRaw<
       Array<{ comodidade: string; count: bigint }>
     >`
-      WITH comodidades_events AS (
-        SELECT 'Ar Condicionado' as name
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'comodidades'->>'ar_condicionado')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Lareira'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'comodidades'->>'lareira')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Lavanderia'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'comodidades'->>'lavanderia')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Sauna'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'comodidades'->>'sauna')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Elevador'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'comodidades'->>'elevador')::BOOLEAN = true
-      )
-      SELECT name as comodidade, COUNT(*) as count
-      FROM comodidades_events
-      GROUP BY name
+      SELECT
+        jsonb_array_elements_text(properties->${PropertyKeys.AMENITIES}) as comodidade,
+        COUNT(*) as count
+      FROM "Event"
+      WHERE "siteKey" = ${siteKey}
+        AND name = ${EventName.SEARCH}
+        AND ts >= ${dateRange.start}
+        AND ts <= ${dateRange.end}
+        AND properties->${PropertyKeys.AMENITIES} IS NOT NULL
+      GROUP BY comodidade
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
     `;
@@ -579,58 +547,16 @@ export class SearchService {
     const lazer = await this.prisma.$queryRaw<
       Array<{ lazer: string; count: bigint }>
     >`
-      WITH lazer_events AS (
-        SELECT 'Churrasqueira' as name
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'lazer'->>'churrasqueira')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Piscina'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'lazer'->>'piscina')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Academia'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'lazer'->>'academia')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Playground'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'lazer'->>'playground')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Salão de Festas'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'lazer'->>'salao_festas')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Salão de Jogos'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'lazer'->>'salao_jogos')::BOOLEAN = true
-      )
-      SELECT name as lazer, COUNT(*) as count
-      FROM lazer_events
-      GROUP BY name
+      SELECT
+        jsonb_array_elements_text(properties->${PropertyKeys.LEISURE}) as lazer,
+        COUNT(*) as count
+      FROM "Event"
+      WHERE "siteKey" = ${siteKey}
+        AND name = ${EventName.SEARCH}
+        AND ts >= ${dateRange.start}
+        AND ts <= ${dateRange.end}
+        AND properties->${PropertyKeys.LEISURE} IS NOT NULL
+      GROUP BY lazer
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
     `;
@@ -639,42 +565,16 @@ export class SearchService {
     const seguranca = await this.prisma.$queryRaw<
       Array<{ seguranca: string; count: bigint }>
     >`
-      WITH seguranca_events AS (
-        SELECT 'Alarme' as name
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'seguranca'->>'alarme')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Circuito de TV'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'seguranca'->>'circuito_tv')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Interfone'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'seguranca'->>'interfone')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Portaria 24h'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'seguranca'->>'portaria_24h')::BOOLEAN = true
-      )
-      SELECT name as seguranca, COUNT(*) as count
-      FROM seguranca_events
-      GROUP BY name
+      SELECT
+        jsonb_array_elements_text(properties->${PropertyKeys.SECURITY}) as seguranca,
+        COUNT(*) as count
+      FROM "Event"
+      WHERE "siteKey" = ${siteKey}
+        AND name = ${EventName.SEARCH}
+        AND ts >= ${dateRange.start}
+        AND ts <= ${dateRange.end}
+        AND properties->${PropertyKeys.SECURITY} IS NOT NULL
+      GROUP BY seguranca
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
     `;
@@ -683,26 +583,17 @@ export class SearchService {
     const comodos = await this.prisma.$queryRaw<
       Array<{ comodo: string; count: bigint }>
     >`
-      WITH comodos_events AS (
-        SELECT 'Área de Serviço' as name
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'comodos'->>'area_servico')::BOOLEAN = true
-        UNION ALL
-        SELECT 'Varanda'
-        FROM "Event"
-        WHERE "siteKey" = ${siteKey}
-          AND name = 'search'
-          AND ts >= ${dateRange.start}
-          AND ts <= ${dateRange.end}
-          AND (properties->'comodos'->>'varanda')::BOOLEAN = true
-      )
-      SELECT name as comodo, COUNT(*) as count
-      FROM comodos_events
-      GROUP BY name
+
+      SELECT
+        jsonb_array_elements_text(properties->${PropertyKeys.ROOMS}) as comodo,
+        COUNT(*) as count
+      FROM "Event"
+      WHERE "siteKey" = ${siteKey}
+        AND name = ${EventName.SEARCH}
+        AND ts >= ${dateRange.start}
+        AND ts <= ${dateRange.end}
+        AND properties->${PropertyKeys.ROOMS} IS NOT NULL
+      GROUP BY comodo
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
     `;
@@ -819,7 +710,7 @@ export class SearchService {
         SELECT DISTINCT "sessionId"
         FROM "Event"
         WHERE "siteKey" = ${siteKey}
-          AND name IN ('conversion_whatsapp_click', 'thank_you_view')
+          AND name IN (${EventName.CLICK_CONTACT}, ${EventName.SUBMIT_LEAD_FORM}, 'thank_you_view')
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
       ),
@@ -828,15 +719,15 @@ export class SearchService {
           "sessionId",
           jsonb_strip_nulls(
             jsonb_build_object(
-              'finalidade', properties->>'finalidade',
-              'cidade', properties->'cidades'->>0, -- Considerando apenas uma cidade como exemplo
-              'tipo', properties->'tipos'->>0,     -- Considerando apenas um tipo
-              'quartos', properties->'quartos'->>0 -- Considerando apenas um número de quartos
+              'finalidade', properties->>${PropertyKeys.STATUS},
+              'cidade', properties->${PropertyKeys.CITY}->>0,
+              'tipo', properties->${PropertyKeys.TYPE}->>0,
+              'quartos', properties->${PropertyKeys.BEDROOMS}->>0
             )
           ) as combination
         FROM "Event"
         WHERE "siteKey" = ${siteKey}
-          AND name = 'search_submit'
+          AND name = ${EventName.SEARCH}
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
           AND "sessionId" IN (SELECT "sessionId" FROM SessionConversions)

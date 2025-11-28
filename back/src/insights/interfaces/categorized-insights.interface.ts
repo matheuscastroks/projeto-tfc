@@ -87,7 +87,6 @@ export interface SearchAnalyticsResponse {
     start: string;
     end: string;
   };
-
 }
 
 export interface TopConvertingFiltersResponse {

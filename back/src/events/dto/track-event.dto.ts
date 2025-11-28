@@ -4,13 +4,14 @@ import {
   IsNumber,
   IsObject,
   MaxLength,
+  IsEnum,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { EventName } from '../../insights/dto/event-schema';
 
 export class TrackEventDto {
-  @IsString()
-  @MaxLength(64)
-  name: string;
+  @IsEnum(EventName)
+  name: EventName;
 
   @IsOptional()
   @IsString()

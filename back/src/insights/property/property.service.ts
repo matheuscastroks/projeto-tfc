@@ -9,6 +9,8 @@ import {
   UnderperformingPropertiesResponse,
   StagnantPropertiesResponse,
 } from '../interfaces/categorized-insights.interface';
+import { EventName } from '../dto/event-schema';
+import { PropertyKeys } from '../constants/property-keys.constant';
 
 @Injectable()
 export class PropertyService {
@@ -120,32 +122,32 @@ export class PropertyService {
       }>
     >`
       WITH property_urls AS (
-        SELECT DISTINCT ON (properties->>'codigo')
-          properties->>'codigo' as property_code,
-          properties->>'url' as property_url
+        SELECT DISTINCT ON (properties->>${PropertyKeys.PROPERTY_ID})
+          properties->>${PropertyKeys.PROPERTY_ID} as property_code,
+          properties->>${PropertyKeys.PROPERTY_URL} as property_url
         FROM "Event"
         WHERE "siteKey" = ${siteKey}
-          AND name = 'view_property'
-          AND properties->>'propertyId' IS NOT NULL
-          AND properties->>'url' IS NOT NULL
-          AND properties->>'url' NOT LIKE '%/obrigado%'
-        ORDER BY properties->>'propertyId', ts DESC
+          AND name = ${EventName.VIEW_PROPERTY}
+          AND properties->>${PropertyKeys.PROPERTY_ID} IS NOT NULL
+          AND properties->>${PropertyKeys.PROPERTY_URL} IS NOT NULL
+          AND properties->>${PropertyKeys.PROPERTY_URL} NOT LIKE '%/obrigado%'
+        ORDER BY properties->>${PropertyKeys.PROPERTY_ID}, ts DESC
       )
       SELECT
-        properties->>'propertyId' as property_code,
+        properties->>${PropertyKeys.PROPERTY_ID} as property_code,
         COALESCE(pu.property_url, '') as property_url,
-        COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
-        COUNT(CASE WHEN name = 'toggle_favorite' AND properties->>'action' = 'add' THEN 1 END) as favorites,
-        COUNT(CASE WHEN name IN ('click_contact', 'submit_lead_form') THEN 1 END) as leads
+        COUNT(CASE WHEN name = ${EventName.VIEW_PROPERTY} THEN 1 END) as views,
+        COUNT(CASE WHEN name = ${EventName.TOGGLE_FAVORITE} AND properties->>${PropertyKeys.ACTION} = 'add' THEN 1 END) as favorites,
+        COUNT(CASE WHEN name IN (${EventName.CLICK_CONTACT}, ${EventName.SUBMIT_LEAD_FORM}) THEN 1 END) as leads
       FROM "Event"
-      LEFT JOIN property_urls pu ON properties->>'propertyId' = pu.property_code
+      LEFT JOIN property_urls pu ON properties->>${PropertyKeys.PROPERTY_ID} = pu.property_code
       WHERE "siteKey" = ${siteKey}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->>'propertyId' IS NOT NULL
-        AND properties->>'propertyId' != ''
-        AND name IN ('view_property', 'toggle_favorite', 'click_contact', 'submit_lead_form')
-      GROUP BY properties->>'propertyId', pu.property_url
+        AND properties->>${PropertyKeys.PROPERTY_ID} IS NOT NULL
+        AND properties->>${PropertyKeys.PROPERTY_ID} != ''
+        AND name IN (${EventName.VIEW_PROPERTY}, ${EventName.TOGGLE_FAVORITE}, ${EventName.CLICK_CONTACT}, ${EventName.SUBMIT_LEAD_FORM})
+      GROUP BY properties->>${PropertyKeys.PROPERTY_ID}, pu.property_url
       ORDER BY views DESC
       LIMIT ${queryDto.limit || 10}
     `;
@@ -203,13 +205,13 @@ export class PropertyService {
       }>
     >`
       SELECT
-        COUNT(*) FILTER (WHERE name = 'view_property') as total_views,
-        COUNT(*) FILTER (WHERE name = 'toggle_favorite' AND properties->>'action' = 'add') as total_favorites
+        COUNT(*) FILTER (WHERE name = ${EventName.VIEW_PROPERTY}) as total_views,
+        COUNT(*) FILTER (WHERE name = ${EventName.TOGGLE_FAVORITE} AND properties->>${PropertyKeys.ACTION} = 'add') as total_favorites
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND name IN ('view_property', 'toggle_favorite')
+        AND name IN (${EventName.VIEW_PROPERTY}, ${EventName.TOGGLE_FAVORITE})
     `;
 
     const data = engagement[0] || {
@@ -254,12 +256,12 @@ export class PropertyService {
       }>
     >`
       SELECT
-        COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
-        COUNT(CASE WHEN name = 'toggle_favorite' AND (properties->>'action' = 'add') THEN 1 END) as favorites,
-        COUNT(CASE WHEN name IN ('click_contact', 'submit_lead_form') THEN 1 END) as leads
+        COUNT(CASE WHEN name = ${EventName.VIEW_PROPERTY} THEN 1 END) as views,
+        COUNT(CASE WHEN name = ${EventName.TOGGLE_FAVORITE} AND (properties->>${PropertyKeys.ACTION} = 'add') THEN 1 END) as favorites,
+        COUNT(CASE WHEN name IN (${EventName.CLICK_CONTACT}, ${EventName.SUBMIT_LEAD_FORM}) THEN 1 END) as leads
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
-        AND properties->>'propertyId' = ${propertyCode}
+        AND properties->>${PropertyKeys.PROPERTY_ID} = ${propertyCode}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
     `;
@@ -315,17 +317,17 @@ export class PropertyService {
     >`
       WITH property_stats AS (
         SELECT
-          properties->>'propertyId' as property_code,
-          MAX(properties->>'url') as property_url,
-          COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
-          COUNT(CASE WHEN name IN ('click_contact', 'submit_lead_form') THEN 1 END) as leads
+          properties->>${PropertyKeys.PROPERTY_ID} as property_code,
+          MAX(properties->>${PropertyKeys.PROPERTY_URL}) as property_url,
+          COUNT(CASE WHEN name = ${EventName.VIEW_PROPERTY} THEN 1 END) as views,
+          COUNT(CASE WHEN name IN (${EventName.CLICK_CONTACT}, ${EventName.SUBMIT_LEAD_FORM}) THEN 1 END) as leads
         FROM "Event"
         WHERE "siteKey" = ${siteKey}
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND properties->>'propertyId' IS NOT NULL
-          AND properties->>'url' NOT LIKE '%/obrigado%'
-        GROUP BY properties->>'propertyId'
+          AND properties->>${PropertyKeys.PROPERTY_ID} IS NOT NULL
+          AND properties->>${PropertyKeys.PROPERTY_URL} NOT LIKE '%/obrigado%'
+        GROUP BY properties->>${PropertyKeys.PROPERTY_ID}
       )
       SELECT *
       FROM property_stats
@@ -384,15 +386,15 @@ export class PropertyService {
     >`
       WITH property_stats AS (
         SELECT
-          properties->>'propertyId' as property_code,
-          MAX(properties->>'url') as property_url,
-          COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
+          properties->>${PropertyKeys.PROPERTY_ID} as property_code,
+          MAX(properties->>${PropertyKeys.PROPERTY_URL}) as property_url,
+          COUNT(CASE WHEN name = ${EventName.VIEW_PROPERTY} THEN 1 END) as views,
           MIN(ts) as first_seen
         FROM "Event"
         WHERE "siteKey" = ${siteKey}
-          AND properties->>'propertyId' IS NOT NULL
-          AND properties->>'url' NOT LIKE '%/obrigado%'
-        GROUP BY properties->>'propertyId'
+          AND properties->>${PropertyKeys.PROPERTY_ID} IS NOT NULL
+          AND properties->>${PropertyKeys.PROPERTY_URL} NOT LIKE '%/obrigado%'
+        GROUP BY properties->>${PropertyKeys.PROPERTY_ID}
       )
       SELECT *
       FROM property_stats

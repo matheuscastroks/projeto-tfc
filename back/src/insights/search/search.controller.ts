@@ -37,8 +37,6 @@ export class SearchController {
     return this.searchService.getSearchAnalytics(siteKey, queryDto);
   }
 
-
-
   @Get('top-converting-filters')
   @ApiOperation({
     summary: 'Obter filtros que mais convertem',

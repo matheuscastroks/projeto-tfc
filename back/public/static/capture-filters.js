@@ -1,23 +1,7 @@
-/**
- * InsightHouse Analytics SDK v2.0
- * "Golden Standard" Implementation
- *
- * Modular Architecture:
- * 1. Constants & Schema: Definitions of events and keys.
- * 2. Utils: Helper functions.
- * 3. UserSession: Manages identity and session lifecycle.
- * 4. DomScraper: Pure functions to extract data from the DOM.
- * 5. EventBuilder: Constructs the standardized event object.
- * 6. Transport: Manages queue, batching, and network transmission.
- * 7. Collector: Orchestrates bindings and initialization.
- */
+
 
 (function () {
   'use strict';
-
-  // ===========================================================================
-  // 1. CONSTANTS & SCHEMA
-  // ===========================================================================
 
   const CONFIG = {
     API_URL: window.IH_API_URL || '',
@@ -45,10 +29,6 @@
     JOURNEY: 'ih_journey',
     FAILED_EVENTS: 'ih_failed_events',
   };
-
-  // ===========================================================================
-  // 2. UTILS
-  // ===========================================================================
 
   const Utils = {
     log: (...args) => {
@@ -86,11 +66,6 @@
       return el.value || undefined;
     },
   };
-
-  // ===========================================================================
-  // 3. USER SESSION
-  // ===========================================================================
-
   const UserSession = {
     getUserId: () => {
       let uid = Utils.getLS(STORAGE_KEYS.USER_ID);
@@ -137,10 +112,6 @@
     },
   };
 
-  // ===========================================================================
-  // 4. DOM SCRAPER (Pure Extraction Logic)
-  // ===========================================================================
-
   const DomScraper = {
     getPropertyIdFromUrl: () => {
       // Exclude thank you pages
@@ -181,6 +152,12 @@
         // Add boolean flags
         furnished: Utils.getVal('filtermobiliado'),
         newProperty: Utils.getVal('filternovo'),
+
+        // Detailed filters (Arrays)
+        rooms: getChecked('comodos[]'),
+        leisure: getChecked('lazer[]'),
+        security: getChecked('seguranca[]'),
+        amenities: getChecked('comodidades[]'),
         // ... add other filters as needed
       };
     },
@@ -196,11 +173,6 @@
       };
     },
   };
-
-  // ===========================================================================
-  // 5. EVENT BUILDER
-  // ===========================================================================
-
   const EventBuilder = {
     build: (eventName, payload = {}) => {
       return {
@@ -227,11 +199,6 @@
       };
     },
   };
-
-  // ===========================================================================
-  // 6. TRANSPORT (Queue & Send)
-  // ===========================================================================
-
   const Transport = {
     queue: [],
     timer: null,
@@ -260,8 +227,7 @@
 
       const url = `${CONFIG.API_URL}${CONFIG.ENDPOINT}`;
 
-      // Use sendBeacon if available and appropriate (page unload), otherwise fetch
-      // For simplicity and better error handling, we use fetch with keepalive
+
       fetch(url, {
         method: 'POST',
         headers: {
@@ -295,7 +261,6 @@
       Utils.setLS(STORAGE_KEYS.FAILED_EVENTS, []); // Clear
       Utils.log('Retrying failed events:', failed.length);
 
-      // Re-queue them (they will be flushed immediately if > max size, or scheduled)
       failed.forEach(e => Transport.enqueue(e));
     },
 
@@ -303,11 +268,6 @@
       setTimeout(Transport.retryFailed, 10000); // Retry after 10s
     },
   };
-
-  // ===========================================================================
-  // 7. COLLECTOR (Orchestration)
-  // ===========================================================================
-
   const Collector = {
     init: () => {
       if (!CONFIG.SITE_KEY) {

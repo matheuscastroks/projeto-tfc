@@ -8,6 +8,7 @@ import {
   GlobalKPIsResponse,
   GlobalFunnelResponse,
 } from '../interfaces/insights.interface';
+import { EventName } from '../dto/event-schema';
 
 @Injectable()
 export class OverviewService {
@@ -274,10 +275,7 @@ export class OverviewService {
       where: {
         siteKey,
         name: {
-          in: [
-            'click_contact',
-            'submit_lead_form',
-          ],
+          in: [EventName.CLICK_CONTACT, EventName.SUBMIT_LEAD_FORM],
         },
         ts: { gte: dateRange.start, lte: dateRange.end },
       },
@@ -293,7 +291,7 @@ export class OverviewService {
     const totalViews = await this.prisma.event.count({
       where: {
         siteKey,
-        name: 'view_property',
+        name: EventName.VIEW_PROPERTY,
         ts: { gte: dateRange.start, lte: dateRange.end },
       },
     });
@@ -307,7 +305,7 @@ export class OverviewService {
     const totalFavorites = await this.prisma.event.count({
       where: {
         siteKey,
-        name: 'toggle_favorite',
+        name: EventName.TOGGLE_FAVORITE,
         ts: { gte: dateRange.start, lte: dateRange.end },
         properties: {
           path: ['action'],
@@ -363,11 +361,11 @@ export class OverviewService {
       }>
     >`
       SELECT
-        COUNT(CASE WHEN name = 'search' THEN 1 END) as searches,
-        COUNT(CASE WHEN name = 'click_property_card' THEN 1 END) as clicks,
-        COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
-        COUNT(CASE WHEN name = 'toggle_favorite' AND properties->>'action' = 'add' THEN 1 END) as favorites,
-        COUNT(CASE WHEN name IN ('click_contact', 'submit_lead_form') THEN 1 END) as leads
+        COUNT(CASE WHEN name = ${EventName.SEARCH} THEN 1 END) as searches,
+        COUNT(CASE WHEN name = ${EventName.CLICK_PROPERTY_CARD} THEN 1 END) as clicks,
+        COUNT(CASE WHEN name = ${EventName.VIEW_PROPERTY} THEN 1 END) as views,
+        COUNT(CASE WHEN name = ${EventName.TOGGLE_FAVORITE} AND properties->>'action' = 'add' THEN 1 END) as favorites,
+        COUNT(CASE WHEN name IN (${EventName.CLICK_CONTACT}, ${EventName.SUBMIT_LEAD_FORM}) THEN 1 END) as leads
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND ts >= ${dateRange.start}
