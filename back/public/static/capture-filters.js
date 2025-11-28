@@ -1,5 +1,3 @@
-
-
 (function () {
   'use strict';
 
@@ -28,6 +26,7 @@
     LAST_ACTIVITY: 'ih_last_activity',
     JOURNEY: 'ih_journey',
     FAILED_EVENTS: 'ih_failed_events',
+    UTM_TAGS: 'ih_utm_tags',
   };
 
   const Utils = {
@@ -110,6 +109,29 @@
         returning: journey.length > 1, // Simplistic definition
       };
     },
+
+    captureUTMs: () => {
+      const params = new URLSearchParams(window.location.search);
+      const utmTags = {};
+      let hasUtm = false;
+
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(key => {
+        const value = params.get(key);
+        if (value) {
+          utmTags[key] = value;
+          hasUtm = true;
+        }
+      });
+
+      if (hasUtm) {
+        Utils.setLS(STORAGE_KEYS.UTM_TAGS, utmTags);
+        Utils.log('Captured UTMs:', utmTags);
+      }
+    },
+
+    getUTMs: () => {
+      return Utils.getLS(STORAGE_KEYS.UTM_TAGS, {});
+    }
   };
 
   const DomScraper = {
@@ -175,6 +197,7 @@
   };
   const EventBuilder = {
     build: (eventName, payload = {}) => {
+      const utms = UserSession.getUTMs();
       return {
         name: eventName,
         timestamp: Date.now(),
@@ -195,7 +218,10 @@
           },
           journey: UserSession.getJourneyContext(),
         },
-        payload: payload,
+        payload: {
+          ...payload,
+          ...utms, // Attach UTMs to payload properties
+        },
       };
     },
   };
@@ -275,6 +301,7 @@
         return;
       }
 
+      UserSession.captureUTMs(); // Capture UTMs on init
       UserSession.trackPageVisit();
       Transport.retryFailed();
 
