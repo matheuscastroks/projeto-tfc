@@ -1,5 +1,11 @@
 import { EnhancedMetricCard } from '@/lib/components/dashboard'
-import { Users, MousePointerClick, TrendingUp, Building2, Heart } from 'lucide-react'
+import {
+  Users,
+  MousePointerClick,
+  TrendingUp,
+  Building2,
+  Heart,
+} from 'lucide-react'
 import { GlobalKPIsResponse } from '@/lib/types/insights'
 
 interface KPISectionProps {
@@ -26,11 +32,15 @@ export function KPISection({ data, isLoading }: KPISectionProps) {
       />
       <EnhancedMetricCard
         title="Taxa de Conversão"
-        value={data?.conversionRate ? `${data.conversionRate.toFixed(2)}%` : '0%'}
+        value={
+          data?.conversionRate ? `${data.conversionRate.toFixed(2)}%` : '0%'
+        }
         subtitle="Visitantes que viraram leads"
         icon={TrendingUp}
         isLoading={isLoading}
-        trend={data?.conversionRate && data.conversionRate > 1.5 ? 'up' : 'neutral'}
+        trend={
+          data?.conversionRate && data.conversionRate > 1.5 ? 'up' : 'neutral'
+        }
       />
       <EnhancedMetricCard
         title="Média de Visualizações"

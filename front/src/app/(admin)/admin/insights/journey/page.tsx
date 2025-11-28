@@ -69,7 +69,8 @@ export default function JourneyAnalyticsPage() {
             Comportamento e Navegação
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
-            Entenda como os visitantes navegam pelo seu site e quanto tempo passam explorando imóveis.
+            Entenda como os visitantes navegam pelo seu site e quanto tempo
+            passam explorando imóveis.
           </p>
         </div>
         <PeriodSelector onPeriodChange={handlePeriodChange} />
@@ -114,7 +115,11 @@ export default function JourneyAnalyticsPage() {
         />
         <EnhancedMetricCard
           title="Visitantes Recorrentes"
-          value={journeyData ? `${journeyData.recurrentVisitorsPercentage.toFixed(1)}%` : '0%'}
+          value={
+            journeyData
+              ? `${journeyData.recurrentVisitorsPercentage.toFixed(1)}%`
+              : '0%'
+          }
           subtitle="Usuários que retornaram"
           icon={Users}
           isLoading={journeyLoading}

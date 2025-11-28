@@ -25,10 +25,23 @@ import { RecommendationCard } from '@/lib/components/insights/RecommendationCard
 import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
 import { SectionHeader } from '@/lib/components/dashboard'
 import { Badge } from '@ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@ui/card'
 import { Spinner } from '@ui/spinner'
 
-import { Lightbulb, BarChart3, Target, Building2, Search, Globe } from 'lucide-react'
+import {
+  Lightbulb,
+  BarChart3,
+  Target,
+  Building2,
+  Search,
+  Globe,
+} from 'lucide-react'
 import type { InsightsQuery } from '@/lib/types/insights'
 import { DevicesChart } from './demand/_components/DevicesChart'
 import { formatDateToISO } from '@/lib/utils'
@@ -68,15 +81,11 @@ export default function InsightsOverviewPage() {
     dateQuery
   )
 
-  const { data: underperformingData, isLoading: isLoadingUnderperforming } = useUnderperformingProperties(
-    selectedSiteKey || '',
-    dateQuery
-  )
+  const { data: underperformingData, isLoading: isLoadingUnderperforming } =
+    useUnderperformingProperties(selectedSiteKey || '', dateQuery)
 
-  const { data: stagnantData, isLoading: isLoadingStagnant } = useStagnantProperties(
-    selectedSiteKey || '',
-    dateQuery
-  )
+  const { data: stagnantData, isLoading: isLoadingStagnant } =
+    useStagnantProperties(selectedSiteKey || '', dateQuery)
 
   const { data: journeyData, isLoading: isLoadingJourney } = useJourneyStats(
     selectedSiteKey || '',
@@ -94,7 +103,8 @@ export default function InsightsOverviewPage() {
     { limit: 10, ...dateQuery }
   )
 
-  const { data: conversionData, isLoading: conversionLoading } = useConversionSummary(selectedSiteKey || '', dateQuery)
+  const { data: conversionData, isLoading: conversionLoading } =
+    useConversionSummary(selectedSiteKey || '', dateQuery)
 
   const { data: propertiesData, isLoading: isLoadingProperty } =
     usePopularProperties(selectedSiteKey || '', { limit: 10, ...dateQuery })
@@ -138,7 +148,8 @@ export default function InsightsOverviewPage() {
             Visão Geral do Negócio
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
-            Acompanhe os principais indicadores de performance, funil de vendas e oportunidades de mercado.
+            Acompanhe os principais indicadores de performance, funil de vendas
+            e oportunidades de mercado.
           </p>
         </div>
         <PeriodSelector onPeriodChange={handlePeriodChange} />
@@ -149,7 +160,10 @@ export default function InsightsOverviewPage() {
 
       {/* 2. Quick Links to Detailed Sections */}
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer" onClick={() => window.location.href = '/admin/insights/funnel'}>
+        <Card
+          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          onClick={() => (window.location.href = '/admin/insights/funnel')}
+        >
           <CardHeader>
             <div className="flex items-center gap-2">
               <Target className="h-5 w-5 text-primary" />
@@ -166,11 +180,15 @@ export default function InsightsOverviewPage() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Buscas</span>
-                  <span className="font-medium">{funnelData.searches.toLocaleString()}</span>
+                  <span className="font-medium">
+                    {funnelData.searches.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Leads</span>
-                  <span className="font-medium">{funnelData.leads.toLocaleString()}</span>
+                  <span className="font-medium">
+                    {funnelData.leads.toLocaleString()}
+                  </span>
                 </div>
               </div>
             ) : (
@@ -179,15 +197,16 @@ export default function InsightsOverviewPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer" onClick={() => window.location.href = '/admin/insights/properties'}>
+        <Card
+          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          onClick={() => (window.location.href = '/admin/insights/properties')}
+        >
           <CardHeader>
             <div className="flex items-center gap-2">
               <Building2 className="h-5 w-5 text-primary" />
               <CardTitle>Imóveis</CardTitle>
             </div>
-            <CardDescription>
-              Performance dos seus anúncios
-            </CardDescription>
+            <CardDescription>Performance dos seus anúncios</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoadingProperty ? (
@@ -195,12 +214,18 @@ export default function InsightsOverviewPage() {
             ) : propertiesData ? (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Imóveis rastreados</span>
-                  <span className="font-medium">{propertiesData.properties.length}</span>
+                  <span className="text-muted-foreground">
+                    Imóveis rastreados
+                  </span>
+                  <span className="font-medium">
+                    {propertiesData.properties.length}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Mais popular</span>
-                  <span className="font-medium">#{propertiesData.properties[0]?.codigo || 'N/A'}</span>
+                  <span className="font-medium">
+                    #{propertiesData.properties[0]?.codigo || 'N/A'}
+                  </span>
                 </div>
               </div>
             ) : (
@@ -209,15 +234,16 @@ export default function InsightsOverviewPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer" onClick={() => window.location.href = '/admin/insights/demand'}>
+        <Card
+          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          onClick={() => (window.location.href = '/admin/insights/demand')}
+        >
           <CardHeader>
             <div className="flex items-center gap-2">
               <Search className="h-5 w-5 text-primary" />
               <CardTitle>Demanda</CardTitle>
             </div>
-            <CardDescription>
-              O que seus clientes procuram
-            </CardDescription>
+            <CardDescription>O que seus clientes procuram</CardDescription>
           </CardHeader>
           <CardContent>
             {searchLoading ? (
@@ -226,11 +252,17 @@ export default function InsightsOverviewPage() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Total de buscas</span>
-                  <span className="font-medium">{searchData.totalSearches.toLocaleString()}</span>
+                  <span className="font-medium">
+                    {searchData.totalSearches.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Cidade mais buscada</span>
-                  <span className="font-medium">{searchData.topCidades[0]?.cidade || 'N/A'}</span>
+                  <span className="text-muted-foreground">
+                    Cidade mais buscada
+                  </span>
+                  <span className="font-medium">
+                    {searchData.topCidades[0]?.cidade || 'N/A'}
+                  </span>
                 </div>
               </div>
             ) : (
@@ -241,15 +273,16 @@ export default function InsightsOverviewPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer" onClick={() => window.location.href = '/admin/insights/journey'}>
+        <Card
+          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          onClick={() => (window.location.href = '/admin/insights/journey')}
+        >
           <CardHeader>
             <div className="flex items-center gap-2">
               <Globe className="h-5 w-5 text-primary" />
               <CardTitle>Jornada</CardTitle>
             </div>
-            <CardDescription>
-              Comportamento dos visitantes
-            </CardDescription>
+            <CardDescription>Comportamento dos visitantes</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoadingJourney ? (
@@ -257,12 +290,21 @@ export default function InsightsOverviewPage() {
             ) : journeyData ? (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Tempo médio no site</span>
-                  <span className="font-medium">{Math.floor(journeyData.avgTimeOnSite / 60)}m {Math.floor(journeyData.avgTimeOnSite % 60)}s</span>
+                  <span className="text-muted-foreground">
+                    Tempo médio no site
+                  </span>
+                  <span className="font-medium">
+                    {Math.floor(journeyData.avgTimeOnSite / 60)}m{' '}
+                    {Math.floor(journeyData.avgTimeOnSite % 60)}s
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Páginas por sessão</span>
-                  <span className="font-medium">{journeyData.avgPageDepth.toFixed(1)}</span>
+                  <span className="text-muted-foreground">
+                    Páginas por sessão
+                  </span>
+                  <span className="font-medium">
+                    {journeyData.avgPageDepth.toFixed(1)}
+                  </span>
                 </div>
               </div>
             ) : (
@@ -271,15 +313,16 @@ export default function InsightsOverviewPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer" onClick={() => window.location.href = '/admin/insights/conversion'}>
+        <Card
+          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          onClick={() => (window.location.href = '/admin/insights/conversion')}
+        >
           <CardHeader>
             <div className="flex items-center gap-2">
               <Target className="h-5 w-5 text-primary" />
               <CardTitle>Conversões</CardTitle>
             </div>
-            <CardDescription>
-              Leads e taxa de conversão
-            </CardDescription>
+            <CardDescription>Leads e taxa de conversão</CardDescription>
           </CardHeader>
           <CardContent>
             {conversionLoading ? (
@@ -287,12 +330,20 @@ export default function InsightsOverviewPage() {
             ) : conversionData ? (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Total de conversões</span>
-                  <span className="font-medium">{conversionData.totalConversions.toLocaleString()}</span>
+                  <span className="text-muted-foreground">
+                    Total de conversões
+                  </span>
+                  <span className="font-medium">
+                    {conversionData.totalConversions.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Taxa de conversão</span>
-                  <span className="font-medium">{conversionData.conversionRate.toFixed(2)}%</span>
+                  <span className="text-muted-foreground">
+                    Taxa de conversão
+                  </span>
+                  <span className="font-medium">
+                    {conversionData.conversionRate.toFixed(2)}%
+                  </span>
                 </div>
               </div>
             ) : (

@@ -58,32 +58,36 @@ export default function FunnelAnalyticsPage() {
     if (dropoffRates.searchToClick > 80) {
       insights.push({
         title: 'Gargalo em Resultados',
-        description: 'Muitas buscas mas poucos cliques. Verifique a qualidade das fotos principais e preços na listagem.',
-        severity: 'high'
+        description:
+          'Muitas buscas mas poucos cliques. Verifique a qualidade das fotos principais e preços na listagem.',
+        severity: 'high',
       })
     }
 
     if (dropoffRates.clickToView > 60) {
       insights.push({
         title: 'Perda de Interesse',
-        description: 'Usuários clicam mas não visualizam o imóvel completo. O tempo de carregamento pode estar alto.',
-        severity: 'medium'
+        description:
+          'Usuários clicam mas não visualizam o imóvel completo. O tempo de carregamento pode estar alto.',
+        severity: 'medium',
       })
     }
 
     if (dropoffRates.viewToFavorite > 90) {
       insights.push({
         title: 'Baixo Engajamento',
-        description: 'Poucos usuários favoritam imóveis. Considere melhorar as descrições e fotos internas.',
-        severity: 'medium'
+        description:
+          'Poucos usuários favoritam imóveis. Considere melhorar as descrições e fotos internas.',
+        severity: 'medium',
       })
     }
 
     if (dropoffRates.favoriteToLead > 95) {
       insights.push({
         title: 'Dificuldade na Conversão',
-        description: 'Usuários favoritam mas não entram em contato. O preço pode estar desalinhado ou o botão de contato pouco visível.',
-        severity: 'high'
+        description:
+          'Usuários favoritam mas não entram em contato. O preço pode estar desalinhado ou o botão de contato pouco visível.',
+        severity: 'high',
       })
     }
 
@@ -105,7 +109,8 @@ export default function FunnelAnalyticsPage() {
             Jornada do Cliente
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
-            Visualize onde você está perdendo oportunidades, desde a busca até o contato final.
+            Visualize onde você está perdendo oportunidades, desde a busca até o
+            contato final.
           </p>
         </div>
         <PeriodSelector onPeriodChange={handlePeriodChange} />
@@ -115,12 +120,13 @@ export default function FunnelAnalyticsPage() {
       {insights.length > 0 && (
         <div className="grid gap-4 md:grid-cols-2">
           {insights.map((insight, index) => (
-            <Alert key={index} variant={insight.severity === 'high' ? 'destructive' : 'default'}>
+            <Alert
+              key={index}
+              variant={insight.severity === 'high' ? 'destructive' : 'default'}
+            >
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>{insight.title}</AlertTitle>
-              <AlertDescription>
-                {insight.description}
-              </AlertDescription>
+              <AlertDescription>{insight.description}</AlertDescription>
             </Alert>
           ))}
         </div>

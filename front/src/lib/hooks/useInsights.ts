@@ -4,7 +4,6 @@ import { apiClient } from '../api'
 import type {
   InsightsQuery,
   SearchAnalyticsResponse,
-
   ConversionRateResponse,
   ConversionSourcesResponse,
   PopularPropertiesResponse,
@@ -92,8 +91,6 @@ export function useSearchSummary(siteKey: string, query?: InsightsQuery) {
     enabled: !!siteKey,
   })
 }
-
-
 
 export function useTopConvertingFilters(
   siteKey: string,

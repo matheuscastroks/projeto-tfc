@@ -100,7 +100,6 @@ export interface SearchAnalyticsResponse {
   }
 }
 
-
 export interface TopConvertingFiltersResponse {
   filters: Array<{
     combination: Record<string, string | string[]>

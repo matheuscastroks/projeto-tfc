@@ -1,7 +1,22 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/ui/tabs'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@ui/card'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/lib/components/ui/tabs'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@ui/card'
 import { Spinner } from '@ui/spinner'
-import { PopularPropertiesResponse, UnderperformingPropertiesResponse, StagnantPropertiesResponse } from '@/lib/types/insights'
+import {
+  PopularPropertiesResponse,
+  UnderperformingPropertiesResponse,
+  StagnantPropertiesResponse,
+} from '@/lib/types/insights'
 import { ExternalLink, AlertTriangle, Clock, TrendingUp } from 'lucide-react'
 
 interface PropertySectionProps {
@@ -15,9 +30,8 @@ export function PropertySection({
   popularData,
   underperformingData,
   stagnantData,
-  isLoading
+  isLoading,
 }: PropertySectionProps) {
-
   if (isLoading) {
     return (
       <Card className="border-2">
@@ -32,7 +46,10 @@ export function PropertySection({
     <Card className="border-2">
       <CardHeader>
         <CardTitle>Performance de Imóveis</CardTitle>
-        <CardDescription>Analise quais imóveis estão performando bem e quais precisam de atenção</CardDescription>
+        <CardDescription>
+          Analise quais imóveis estão performando bem e quais precisam de
+          atenção
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="popular" className="w-full">
@@ -45,11 +62,19 @@ export function PropertySection({
           <TabsContent value="popular">
             <div className="space-y-4">
               {popularData?.properties.map((prop) => (
-                <div key={prop.codigo} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  key={prop.codigo}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Cód. {prop.codigo}</span>
-                      <a href={prop.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary">
+                      <a
+                        href={prop.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-muted-foreground hover:text-primary"
+                      >
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     </div>
@@ -64,16 +89,24 @@ export function PropertySection({
                     </div>
                     <div className="text-center">
                       <div className="font-bold">{prop.favorites}</div>
-                      <div className="text-muted-foreground text-xs">Favoritos</div>
+                      <div className="text-muted-foreground text-xs">
+                        Favoritos
+                      </div>
                     </div>
                     <div className="text-center">
-                      <div className="font-bold text-green-600">{prop.leads}</div>
+                      <div className="font-bold text-green-600">
+                        {prop.leads}
+                      </div>
                       <div className="text-muted-foreground text-xs">Leads</div>
                     </div>
                   </div>
                 </div>
               ))}
-              {(!popularData?.properties.length) && <div className="text-center py-8 text-muted-foreground">Nenhum dado disponível</div>}
+              {!popularData?.properties.length && (
+                <div className="text-center py-8 text-muted-foreground">
+                  Nenhum dado disponível
+                </div>
+              )}
             </div>
           </TabsContent>
 
@@ -81,14 +114,25 @@ export function PropertySection({
             <div className="space-y-4">
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg flex items-start gap-3 text-sm text-yellow-800 dark:text-yellow-200 mb-4">
                 <AlertTriangle className="h-5 w-5 shrink-0" />
-                <p>Estes imóveis têm muitas visualizações mas poucos leads. Considere revisar o preço, fotos ou descrição.</p>
+                <p>
+                  Estes imóveis têm muitas visualizações mas poucos leads.
+                  Considere revisar o preço, fotos ou descrição.
+                </p>
               </div>
               {underperformingData?.properties.map((prop) => (
-                <div key={prop.codigo} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  key={prop.codigo}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Cód. {prop.codigo}</span>
-                      <a href={prop.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary">
+                      <a
+                        href={prop.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-muted-foreground hover:text-primary"
+                      >
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     </div>
@@ -108,7 +152,11 @@ export function PropertySection({
                   </div>
                 </div>
               ))}
-              {(!underperformingData?.properties.length) && <div className="text-center py-8 text-muted-foreground">Nenhum imóvel com baixa performance identificado</div>}
+              {!underperformingData?.properties.length && (
+                <div className="text-center py-8 text-muted-foreground">
+                  Nenhum imóvel com baixa performance identificado
+                </div>
+              )}
             </div>
           </TabsContent>
 
@@ -116,14 +164,25 @@ export function PropertySection({
             <div className="space-y-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg flex items-start gap-3 text-sm text-blue-800 dark:text-blue-200 mb-4">
                 <Clock className="h-5 w-5 shrink-0" />
-                <p>Estes imóveis estão no site há mais de 30 dias com poucas visualizações. Melhore o destaque ou promova-os.</p>
+                <p>
+                  Estes imóveis estão no site há mais de 30 dias com poucas
+                  visualizações. Melhore o destaque ou promova-os.
+                </p>
               </div>
               {stagnantData?.properties.map((prop) => (
-                <div key={prop.codigo} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  key={prop.codigo}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Cód. {prop.codigo}</span>
-                      <a href={prop.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary">
+                      <a
+                        href={prop.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-muted-foreground hover:text-primary"
+                      >
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     </div>
@@ -134,12 +193,18 @@ export function PropertySection({
                   <div className="flex gap-6 text-sm">
                     <div className="text-center">
                       <div className="font-bold">{prop.views}</div>
-                      <div className="text-muted-foreground text-xs">Views Totais</div>
+                      <div className="text-muted-foreground text-xs">
+                        Views Totais
+                      </div>
                     </div>
                   </div>
                 </div>
               ))}
-              {(!stagnantData?.properties.length) && <div className="text-center py-8 text-muted-foreground">Nenhum imóvel estagnado identificado</div>}
+              {!stagnantData?.properties.length && (
+                <div className="text-center py-8 text-muted-foreground">
+                  Nenhum imóvel estagnado identificado
+                </div>
+              )}
             </div>
           </TabsContent>
         </Tabs>

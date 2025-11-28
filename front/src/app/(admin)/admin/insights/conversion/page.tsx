@@ -290,14 +290,10 @@ export default function ConversionAnalyticsPage() {
           title="Perfil dos Leads"
           description="Características demográficas e comportamentais dos seus leads"
         />
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-          <CardContent>
-            <LeadProfileSection
-              data={leadProfileData}
-              isLoading={leadProfileLoading}
-            />
-          </CardContent>
-        </Card>
+        <LeadProfileSection
+          data={leadProfileData}
+          isLoading={leadProfileLoading}
+        />
       </div>
 
       {/* Details Modal */}

@@ -26,7 +26,12 @@ export const queryKeys = {
           params,
         ] as const,
       kpis: (siteKey: string, params?: any) =>
-        [...queryKeys.insights.overview.all(), 'kpis', siteKey, params] as const,
+        [
+          ...queryKeys.insights.overview.all(),
+          'kpis',
+          siteKey,
+          params,
+        ] as const,
       funnel: (siteKey: string, params?: any) =>
         [
           ...queryKeys.insights.overview.all(),
@@ -131,7 +136,12 @@ export const queryKeys = {
     journey: {
       all: () => [...queryKeys.insights.all, 'journey'] as const,
       stats: (siteKey: string, params?: any) =>
-        [...queryKeys.insights.journey.all(), 'stats', siteKey, params] as const,
+        [
+          ...queryKeys.insights.journey.all(),
+          'stats',
+          siteKey,
+          params,
+        ] as const,
     },
   },
   auth: {

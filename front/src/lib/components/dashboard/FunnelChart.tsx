@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   BarChart,
@@ -9,27 +9,25 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
-} from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@ui/card';
+} from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from '@ui/card'
 
 interface FunnelStep {
-  name: string;
-  value: number;
-  fill: string;
-  conversionRate?: number;
+  name: string
+  value: number
+  fill: string
+  conversionRate?: number
 }
 
 interface FunnelChartProps {
-  data: FunnelStep[];
-  title: string;
-  description?: string;
+  data: FunnelStep[]
+  title: string
+  description?: string
 }
-
-
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
-    const dataPoint = payload[0].payload;
+    const dataPoint = payload[0].payload
     return (
       <div className="bg-background border rounded-lg p-3 shadow-lg">
         <p className="font-medium">{label}</p>
@@ -42,13 +40,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           </p>
         )}
       </div>
-    );
+    )
   }
-  return null;
-};
+  return null
+}
 
 export function FunnelChart({ data, title, description }: FunnelChartProps) {
-
   return (
     <Card className="col-span-1">
       <CardHeader>
@@ -82,5 +79,5 @@ export function FunnelChart({ data, title, description }: FunnelChartProps) {
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  );
+  )
 }

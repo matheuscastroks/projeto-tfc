@@ -1,18 +1,18 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@ui/card';
-import { Badge } from '@ui/badge';
-import { ScrollArea } from '@ui/scroll-area';
+import { Card, CardContent, CardHeader, CardTitle } from '@ui/card'
+import { Badge } from '@ui/badge'
+import { ScrollArea } from '@ui/scroll-area'
 
 interface TopListItem {
-  label: string;
-  value: number | string;
-  subValue?: string;
-  badge?: string;
+  label: string
+  value: number | string
+  subValue?: string
+  badge?: string
 }
 
 interface TopListProps {
-  title: string;
-  items: TopListItem[];
-  icon?: React.ReactNode;
+  title: string
+  items: TopListItem[]
+  icon?: React.ReactNode
 }
 
 export function TopList({ title, items, icon }: TopListProps) {
@@ -28,7 +28,10 @@ export function TopList({ title, items, icon }: TopListProps) {
             {items.map((item, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none truncate max-w-[180px]" title={item.label}>
+                  <p
+                    className="text-sm font-medium leading-none truncate max-w-[180px]"
+                    title={item.label}
+                  >
                     {item.label}
                   </p>
                   {item.subValue && (
@@ -55,5 +58,5 @@ export function TopList({ title, items, icon }: TopListProps) {
         </ScrollArea>
       </CardContent>
     </Card>
-  );
+  )
 }

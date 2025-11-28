@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   PieChart,
@@ -7,21 +7,21 @@ import {
   ResponsiveContainer,
   Tooltip,
   Legend,
-} from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@ui/card';
+} from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from '@ui/card'
 
 interface DemographicsData {
-  name: string;
-  value: number;
+  name: string
+  value: number
 }
 
 interface DemographicsChartProps {
-  data: DemographicsData[];
-  title: string;
-  colors?: string[];
+  data: DemographicsData[]
+  title: string
+  colors?: string[]
 }
 
-const DEFAULT_COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+const DEFAULT_COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8']
 
 export function DemographicsChart({
   data,
@@ -58,5 +58,5 @@ export function DemographicsChart({
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  );
+  )
 }

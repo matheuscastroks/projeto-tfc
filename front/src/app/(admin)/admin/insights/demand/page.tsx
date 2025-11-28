@@ -13,7 +13,6 @@ import { Spinner } from '@ui/spinner'
 import { useSiteContext } from '@/lib/providers/SiteProvider'
 import {
   useSearchSummary,
-
   useTopConvertingFilters,
   useDevicesTimeSeries,
 } from '@/lib/hooks/useInsights'
@@ -22,7 +21,6 @@ import {
   MapPin,
   Home,
   Target,
-
   DollarSign,
   MoreHorizontal,
   Search,
