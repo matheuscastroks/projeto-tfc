@@ -8,7 +8,6 @@ import {
   LeadProfileResponse,
 } from '../interfaces/categorized-insights.interface';
 
-
 @Injectable()
 export class ConversionService {
   private readonly logger = new Logger(ConversionService.name);

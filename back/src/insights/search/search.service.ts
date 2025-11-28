@@ -10,7 +10,6 @@ import {
 import { Prisma } from '@prisma/client';
 import { XMLParser } from 'fast-xml-parser';
 
-
 @Injectable()
 export class SearchService {
   private readonly logger = new Logger(SearchService.name);

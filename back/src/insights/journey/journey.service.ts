@@ -4,7 +4,6 @@ import { InsightsQueryDto } from '../dto/insights-query.dto';
 import { DateFilter } from '../../events/dto/get-events.dto';
 import { JourneyResponse } from '../interfaces/categorized-insights.interface';
 
-
 @Injectable()
 export class JourneyService {
   private readonly logger = new Logger(JourneyService.name);

@@ -5,10 +5,7 @@ export enum EventName {
   TOGGLE_FAVORITE = 'toggle_favorite',
   CLICK_CONTACT = 'click_contact',
   SUBMIT_LEAD_FORM = 'submit_lead_form',
-
 }
-
-
 
 export interface PageContext {
   url: string;

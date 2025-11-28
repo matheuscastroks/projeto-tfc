@@ -11,7 +11,6 @@ import {
   StagnantPropertiesResponse,
 } from '../interfaces/categorized-insights.interface';
 
-
 @Injectable()
 export class PropertyService {
   private readonly logger = new Logger(PropertyService.name);
