@@ -49,7 +49,7 @@ export class PrismaService
     // Inicializa o PrismaClient com configurações de logging
     super({
       log: isDevelopment
-        ? ['error', 'warn'] // Em dev: loga queries SQL
+        ? ['query', 'error', 'warn'] // Em dev: loga queries SQL
         : ['error'], // Em prod: loga apenas erros
     });
   }
