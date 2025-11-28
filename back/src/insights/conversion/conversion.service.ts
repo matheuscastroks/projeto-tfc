@@ -222,7 +222,7 @@ export class ConversionService {
         AND name IN (${EventName.CLICK_CONTACT}, ${EventName.THANK_YOU_VIEW}, ${EventName.SUBMIT_LEAD_FORM})
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-      GROUP BY COALESCE(properties->>${PropertyKeys.LEAD_SOURCE}, 'Site')
+      GROUP BY source
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
     `;

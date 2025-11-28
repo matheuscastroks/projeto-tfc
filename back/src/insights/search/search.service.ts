@@ -167,7 +167,7 @@ export class SearchService {
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
         AND properties->>${PropertyKeys.STATUS} IS NOT NULL
-      GROUP BY properties->>${PropertyKeys.STATUS}
+      GROUP BY finalidade
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
     `;

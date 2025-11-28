@@ -1,5 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 import { InsightsQueryDto } from '../dto/insights-query.dto';
 import { DateFilter } from '../../events/dto/get-events.dto';
 import {
@@ -122,32 +123,32 @@ export class PropertyService {
       }>
     >`
       WITH property_urls AS (
-        SELECT DISTINCT ON (properties->>${PropertyKeys.PROPERTY_ID})
-          properties->>${PropertyKeys.PROPERTY_ID} as property_code,
-          properties->>${PropertyKeys.PROPERTY_URL} as property_url
+        SELECT DISTINCT ON (properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_ID}'`)})
+          properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_ID}'`)} as property_code,
+          properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_URL}'`)} as property_url
         FROM "Event"
         WHERE "siteKey" = ${siteKey}
           AND name = ${EventName.VIEW_PROPERTY}
-          AND properties->>${PropertyKeys.PROPERTY_ID} IS NOT NULL
-          AND properties->>${PropertyKeys.PROPERTY_URL} IS NOT NULL
-          AND properties->>${PropertyKeys.PROPERTY_URL} NOT LIKE '%/obrigado%'
-        ORDER BY properties->>${PropertyKeys.PROPERTY_ID}, ts DESC
+          AND properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_ID}'`)} IS NOT NULL
+          AND properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_URL}'`)} IS NOT NULL
+          AND properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_URL}'`)} NOT LIKE '%/obrigado%'
+        ORDER BY properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_ID}'`)}, ts DESC
       )
       SELECT
-        properties->>${PropertyKeys.PROPERTY_ID} as property_code,
+        properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_ID}'`)} as property_code,
         COALESCE(pu.property_url, '') as property_url,
         COUNT(CASE WHEN name = ${EventName.VIEW_PROPERTY} THEN 1 END) as views,
         COUNT(CASE WHEN name = ${EventName.TOGGLE_FAVORITE} AND properties->>${PropertyKeys.ACTION} = 'add' THEN 1 END) as favorites,
         COUNT(CASE WHEN name IN (${EventName.CLICK_CONTACT}, ${EventName.SUBMIT_LEAD_FORM}) THEN 1 END) as leads
       FROM "Event"
-      LEFT JOIN property_urls pu ON properties->>${PropertyKeys.PROPERTY_ID} = pu.property_code
+      LEFT JOIN property_urls pu ON properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_ID}'`)} = pu.property_code
       WHERE "siteKey" = ${siteKey}
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->>${PropertyKeys.PROPERTY_ID} IS NOT NULL
-        AND properties->>${PropertyKeys.PROPERTY_ID} != ''
+        AND properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_ID}'`)} IS NOT NULL
+        AND properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_ID}'`)} != ''
         AND name IN (${EventName.VIEW_PROPERTY}, ${EventName.TOGGLE_FAVORITE}, ${EventName.CLICK_CONTACT}, ${EventName.SUBMIT_LEAD_FORM})
-      GROUP BY properties->>${PropertyKeys.PROPERTY_ID}, pu.property_url
+      GROUP BY properties->>${Prisma.raw(`'${PropertyKeys.PROPERTY_ID}'`)}, pu.property_url
       ORDER BY views DESC
       LIMIT ${queryDto.limit || 10}
     `;
@@ -327,7 +328,7 @@ export class PropertyService {
           AND ts <= ${dateRange.end}
           AND properties->>${PropertyKeys.PROPERTY_ID} IS NOT NULL
           AND properties->>${PropertyKeys.PROPERTY_URL} NOT LIKE '%/obrigado%'
-        GROUP BY properties->>${PropertyKeys.PROPERTY_ID}
+        GROUP BY property_code
       )
       SELECT *
       FROM property_stats
@@ -394,7 +395,7 @@ export class PropertyService {
         WHERE "siteKey" = ${siteKey}
           AND properties->>${PropertyKeys.PROPERTY_ID} IS NOT NULL
           AND properties->>${PropertyKeys.PROPERTY_URL} NOT LIKE '%/obrigado%'
-        GROUP BY properties->>${PropertyKeys.PROPERTY_ID}
+        GROUP BY property_code
       )
       SELECT *
       FROM property_stats
