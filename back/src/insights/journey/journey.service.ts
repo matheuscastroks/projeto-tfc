@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { InsightsQueryDto } from '../dto/insights-query.dto';
 import { DateFilter } from '../../events/dto/get-events.dto';
 import { JourneyResponse } from '../interfaces/categorized-insights.interface';
-import { EventName } from '../dto/event-schema';
+
 
 @Injectable()
 export class JourneyService {
@@ -131,7 +131,7 @@ export class JourneyService {
         WHERE "siteKey" = ${siteKey}
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND name IN (${EventName.VIEW_PROPERTY}, ${EventName.SEARCH}) -- Page view events
+          AND name IN ('view_property', 'search') -- Page view events
           AND "sessionId" IS NOT NULL
         GROUP BY "sessionId"
       )

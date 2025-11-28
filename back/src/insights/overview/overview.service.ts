@@ -8,8 +8,6 @@ import {
   GlobalKPIsResponse,
   GlobalFunnelResponse,
 } from '../interfaces/insights.interface';
-import { EventName } from '../dto/event-schema';
-
 @Injectable()
 export class OverviewService {
   private readonly logger = new Logger(OverviewService.name);
@@ -275,7 +273,7 @@ export class OverviewService {
       where: {
         siteKey,
         name: {
-          in: [EventName.CLICK_CONTACT, EventName.SUBMIT_LEAD_FORM],
+          in: ['click_contact', 'submit_lead_form'],
         },
         ts: { gte: dateRange.start, lte: dateRange.end },
       },
@@ -291,7 +289,7 @@ export class OverviewService {
     const totalViews = await this.prisma.event.count({
       where: {
         siteKey,
-        name: EventName.VIEW_PROPERTY,
+        name: 'view_property',
         ts: { gte: dateRange.start, lte: dateRange.end },
       },
     });
@@ -305,7 +303,7 @@ export class OverviewService {
     const totalFavorites = await this.prisma.event.count({
       where: {
         siteKey,
-        name: EventName.TOGGLE_FAVORITE,
+        name: 'toggle_favorite',
         ts: { gte: dateRange.start, lte: dateRange.end },
         properties: {
           path: ['action'],
@@ -345,11 +343,11 @@ export class OverviewService {
     );
 
     // Funnel Steps:
-    // 1. Search (search_submit)
-    // 2. Click Result (results_item_click)
-    // 3. View Property (property_page_view)
-    // 4. Favorite (favorite_toggle add)
-    // 5. Lead (conversion_whatsapp_click, thank_you_view)
+    // 1. Search (search)
+    // 2. Click Result (click_property_card)
+    // 3. View Property (view_property)
+    // 4. Favorite (toggle_favorite add)
+    // 5. Lead (click_contact, submit_lead_form)
 
     const funnelCounts = await this.prisma.$queryRaw<
       Array<{
@@ -361,11 +359,11 @@ export class OverviewService {
       }>
     >`
       SELECT
-        COUNT(CASE WHEN name = ${EventName.SEARCH} THEN 1 END) as searches,
-        COUNT(CASE WHEN name = ${EventName.CLICK_PROPERTY_CARD} THEN 1 END) as clicks,
-        COUNT(CASE WHEN name = ${EventName.VIEW_PROPERTY} THEN 1 END) as views,
-        COUNT(CASE WHEN name = ${EventName.TOGGLE_FAVORITE} AND properties->>'action' = 'add' THEN 1 END) as favorites,
-        COUNT(CASE WHEN name IN (${EventName.CLICK_CONTACT}, ${EventName.SUBMIT_LEAD_FORM}) THEN 1 END) as leads
+        COUNT(CASE WHEN name = 'search' THEN 1 END) as searches,
+        COUNT(CASE WHEN name = 'click_property_card' THEN 1 END) as clicks,
+        COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
+        COUNT(CASE WHEN name = 'toggle_favorite' AND properties->>'action' = 'add' THEN 1 END) as favorites,
+        COUNT(CASE WHEN name IN ('click_contact', 'submit_lead_form') THEN 1 END) as leads
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND ts >= ${dateRange.start}

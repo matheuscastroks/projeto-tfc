@@ -15,24 +15,18 @@ export enum EventCategory {
  */
 export const EVENT_CATEGORY_MAP: Record<string, EventCategory> = {
   // Busca
-  search_submit: EventCategory.SEARCH,
+  search: EventCategory.SEARCH,
 
   // Navegação
-  results_item_click: EventCategory.NAVIGATION,
-  results_saber_mais_click: EventCategory.NAVIGATION,
-  property_page_view: EventCategory.NAVIGATION,
+  click_property_card: EventCategory.NAVIGATION,
+  view_property: EventCategory.NAVIGATION,
 
   // Engajamento com imóvel (favoritos)
-  favorite_toggle: EventCategory.PROPERTY,
+  toggle_favorite: EventCategory.PROPERTY,
 
   // Conversão
-  conversion_whatsapp_click: EventCategory.CONVERSION,
-  conversion_generate_lead: EventCategory.CONVERSION,
-  thank_you_view: EventCategory.CONVERSION,
-
-  // Eventos de conversão antigos (mantidos para histórico)
-  conversion_contact_form: EventCategory.CONVERSION,
-  contact_form_submit: EventCategory.CONVERSION, // Também considerado conversão agora
+  click_contact: EventCategory.CONVERSION,
+  submit_lead_form: EventCategory.CONVERSION,
 };
 
 /**

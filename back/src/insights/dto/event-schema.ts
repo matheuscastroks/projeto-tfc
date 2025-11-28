@@ -5,7 +5,7 @@ export enum EventName {
   TOGGLE_FAVORITE = 'toggle_favorite',
   CLICK_CONTACT = 'click_contact',
   SUBMIT_LEAD_FORM = 'submit_lead_form',
-  THANK_YOU_VIEW = 'thank_you_view',
+
 }
 
 export interface UserContext {
