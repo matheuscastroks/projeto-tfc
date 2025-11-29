@@ -157,14 +157,14 @@ export class SearchService {
       Array<{ finalidade: string; count: bigint }>
     >`
       SELECT
-        properties->>'status' as finalidade,
+        properties->'filters'->>'status' as finalidade,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->>'status' IS NOT NULL
+        AND properties->'filters'->>'status' IS NOT NULL
       GROUP BY finalidade
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -175,14 +175,14 @@ export class SearchService {
       Array<{ tipo: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'type') as tipo,
+        jsonb_array_elements_text(properties->'filters'->'type') as tipo,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'type' IS NOT NULL
+        AND properties->'filters'->'type' IS NOT NULL
       GROUP BY tipo
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -193,14 +193,14 @@ export class SearchService {
       Array<{ cidade: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'city') as cidade,
+        jsonb_array_elements_text(properties->'filters'->'city') as cidade,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'city' IS NOT NULL
+        AND properties->'filters'->'city' IS NOT NULL
       GROUP BY cidade
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -211,14 +211,14 @@ export class SearchService {
       Array<{ bairro: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'neighborhood') as bairro,
+        jsonb_array_elements_text(properties->'filters'->'neighborhood') as bairro,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'neighborhood' IS NOT NULL
+        AND properties->'filters'->'neighborhood' IS NOT NULL
       GROUP BY bairro
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -229,14 +229,14 @@ export class SearchService {
       Array<{ quartos: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'bedrooms') as quartos,
+        jsonb_array_elements_text(properties->'filters'->'bedrooms') as quartos,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'bedrooms' IS NOT NULL
+        AND properties->'filters'->'bedrooms' IS NOT NULL
       GROUP BY quartos
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -247,14 +247,14 @@ export class SearchService {
       Array<{ suites: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'suites') as suites,
+        jsonb_array_elements_text(properties->'filters'->'suites') as suites,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'suites' IS NOT NULL
+        AND properties->'filters'->'suites' IS NOT NULL
       GROUP BY suites
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -265,14 +265,14 @@ export class SearchService {
       Array<{ banheiros: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'bathrooms') as banheiros,
+        jsonb_array_elements_text(properties->'filters'->'bathrooms') as banheiros,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'bathrooms' IS NOT NULL
+        AND properties->'filters'->'bathrooms' IS NOT NULL
       GROUP BY banheiros
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -283,14 +283,14 @@ export class SearchService {
       Array<{ vagas: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'garage') as vagas,
+        jsonb_array_elements_text(properties->'filters'->'garage') as vagas,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'garage' IS NOT NULL
+        AND properties->'filters'->'garage' IS NOT NULL
       GROUP BY vagas
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -717,10 +717,10 @@ export class SearchService {
           "sessionId",
           jsonb_strip_nulls(
             jsonb_build_object(
-              'finalidade', properties->>'status',
-              'cidade', properties->'city'->>0,
-              'tipo', properties->'type'->>0,
-              'quartos', properties->'bedrooms'->>0
+              'finalidade', properties->'filters'->>'status',
+              'cidade', properties->'filters'->'city'->>0,
+              'tipo', properties->'filters'->'type'->>0,
+              'quartos', properties->'filters'->'bedrooms'->>0
             )
           ) as combination
         FROM "Event"
