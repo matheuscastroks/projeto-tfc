@@ -64,6 +64,34 @@
       if (el.type === 'checkbox' || el.type === 'radio') return el.checked;
       return el.value || undefined;
     },
+
+    getMultiVal: (id) => {
+      const el = document.getElementById(id);
+      if (!el) return undefined;
+
+      // Handle <select multiple>
+      if (el.tagName === 'SELECT' && el.multiple) {
+        // Try jQuery/Bootstrap Select first if available
+        if (typeof $ !== 'undefined' && $(el).data('selectpicker')) {
+           const values = $(el).val();
+           return Array.isArray(values) && values.length > 0 ? values : undefined;
+        }
+
+        // Fallback to native
+        const values = Array.from(el.options)
+          .filter(o => o.selected)
+          .map(o => o.value);
+        return values.length > 0 ? values : undefined;
+      }
+
+      // Handle comma-separated values (common in hidden inputs for multi-select plugins)
+      if (el.value && el.value.includes(',')) {
+        return el.value.split(',').map(v => v.trim()).filter(v => v);
+      }
+
+      // Default single value
+      return el.value ? [el.value] : undefined;
+    },
   };
   const UserSession = {
     getUserId: () => {
@@ -161,13 +189,13 @@
       return {
         term: undefined,
         status: Utils.getVal('property-status'), // finalidade
-        type: Utils.getVal('residencial-property-type') ? [Utils.getVal('residencial-property-type')] : undefined,
-        city: Utils.getVal('search-field-cidade') ? [Utils.getVal('search-field-cidade')] : undefined,
-        neighborhood: Utils.getVal('search-field-cidadebairro') ? [Utils.getVal('search-field-cidadebairro')] : undefined,
+        type: Utils.getMultiVal('residencial-property-type'),
+        city: Utils.getMultiVal('search-field-cidade'),
+        neighborhood: Utils.getMultiVal('search-field-cidadebairro'),
         bedrooms: getChecked('dormitorios[]'),
         suites: getChecked('suites[]'),
         bathrooms: getChecked('banheiros[]'),
-        parking: getChecked('vagas[]'),
+        garage: getChecked('vagas[]'),
         salePrice: getRange('input-slider-valor-venda'),
         rentPrice: getRange('input-slider-valor-aluguel'),
         area: getRange('input-slider-area'),
@@ -191,7 +219,15 @@
         propertyId: qs.get('codigo'),
         interest: qs.get('interesse'),
         value: Number(qs.get('valor_venda') || 0),
-        // ... extract other params
+        rental_value: Number(qs.get('valor_aluguel') || 0),
+        category: qs.get('categoria'),
+        type: qs.get('tipo'),
+        city: qs.get('cidade'),
+        neighborhood: qs.get('bairro'),
+        bedrooms: qs.get('dormitorios'),
+        garage: qs.get('vagas'),
+        title: qs.get('titulo_anuncio'),
+        // se necessário, extrair outros parâmetros
       };
     },
   };
@@ -320,6 +356,11 @@
         if (document.visibilityState === 'hidden') Transport.flush();
       });
 
+      // Page Hide (Flush on unload/navigation)
+      window.addEventListener('pagehide', () => {
+        Transport.flush();
+      });
+
       // Click Delegation
       document.addEventListener('click', (e) => {
         const target = e.target;
@@ -374,6 +415,20 @@
             source: 'main_search',
             filters: DomScraper.getSearchFilters(),
           });
+          // Force flush immediately to ensure capture before navigation
+          Transport.flush();
+        });
+      }
+
+      // Bind to sidebar search button if present
+      const sidebarSearchBtn = document.querySelector('.submit-sidebar-search-form');
+      if (sidebarSearchBtn) {
+        sidebarSearchBtn.addEventListener('click', () => {
+          Collector.capture(EVENT_NAMES.SEARCH, {
+            source: 'sidebar_search',
+            filters: DomScraper.getSearchFilters(),
+          });
+          Transport.flush();
         });
       }
 
