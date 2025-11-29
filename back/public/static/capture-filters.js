@@ -403,7 +403,10 @@
       // 1. View Property
       const propertyId = DomScraper.getPropertyIdFromUrl();
       if (propertyId) {
-        Collector.capture(EVENT_NAMES.VIEW_PROPERTY, { propertyId });
+        Collector.capture(EVENT_NAMES.VIEW_PROPERTY, {
+          propertyId,
+          url: location.href
+        });
       }
 
       // 2. Search Submit
