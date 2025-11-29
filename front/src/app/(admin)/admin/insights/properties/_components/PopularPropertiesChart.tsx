@@ -19,8 +19,8 @@ interface PopularPropertiesChartProps {
 }
 
 const chartConfig = {
-  engagementScore: {
-    label: 'Pontuação de Engajamento',
+  views: {
+    label: 'Visualizações',
     color: 'hsl(var(--chart-1))',
   },
 }
@@ -52,7 +52,6 @@ export function PopularPropertiesChart({
 
   const chartData = data.properties.slice(0, 5).map((item) => ({
     codigo: item.codigo,
-    engagementScore: item.engagementScore,
     views: item.views,
     favorites: item.favorites,
   }))
@@ -66,7 +65,7 @@ export function PopularPropertiesChart({
           <YAxis />
           <ChartTooltip content={<ChartTooltipContent />} />
           <Bar
-            dataKey="engagementScore"
+            dataKey="views"
             fill="hsl(var(--chart-1))"
             radius={[4, 4, 0, 0]}
           />

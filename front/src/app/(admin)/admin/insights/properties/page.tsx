@@ -181,8 +181,8 @@ export default function PropertiesAnalyticsPage() {
                     label: `Imóvel #${p.codigo}`,
                     value: p.views,
                     subValue: p.url
-                      ? `${p.favorites} favoritos • Score: ${p.engagementScore.toFixed(1)}`
-                      : `${p.favorites} favoritos • Score: ${p.engagementScore.toFixed(1)} • URL não disponível`,
+                      ? `${p.favorites} favoritos`
+                      : `${p.favorites} favoritos • URL não disponível`,
                     link: p.url || undefined,
                   })),
                   'Ranking completo de imóveis por engajamento',

@@ -138,45 +138,7 @@ const columns: ColumnDef<Property>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: 'engagementScore',
-    header: ({ column }) => {
-      return (
-        <div className="text-right">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  onClick={() =>
-                    column.toggleSorting(column.getIsSorted() === 'asc')
-                  }
-                  className="gap-2"
-                >
-                  Score de Engajamento
-                  <Info className="h-3 w-3" />
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>
-                  Métrica ponderada que combina visualizações (peso 1) e
-                  favoritos (peso 3) para medir o engajamento do imóvel.
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      )
-    },
-    cell: ({ row }) => (
-      <div className="text-right">
-        <span className="font-semibold">
-          {row.getValue<number>('engagementScore').toFixed(1)}
-        </span>
-      </div>
-    ),
-  },
+
   {
     accessorKey: 'leads',
     header: ({ column }) => {

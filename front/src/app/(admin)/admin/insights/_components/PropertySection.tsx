@@ -78,9 +78,7 @@ export function PropertySection({
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      Score de Engajamento: {prop.engagementScore}
-                    </div>
+
                   </div>
                   <div className="flex gap-6 text-sm">
                     <div className="text-center">
