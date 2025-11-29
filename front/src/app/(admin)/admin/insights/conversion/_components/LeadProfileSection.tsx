@@ -10,7 +10,7 @@ import {
 import { Spinner } from '@ui/spinner'
 import { TrendingUp, DollarSign, MapPin, Home, Tag } from 'lucide-react'
 import type { LeadProfileResponse } from '@/lib/types/insights'
-import { Bar, BarChart, LabelList, Pie, PieChart, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, LabelList, Pie, PieChart, XAxis, YAxis, Legend } from 'recharts'
 import {
   ChartContainer,
   ChartTooltip,
@@ -217,6 +217,7 @@ export function LeadProfileSection({
                     strokeWidth={5}
                     label
                   />
+                  <Legend />
                 </PieChart>
               </ChartContainer>
             ) : (
@@ -313,6 +314,7 @@ export function LeadProfileSection({
                     strokeWidth={5}
                     label
                   />
+                  <Legend />
                 </PieChart>
               </ChartContainer>
             ) : (
