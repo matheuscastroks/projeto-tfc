@@ -84,9 +84,19 @@ const columns: ColumnDef<Property>[] = [
               <ExternalLink className="h-3 w-3 flex-shrink-0" />
             </a>
           ) : (
-            <span className="text-xs text-muted-foreground">
-              URL não disponível
-            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground/50 cursor-not-allowed">
+                    <span className="italic">Link indisponível</span>
+                    <ExternalLink className="h-3 w-3 flex-shrink-0" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>A URL deste imóvel não foi capturada</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
       )
@@ -107,13 +117,25 @@ const columns: ColumnDef<Property>[] = [
         </div>
       )
     },
-    cell: ({ row }) => (
-      <div className="text-right">
-        <span className="font-medium">
-          {row.getValue<number>('views').toLocaleString()}
-        </span>
-      </div>
-    ),
+    cell: ({ row, table }) => {
+      const val = row.getValue<number>('views')
+      const max = Math.max(...table.getFilteredRowModel().rows.map(r => r.getValue<number>('views')), 1)
+      const percent = (val / max)
+
+      return (
+        <div className="flex justify-end">
+          <div
+            className="px-2.5 py-1 rounded-md font-medium text-xs transition-colors"
+            style={{
+              backgroundColor: `hsl(var(--primary) / ${Math.max(percent * 0.25, 0.05)})`,
+              color: 'hsl(var(--primary))'
+            }}
+          >
+            {val.toLocaleString()}
+          </div>
+        </div>
+      )
+    },
   },
   {
     accessorKey: 'favorites',
@@ -130,15 +152,26 @@ const columns: ColumnDef<Property>[] = [
         </div>
       )
     },
-    cell: ({ row }) => (
-      <div className="text-right">
-        <span className="font-medium">
-          {row.getValue<number>('favorites').toLocaleString()}
-        </span>
-      </div>
-    ),
-  },
+    cell: ({ row, table }) => {
+      const val = row.getValue<number>('favorites')
+      const max = Math.max(...table.getFilteredRowModel().rows.map(r => r.getValue<number>('favorites')), 1)
+      const percent = (val / max)
 
+      return (
+        <div className="flex justify-end">
+          <div
+            className="px-2.5 py-1 rounded-md font-medium text-xs transition-colors"
+            style={{
+              backgroundColor: `hsl(0 84% 60% / ${Math.max(percent * 0.25, 0.05)})`, // Red-400 equivalent
+              color: 'hsl(0 84% 60%)'
+            }}
+          >
+            {val.toLocaleString()}
+          </div>
+        </div>
+      )
+    },
+  },
   {
     accessorKey: 'leads',
     header: ({ column }) => {
@@ -154,13 +187,25 @@ const columns: ColumnDef<Property>[] = [
         </div>
       )
     },
-    cell: ({ row }) => (
-      <div className="text-right">
-        <span className="font-semibold">
-          {row.getValue<number>('leads').toLocaleString()}
-        </span>
-      </div>
-    ),
+    cell: ({ row, table }) => {
+      const val = row.getValue<number>('leads')
+      const max = Math.max(...table.getFilteredRowModel().rows.map(r => r.getValue<number>('leads')), 1)
+      const percent = (val / max)
+
+      return (
+        <div className="flex justify-end">
+          <div
+            className="px-2.5 py-1 rounded-md font-medium text-xs transition-colors"
+            style={{
+              backgroundColor: `hsl(142 76% 36% / ${Math.max(percent * 0.25, 0.05)})`, // Green-600 equivalent
+              color: 'hsl(142 76% 36%)'
+            }}
+          >
+            {val.toLocaleString()}
+          </div>
+        </div>
+      )
+    },
   },
 ]
 

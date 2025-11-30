@@ -117,7 +117,7 @@ const columns: ColumnDef<FilterItem>[] = [
       )
     },
     cell: ({ getValue }) => (
-      <p className="font-medium text-sm break-words leading-relaxed">
+      <p className="font-semibold text-sm break-words">
         {getValue() as string}
       </p>
     ),
@@ -137,13 +137,25 @@ const columns: ColumnDef<FilterItem>[] = [
         </div>
       )
     },
-    cell: ({ getValue }) => (
-      <div className="text-right">
-        <p className="font-bold text-base">
-          {(getValue() as number).toLocaleString()}
-        </p>
-      </div>
-    ),
+    cell: ({ row, table }) => {
+      const val = row.getValue<number>('conversions')
+      const max = Math.max(...table.getFilteredRowModel().rows.map(r => r.getValue<number>('conversions')), 1)
+      const percent = (val / max)
+
+      return (
+        <div className="flex justify-end">
+          <div
+            className="px-2.5 py-1 rounded-md font-medium text-xs transition-colors"
+            style={{
+              backgroundColor: `hsl(142 76% 36% / ${Math.max(percent * 0.25, 0.05)})`, // Green-600 equivalent
+              color: 'hsl(142 76% 36%)'
+            }}
+          >
+            {val.toLocaleString()}
+          </div>
+        </div>
+      )
+    },
   },
 ]
 
@@ -285,7 +297,7 @@ export function TopConvertingFiltersTable({
                     className="border-b transition-colors hover:bg-muted/50"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="px-4 py-2.5">
+                      <TableCell key={cell.id} className="px-4 py-4">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
