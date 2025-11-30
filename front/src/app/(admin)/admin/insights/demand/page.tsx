@@ -19,9 +19,7 @@ import {
 import {
   TrendingUp,
   MapPin,
-  Home,
   Target,
-  DollarSign,
   MoreHorizontal,
   Search,
 } from 'lucide-react'
@@ -30,6 +28,8 @@ import { TopCidadesChart } from './_components/TopCidadesChart'
 import { TopBairrosChart } from './_components/TopBairrosChart'
 import { DevicesChart } from './_components/DevicesChart'
 import { TopConvertingFiltersTable } from './_components/TopConvertingFiltersTable'
+import { PropertyFeaturesPanel } from './_components/PropertyFeaturesPanel'
+import { PriceAreaPanel } from './_components/PriceAreaPanel'
 import {
   DetailsModal,
   type DetailsDataItem,
@@ -149,6 +149,10 @@ export default function SearchAnalyticsPage() {
           icon={TrendingUp}
           isLoading={topConvertingFiltersLoading}
         />
+
+        <div className="md:col-span-2">
+           <DevicesChart data={devicesData} isLoading={devicesLoading} />
+        </div>
       </div>
 
       {/* Section: Location Analysis */}
@@ -289,323 +293,10 @@ export default function SearchAnalyticsPage() {
         </div>
       </div>
 
-      {/* Section: Devices */}
-      <DevicesChart data={devicesData} isLoading={devicesLoading} />
-
-      {/* Section: Property Features */}
-      <div className="space-y-4">
-        <SectionHeader
-          icon={Home}
-          title="Características de Imóveis"
-          description="Perfil dos imóveis mais procurados pelos seus visitantes"
-        />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {/* Quartos */}
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Quartos</CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  const quartos = searchData?.topQuartos || []
-                  openDetailsModal(
-                    'Quartos Mais Buscados',
-                    quartos.map((q) => ({
-                      label: `${q.quartos} quartos`,
-                      value: q.count,
-                      percentage:
-                        (q.count / (searchData?.totalSearches || 1)) * 100,
-                    })),
-                    'Distribuição de buscas por número de quartos',
-                    [
-                      'Priorize imóveis com o número de quartos mais buscado',
-                      'Destaque esta característica em anúncios',
-                    ]
-                  )
-                }}
-              >
-                <MoreHorizontal className="h-3 w-3" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {searchLoading ? (
-                <Spinner className="h-6 w-6" />
-              ) : searchData?.topQuartos && searchData.topQuartos.length > 0 ? (
-                <div className="text-2xl font-bold">
-                  {searchData.topQuartos[0].quartos}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">Sem dados</p>
-              )}
-              <p className="text-xs text-muted-foreground mt-1">Mais buscado</p>
-            </CardContent>
-          </Card>
-
-          {/* Suites */}
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Suítes</CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  const suites = searchData?.topSuites || []
-                  openDetailsModal(
-                    'Suítes Mais Buscadas',
-                    suites.map((s) => ({
-                      label: `${s.suites} suítes`,
-                      value: s.count,
-                      percentage:
-                        (s.count / (searchData?.totalSearches || 1)) * 100,
-                    })),
-                    'Distribuição de buscas por número de suítes'
-                  )
-                }}
-              >
-                <MoreHorizontal className="h-3 w-3" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {searchLoading ? (
-                <Spinner className="h-6 w-6" />
-              ) : searchData?.topSuites && searchData.topSuites.length > 0 ? (
-                <div className="text-2xl font-bold">
-                  {searchData.topSuites[0].suites}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">Sem dados</p>
-              )}
-              <p className="text-xs text-muted-foreground mt-1">Mais buscado</p>
-            </CardContent>
-          </Card>
-
-          {/* Banheiros */}
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Banheiros</CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  const banheiros = searchData?.topBanheiros || []
-                  openDetailsModal(
-                    'Banheiros Mais Buscados',
-                    banheiros.map((b) => ({
-                      label: `${b.banheiros} banheiros`,
-                      value: b.count,
-                      percentage:
-                        (b.count / (searchData?.totalSearches || 1)) * 100,
-                    })),
-                    'Distribuição de buscas por número de banheiros'
-                  )
-                }}
-              >
-                <MoreHorizontal className="h-3 w-3" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {searchLoading ? (
-                <Spinner className="h-6 w-6" />
-              ) : searchData?.topBanheiros &&
-                searchData.topBanheiros.length > 0 ? (
-                <div className="text-2xl font-bold">
-                  {searchData.topBanheiros[0].banheiros}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">Sem dados</p>
-              )}
-              <p className="text-xs text-muted-foreground mt-1">Mais buscado</p>
-            </CardContent>
-          </Card>
-
-          {/* Vagas */}
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Vagas</CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  const vagas = searchData?.topVagas || []
-                  openDetailsModal(
-                    'Vagas Mais Buscadas',
-                    vagas.map((v) => ({
-                      label: `${v.vagas} vagas`,
-                      value: v.count,
-                      percentage:
-                        (v.count / (searchData?.totalSearches || 1)) * 100,
-                    })),
-                    'Distribuição de buscas por número de vagas'
-                  )
-                }}
-              >
-                <MoreHorizontal className="h-3 w-3" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {searchLoading ? (
-                <Spinner className="h-6 w-6" />
-              ) : searchData?.topVagas && searchData.topVagas.length > 0 ? (
-                <div className="text-2xl font-bold">
-                  {searchData.topVagas[0].vagas}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">Sem dados</p>
-              )}
-              <p className="text-xs text-muted-foreground mt-1">Mais buscado</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Section: Price & Area Ranges */}
+      {/* Section: Property Features & Price/Area */}
       <div className="space-y-6">
-        <SectionHeader
-          icon={DollarSign}
-          title="Faixas de Preço e Área"
-          description="Poder de compra e preferências de tamanho dos seus visitantes"
-        />
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Faixas de Preço</CardTitle>
-                <CardDescription>
-                  Distribuição de buscas por faixa de preço
-                </CardDescription>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const prices = [
-                    ...(searchData?.priceRanges?.venda || []),
-                    ...(searchData?.priceRanges?.aluguel || []),
-                  ]
-                  openDetailsModal(
-                    'Faixas de Preço Detalhadas',
-                    prices.map((p) => ({
-                      label: p.range,
-                      value: p.count,
-                      percentage:
-                        (p.count / (searchData?.totalSearches || 1)) * 100,
-                    })),
-                    'Análise completa das faixas de preço mais buscadas',
-                    [
-                      'A faixa de preço mais popular indica o poder aquisitivo do seu público',
-                      'Ajuste seu inventário para atender esta demanda',
-                    ]
-                  )
-                }}
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {searchLoading ? (
-                <div className="flex items-center justify-center h-48">
-                  <Spinner className="h-8 w-8" />
-                </div>
-              ) : searchData?.priceRanges?.venda &&
-                searchData.priceRanges.venda.length > 0 ? (
-                <div className="space-y-2">
-                  {searchData.priceRanges.venda
-                    .slice(0, 8)
-                    .map((range, index) => {
-                      const maxCount =
-                        searchData.priceRanges.venda[0]?.count || 1
-                      const widthPercent = (range.count / maxCount) * 100
-                      return (
-                        <div key={index} className="space-y-1">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="font-medium">{range.range}</span>
-                            <span className="text-muted-foreground">
-                              {range.count.toLocaleString()}
-                            </span>
-                          </div>
-                          <div className="h-2 bg-muted rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-primary transition-all duration-500"
-                              style={{ width: `${widthPercent}%` }}
-                            />
-                          </div>
-                        </div>
-                      )
-                    })}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  Nenhum dado disponível
-                </p>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Faixas de Área</CardTitle>
-                <CardDescription>
-                  Distribuição de buscas por área em m²
-                </CardDescription>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const areas = searchData?.areaRanges || []
-                  openDetailsModal(
-                    'Faixas de Área Detalhadas',
-                    areas.map((a) => ({
-                      label: a.range,
-                      value: a.count,
-                      percentage:
-                        (a.count / (searchData?.totalSearches || 1)) * 100,
-                    })),
-                    'Análise completa das faixas de área mais buscadas'
-                  )
-                }}
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {searchLoading ? (
-                <div className="flex items-center justify-center h-48">
-                  <Spinner className="h-8 w-8" />
-                </div>
-              ) : searchData?.areaRanges && searchData.areaRanges.length > 0 ? (
-                <div className="space-y-2">
-                  {searchData.areaRanges.slice(0, 8).map((range, index) => {
-                    const maxCount = searchData.areaRanges[0]?.count || 1
-                    const widthPercent = (range.count / maxCount) * 100
-                    return (
-                      <div key={index} className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium">{range.range}</span>
-                          <span className="text-muted-foreground">
-                            {range.count.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="h-2 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-primary transition-all duration-500"
-                            style={{ width: `${widthPercent}%` }}
-                          />
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  Nenhum dado disponível
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        <PropertyFeaturesPanel data={searchData} isLoading={searchLoading} openDetailsModal={openDetailsModal} />
+        <PriceAreaPanel data={searchData} isLoading={searchLoading} openDetailsModal={openDetailsModal} />
       </div>
 
       {/* Section: Top Converting Filters */}
