@@ -73,23 +73,7 @@ export default function FunnelAnalyticsPage() {
       })
     }
 
-    if (dropoffRates.viewToFavorite > 90) {
-      insights.push({
-        title: 'Baixo Engajamento',
-        description:
-          'Poucos usuários favoritam imóveis. Considere melhorar as descrições e fotos internas.',
-        severity: 'medium',
-      })
-    }
 
-    if (dropoffRates.favoriteToLead > 95) {
-      insights.push({
-        title: 'Dificuldade na Conversão',
-        description:
-          'Usuários favoritam mas não entram em contato. O preço pode estar desalinhado ou o botão de contato pouco visível.',
-        severity: 'high',
-      })
-    }
 
     return insights
   }

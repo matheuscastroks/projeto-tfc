@@ -1,6 +1,5 @@
 'use client'
-
-import { Pie, PieChart, Cell } from 'recharts'
+import { Bar, BarChart, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts'
 import {
   ChartContainer,
   ChartTooltip,
@@ -16,34 +15,12 @@ interface TopCidadesChartProps {
   isLoading?: boolean
 }
 
-const COLORS = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
-]
-
-// Generate chart config dynamically for up to 5 cities
-const generateChartConfig = (
-  cidades: Array<{ cidade: string }>
-): ChartConfig => {
-  const config: ChartConfig = {
-    count: {
-      label: 'Buscas',
-    },
-  }
-
-  cidades.forEach((item, index) => {
-    const key = item.cidade.toLowerCase().replace(/\s+/g, '_')
-    config[key] = {
-      label: item.cidade,
-      color: COLORS[index % COLORS.length],
-    }
-  })
-
-  return config
-}
+const chartConfig = {
+  count: {
+    label: 'Buscas',
+    color: 'hsl(var(--primary))',
+  },
+} satisfies ChartConfig
 
 export function TopCidadesChart({ data, isLoading }: TopCidadesChartProps) {
   if (isLoading) {
@@ -67,31 +44,47 @@ export function TopCidadesChart({ data, isLoading }: TopCidadesChartProps) {
     )
   }
 
-  const topCidades = data.topCidades.slice(0, 5)
-  const chartConfig = generateChartConfig(topCidades)
-
-  const chartData = topCidades.map((item) => {
-    const key = item.cidade.toLowerCase().replace(/\s+/g, '_')
-    return {
-      cidade: key,
-      cidadeLabel: item.cidade,
-      count: item.count,
-    }
-  })
+  const chartData = data.topCidades.slice(0, 5).map((item) => ({
+    cidade: item.cidade,
+    count: item.count,
+  }))
 
   return (
-    <ChartContainer
-      config={chartConfig}
-      className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[250px]"
-    >
-      <PieChart>
-        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-        <Pie data={chartData} dataKey="count" label nameKey="cidade" stroke="0">
-          {chartData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-      </PieChart>
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart
+        accessibilityLayer
+        data={chartData}
+        layout="vertical"
+        margin={{
+          left: 0,
+          right: 30, // Space for labels
+        }}
+      >
+        <CartesianGrid horizontal={false} />
+        <YAxis
+          dataKey="cidade"
+          type="category"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          width={100} // Fixed width for labels
+          tickFormatter={(value) => value}
+        />
+        <XAxis dataKey="count" type="number" hide />
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent hideLabel />}
+        />
+        <Bar dataKey="count" layout="vertical" fill="var(--color-count)" radius={4}>
+            <LabelList
+              dataKey="count"
+              position="right"
+              offset={8}
+              className="fill-foreground"
+              fontSize={12}
+            />
+        </Bar>
+      </BarChart>
     </ChartContainer>
   )
 }

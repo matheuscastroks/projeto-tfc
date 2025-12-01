@@ -87,46 +87,42 @@ export function LeadProfileSection({
 
   return (
     <div className="space-y-6">
-      {/* Average Values Cards */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200 bg-gradient-to-br from-background to-muted/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Ticket Médio (Venda)
-            </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {data?.averageSaleValue
-                ? formatCurrency(data.averageSaleValue)
-                : 'R$ 0,00'}
+      {/* Financial Overview Card */}
+      <Card className="border-2 hover:border-primary/50 transition-all duration-200 bg-gradient-to-br from-background to-muted/20">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <DollarSign className="h-5 w-5 text-primary" />
+            <CardTitle>Resumo Financeiro</CardTitle>
+          </div>
+          <CardDescription>
+            Médias de valores convertidos em venda e aluguel
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-8">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground">
+                Ticket Médio (Venda)
+              </p>
+              <div className="text-2xl font-bold">
+                {data?.averageSaleValue
+                  ? formatCurrency(data.averageSaleValue)
+                  : 'R$ 0,00'}
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Média de valor dos imóveis convertidos em venda
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200 bg-gradient-to-br from-background to-muted/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Ticket Médio (Aluguel)
-            </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {data?.averageRentalValue
-                ? formatCurrency(data.averageRentalValue)
-                : 'R$ 0,00'}
+            <div className="space-y-1 border-l pl-8">
+              <p className="text-sm font-medium text-muted-foreground">
+                Ticket Médio (Aluguel)
+              </p>
+              <div className="text-2xl font-bold">
+                {data?.averageRentalValue
+                  ? formatCurrency(data.averageRentalValue)
+                  : 'R$ 0,00'}
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Média de valor dos imóveis convertidos em aluguel
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Interests Chart (Bar) */}
@@ -170,7 +166,7 @@ export function LeadProfileSection({
                     dataKey="count"
                     layout="vertical"
                     radius={4}
-                    barSize={32}
+                    barSize={40}
                   >
                     <LabelList
                       dataKey="count"
@@ -213,7 +209,8 @@ export function LeadProfileSection({
                     data={categoriesData}
                     dataKey="count"
                     nameKey="name"
-                    innerRadius={60}
+                    innerRadius={70}
+                    outerRadius={100}
                     strokeWidth={5}
                     label
                   />
@@ -267,7 +264,7 @@ export function LeadProfileSection({
                     dataKey="count"
                     layout="vertical"
                     radius={4}
-                    barSize={32}
+                    barSize={40}
                   >
                     <LabelList
                       dataKey="count"
@@ -310,7 +307,8 @@ export function LeadProfileSection({
                     data={citiesData}
                     dataKey="count"
                     nameKey="name"
-                    innerRadius={60}
+                    innerRadius={70}
+                    outerRadius={100}
                     strokeWidth={5}
                     label
                   />

@@ -301,14 +301,14 @@ export class SearchService {
       Array<{ salas: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'living_rooms') as salas,
+        jsonb_array_elements_text(properties->'filters'->'living_rooms') as salas,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'living_rooms' IS NOT NULL
+        AND properties->'filters'->'living_rooms' IS NOT NULL
       GROUP BY salas
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -319,14 +319,14 @@ export class SearchService {
       Array<{ galpoes: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'warehouses') as galpoes,
+        jsonb_array_elements_text(properties->'filters'->'warehouses') as galpoes,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'warehouses' IS NOT NULL
+        AND properties->'filters'->'warehouses' IS NOT NULL
       GROUP BY galpoes
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -339,20 +339,19 @@ export class SearchService {
       WITH price_buckets AS (
         SELECT
           CASE
-            WHEN (properties->'salePrice'->>'min')::NUMERIC < 100000 THEN '0-100k'
-            WHEN (properties->'salePrice'->>'min')::NUMERIC < 300000 THEN '100k-300k'
-            WHEN (properties->'salePrice'->>'min')::NUMERIC < 500000 THEN '300k-500k'
-            WHEN (properties->'salePrice'->>'min')::NUMERIC < 1000000 THEN '500k-1M'
-            ELSE '1M+'
+            WHEN (properties->'filters'->'salePrice'->>'min')::NUMERIC < 1000000 THEN 'Até 1M'
+            WHEN (properties->'filters'->'salePrice'->>'min')::NUMERIC < 3000000 THEN '1M-3M'
+            WHEN (properties->'filters'->'salePrice'->>'min')::NUMERIC < 7000000 THEN '3M-7M'
+            ELSE '7M+'
           END as range
         FROM "Event"
         WHERE "siteKey" = ${siteKey}
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND properties->'salePrice' IS NOT NULL
-          AND properties->'salePrice'->>'min' IS NOT NULL
-          AND properties->'salePrice'->>'min' != '0'
+          AND properties->'filters'->'salePrice' IS NOT NULL
+          AND properties->'filters'->'salePrice'->>'min' IS NOT NULL
+          AND properties->'filters'->'salePrice'->>'min' != '0'
       )
       SELECT range, COUNT(*) as count
       FROM price_buckets
@@ -367,10 +366,10 @@ export class SearchService {
       WITH price_buckets AS (
         SELECT
           CASE
-            WHEN (properties->'rentPrice'->>'min')::NUMERIC < 1000 THEN '0-1k'
-            WHEN (properties->'rentPrice'->>'min')::NUMERIC < 2000 THEN '1k-2k'
-            WHEN (properties->'rentPrice'->>'min')::NUMERIC < 3000 THEN '2k-3k'
-            WHEN (properties->'rentPrice'->>'min')::NUMERIC < 5000 THEN '3k-5k'
+            WHEN (properties->'filters'->'rentPrice'->>'min')::NUMERIC < 1000 THEN '0-1k'
+            WHEN (properties->'filters'->'rentPrice'->>'min')::NUMERIC < 2000 THEN '1k-2k'
+            WHEN (properties->'filters'->'rentPrice'->>'min')::NUMERIC < 3000 THEN '2k-3k'
+            WHEN (properties->'filters'->'rentPrice'->>'min')::NUMERIC < 5000 THEN '3k-5k'
             ELSE '5k+'
           END as range
         FROM "Event"
@@ -378,9 +377,9 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND properties->'rentPrice' IS NOT NULL
-          AND properties->'rentPrice'->>'min' IS NOT NULL
-          AND properties->'rentPrice'->>'min' != '0'
+          AND properties->'filters'->'rentPrice' IS NOT NULL
+          AND properties->'filters'->'rentPrice'->>'min' IS NOT NULL
+          AND properties->'filters'->'rentPrice'->>'min' != '0'
       )
       SELECT range, COUNT(*) as count
       FROM price_buckets
@@ -395,10 +394,10 @@ export class SearchService {
       WITH area_buckets AS (
         SELECT
           CASE
-            WHEN (properties->'area'->>'min')::NUMERIC < 50 THEN '0-50m²'
-            WHEN (properties->'area'->>'min')::NUMERIC < 100 THEN '50-100m²'
-            WHEN (properties->'area'->>'min')::NUMERIC < 200 THEN '100-200m²'
-            WHEN (properties->'area'->>'min')::NUMERIC < 300 THEN '200-300m²'
+            WHEN (properties->'filters'->'area'->>'min')::NUMERIC < 50 THEN '0-50m²'
+            WHEN (properties->'filters'->'area'->>'min')::NUMERIC < 100 THEN '50-100m²'
+            WHEN (properties->'filters'->'area'->>'min')::NUMERIC < 200 THEN '100-200m²'
+            WHEN (properties->'filters'->'area'->>'min')::NUMERIC < 300 THEN '200-300m²'
             ELSE '300m²+'
           END as range
         FROM "Event"
@@ -406,9 +405,9 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND properties->'area' IS NOT NULL
-          AND properties->'area'->>'min' IS NOT NULL
-          AND properties->'area'->>'min' != '0'
+          AND properties->'filters'->'area' IS NOT NULL
+          AND properties->'filters'->'area'->>'min' IS NOT NULL
+          AND properties->'filters'->'area'->>'min' != '0'
       )
       SELECT range, COUNT(*) as count
       FROM area_buckets
@@ -428,7 +427,7 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'furnished')::BOOLEAN = true
+          AND (properties->'filters'->>'furnished')::BOOLEAN = true
         UNION ALL
         SELECT 'Imóvel Novo'
         FROM "Event"
@@ -436,7 +435,7 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'newProperty')::BOOLEAN = true
+          AND (properties->'filters'->>'newProperty')::BOOLEAN = true
         UNION ALL
         SELECT 'Imóvel Novo'
         FROM "Event"
@@ -444,7 +443,7 @@ export class SearchService {
           AND name IN ('search_submit', 'search')
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'newProperty')::BOOLEAN = true
+          AND (properties->'filters'->>'newProperty')::BOOLEAN = true
         UNION ALL
         SELECT 'Na Planta'
         FROM "Event"
@@ -452,7 +451,7 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'na_planta')::BOOLEAN = true
+          AND (properties->'filters'->>'na_planta')::BOOLEAN = true
         UNION ALL
         SELECT 'Em Construção'
         FROM "Event"
@@ -460,7 +459,7 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'em_construcao')::BOOLEAN = true
+          AND (properties->'filters'->>'em_construcao')::BOOLEAN = true
         UNION ALL
         SELECT 'Aceita Permuta'
         FROM "Event"
@@ -468,7 +467,7 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'aceita_permuta')::BOOLEAN = true
+          AND (properties->'filters'->>'aceita_permuta')::BOOLEAN = true
         UNION ALL
         SELECT 'Pet Friendly'
         FROM "Event"
@@ -476,7 +475,7 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'pet_friendly')::BOOLEAN = true
+          AND (properties->'filters'->>'pet_friendly')::BOOLEAN = true
         UNION ALL
         SELECT 'Seguro Fiança'
         FROM "Event"
@@ -484,7 +483,7 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'seguro_fianca')::BOOLEAN = true
+          AND (properties->'filters'->>'seguro_fianca')::BOOLEAN = true
         UNION ALL
         SELECT 'Reservado'
         FROM "Event"
@@ -492,7 +491,7 @@ export class SearchService {
           AND name IN ('search_submit', 'search')
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'reservado')::BOOLEAN = true
+          AND (properties->'filters'->>'reservado')::BOOLEAN = true
         UNION ALL
         SELECT 'Valor Total Pacote'
         FROM "Event"
@@ -500,12 +499,12 @@ export class SearchService {
           AND name = 'search'
           AND ts >= ${dateRange.start}
           AND ts <= ${dateRange.end}
-          AND (properties->>'valor_total_pacote')::BOOLEAN = true
+          AND (properties->'filters'->>'valor_total_pacote')::BOOLEAN = true
       )
       SELECT switch_name as switch, COUNT(*) as count
       FROM switch_events
       GROUP BY switch_name
-      ORDER BY count DESC
+      ORDER BY switch_name DESC
       LIMIT ${queryDto.limit || 10}
     `;
 
@@ -528,14 +527,14 @@ export class SearchService {
       Array<{ comodidade: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'amenities') as comodidade,
+        jsonb_array_elements_text(properties->'filters'->'amenities') as comodidade,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'amenities' IS NOT NULL
+        AND properties->'filters'->'amenities' IS NOT NULL
       GROUP BY comodidade
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -546,14 +545,14 @@ export class SearchService {
       Array<{ lazer: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'leisure') as lazer,
+        jsonb_array_elements_text(properties->'filters'->'leisure') as lazer,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'leisure' IS NOT NULL
+        AND properties->'filters'->'leisure' IS NOT NULL
       GROUP BY lazer
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -564,14 +563,14 @@ export class SearchService {
       Array<{ seguranca: string; count: bigint }>
     >`
       SELECT
-        jsonb_array_elements_text(properties->'security') as seguranca,
+        jsonb_array_elements_text(properties->'filters'->'security') as seguranca,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'security' IS NOT NULL
+        AND properties->'filters'->'security' IS NOT NULL
       GROUP BY seguranca
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}
@@ -583,14 +582,14 @@ export class SearchService {
     >`
 
       SELECT
-        jsonb_array_elements_text(properties->'rooms') as comodo,
+        jsonb_array_elements_text(properties->'filters'->'rooms') as comodo,
         COUNT(*) as count
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
         AND name = 'search'
         AND ts >= ${dateRange.start}
         AND ts <= ${dateRange.end}
-        AND properties->'rooms' IS NOT NULL
+        AND properties->'filters'->'rooms' IS NOT NULL
       GROUP BY comodo
       ORDER BY count DESC
       LIMIT ${queryDto.limit || 10}

@@ -1,12 +1,14 @@
 'use client'
 
 import {
-  BarChart,
+  ComposedChart,
+  Line,
   Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
+  Legend,
 } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@ui/chart'
 import { Spinner } from '@ui/spinner'
@@ -21,7 +23,11 @@ interface PopularPropertiesChartProps {
 const chartConfig = {
   views: {
     label: 'Visualizações',
-    color: 'hsl(var(--chart-1))',
+    color: 'hsl(var(--primary))',
+  },
+  leads: {
+    label: 'Leads',
+    color: '#10b981', // Emerald 500
   },
 }
 
@@ -31,7 +37,7 @@ export function PopularPropertiesChart({
 }: PopularPropertiesChartProps) {
   if (isLoading) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
+      <div className="flex h-full items-center justify-center">
         <Spinner className="h-8 w-8" />
       </div>
     )
@@ -39,7 +45,7 @@ export function PopularPropertiesChart({
 
   if (!data || !data.properties.length) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="flex flex-col items-center justify-center py-12 text-center h-full">
         <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
           <Building2 className="h-8 w-8 text-muted-foreground" />
         </div>
@@ -53,23 +59,47 @@ export function PopularPropertiesChart({
   const chartData = data.properties.slice(0, 5).map((item) => ({
     codigo: item.codigo,
     views: item.views,
+    leads: item.leads,
     favorites: item.favorites,
   }))
 
   return (
-    <ChartContainer config={chartConfig} className="h-[300px]">
+    <ChartContainer config={chartConfig} className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="codigo" />
-          <YAxis />
-          <ChartTooltip content={<ChartTooltipContent />} />
+        <ComposedChart
+          data={chartData}
+          layout="vertical"
+          margin={{ left: 0, right: 30, top: 10, bottom: 10 }}
+          barGap={2}
+        >
+          <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+          <XAxis type="number" hide />
+          <YAxis
+            dataKey="codigo"
+            type="category"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            width={60}
+            className="text-xs font-medium"
+          />
+          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+          <Legend />
           <Bar
             dataKey="views"
-            fill="hsl(var(--chart-1))"
-            radius={[4, 4, 0, 0]}
+            name="Visualizações"
+            fill="var(--color-views)"
+            radius={[0, 4, 4, 0]}
+            barSize={20}
           />
-        </BarChart>
+          <Bar
+            dataKey="leads"
+            name="Leads"
+            fill="var(--color-leads)"
+            radius={[0, 4, 4, 0]}
+            barSize={20}
+          />
+        </ComposedChart>
       </ResponsiveContainer>
     </ChartContainer>
   )

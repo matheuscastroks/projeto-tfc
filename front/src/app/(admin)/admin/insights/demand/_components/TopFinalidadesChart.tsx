@@ -1,6 +1,6 @@
 'use client'
 
-import { PieChart, Pie, Cell } from 'recharts'
+import { Bar, BarChart, XAxis, YAxis, CartesianGrid, LabelList, Cell } from 'recharts'
 import {
   ChartContainer,
   ChartTooltip,
@@ -15,14 +15,6 @@ interface TopFinalidadesChartProps {
   data: SearchAnalyticsResponse | undefined
   isLoading?: boolean
 }
-
-const COLORS = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
-]
 
 const chartConfig = {
   count: {
@@ -87,29 +79,51 @@ export function TopFinalidadesChart({
     const normalized = normalizeFinalidade(item.finalidade)
     return {
       finalidade: normalized,
+      label: item.finalidade, // Keep original label for display
       count: item.count,
+      fill: (chartConfig[normalized as keyof typeof chartConfig] as { color?: string })?.color || 'hsl(var(--primary))',
     }
   })
 
   return (
-    <ChartContainer
-      config={chartConfig}
-      className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[250px]"
-    >
-      <PieChart>
-        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-        <Pie
-          data={chartData}
-          dataKey="count"
-          label
-          nameKey="finalidade"
-          stroke="0"
-        >
-          {chartData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-      </PieChart>
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart
+        accessibilityLayer
+        data={chartData}
+        layout="vertical"
+        margin={{
+          left: 0,
+          right: 30, // Space for labels
+        }}
+      >
+        <CartesianGrid horizontal={false} />
+        <YAxis
+          dataKey="label"
+          type="category"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          width={100} // Fixed width for labels
+          tickFormatter={(value) => value}
+        />
+        <XAxis dataKey="count" type="number" hide />
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent hideLabel />}
+        />
+        <Bar dataKey="count" layout="vertical" radius={4}>
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.fill} />
+            ))}
+            <LabelList
+              dataKey="count"
+              position="right"
+              offset={8}
+              className="fill-foreground"
+              fontSize={12}
+            />
+        </Bar>
+      </BarChart>
     </ChartContainer>
   )
 }

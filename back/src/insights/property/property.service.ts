@@ -135,7 +135,7 @@ export class PropertyService {
       SELECT
         properties->>'propertyId' as property_code,
         COALESCE(pu.property_url, '') as property_url,
-        COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
+        COUNT(DISTINCT CASE WHEN name = 'view_property' THEN "sessionId" END) as views,
         COUNT(CASE WHEN name = 'toggle_favorite' AND properties->>'action' = 'add' THEN 1 END) as favorites,
         COUNT(CASE WHEN name IN ('click_contact', 'submit_lead_form') THEN 1 END) as leads
       FROM "Event"
@@ -204,7 +204,7 @@ export class PropertyService {
       }>
     >`
       SELECT
-        COUNT(*) FILTER (WHERE name = 'view_property') as total_views,
+        COUNT(DISTINCT "sessionId") FILTER (WHERE name = 'view_property') as total_views,
         COUNT(*) FILTER (WHERE name = 'toggle_favorite' AND properties->>'action' = 'add') as total_favorites
       FROM "Event"
       WHERE "siteKey" = ${siteKey}
@@ -255,7 +255,7 @@ export class PropertyService {
       }>
     >`
       SELECT
-        COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
+        COUNT(DISTINCT CASE WHEN name = 'view_property' THEN "sessionId" END) as views,
         COUNT(CASE WHEN name = 'toggle_favorite' AND (properties->>'action' = 'add') THEN 1 END) as favorites,
         COUNT(CASE WHEN name IN ('click_contact', 'submit_lead_form') THEN 1 END) as leads
       FROM "Event"
@@ -318,7 +318,7 @@ export class PropertyService {
         SELECT
           properties->>'propertyId' as property_code,
           MAX(properties->>'url') as property_url,
-          COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
+          COUNT(DISTINCT CASE WHEN name = 'view_property' THEN "sessionId" END) as views,
           COUNT(CASE WHEN name IN ('click_contact', 'submit_lead_form') THEN 1 END) as leads
         FROM "Event"
         WHERE "siteKey" = ${siteKey}
@@ -387,7 +387,7 @@ export class PropertyService {
         SELECT
           properties->>'propertyId' as property_code,
           MAX(properties->>'url') as property_url,
-          COUNT(CASE WHEN name = 'view_property' THEN 1 END) as views,
+          COUNT(DISTINCT CASE WHEN name = 'view_property' THEN "sessionId" END) as views,
           MIN(ts) as first_seen
         FROM "Event"
         WHERE "siteKey" = ${siteKey}

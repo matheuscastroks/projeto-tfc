@@ -40,48 +40,42 @@ export function JourneySection({ data, isLoading }: JourneySectionProps) {
   }
 
   return (
-    <Card className="border-2">
+    <Card className="border-2 h-full">
       <CardHeader>
-        <CardTitle>Comportamento de Navegação</CardTitle>
+        <CardTitle>Jornada do Usuário</CardTitle>
         <CardDescription>
-          Entenda o engajamento e a fidelidade dos visitantes
+          Engajamento e fidelidade dos visitantes
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="flex flex-col items-center p-4 bg-muted/30 rounded-lg text-center">
-            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-3">
-              <Clock className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+        <div className="grid grid-cols-3 gap-4 divide-x">
+          <div className="flex flex-col items-center justify-center text-center px-2">
+            <div className="flex items-center gap-2 mb-2 text-muted-foreground">
+              <Clock className="h-4 w-4" />
+              <span className="text-xs font-medium uppercase tracking-wider">Tempo Médio</span>
             </div>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold tracking-tight">
               {formatTime(data.avgTimeOnSite)}
             </div>
-            <div className="text-sm text-muted-foreground">
-              Tempo Médio no Site
-            </div>
           </div>
 
-          <div className="flex flex-col items-center p-4 bg-muted/30 rounded-lg text-center">
-            <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full mb-3">
-              <Layers className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+          <div className="flex flex-col items-center justify-center text-center px-2">
+            <div className="flex items-center gap-2 mb-2 text-muted-foreground">
+              <Layers className="h-4 w-4" />
+              <span className="text-xs font-medium uppercase tracking-wider">Páginas/Sessão</span>
             </div>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold tracking-tight">
               {data.avgPageDepth.toFixed(1)}
             </div>
-            <div className="text-sm text-muted-foreground">
-              Páginas por Sessão
-            </div>
           </div>
 
-          <div className="flex flex-col items-center p-4 bg-muted/30 rounded-lg text-center">
-            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full mb-3">
-              <Repeat className="h-6 w-6 text-green-600 dark:text-green-400" />
+          <div className="flex flex-col items-center justify-center text-center px-2">
+            <div className="flex items-center gap-2 mb-2 text-muted-foreground">
+              <Repeat className="h-4 w-4" />
+              <span className="text-xs font-medium uppercase tracking-wider">Recorrência</span>
             </div>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold tracking-tight">
               {data.recurrentVisitorsPercentage.toFixed(1)}%
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Visitantes Recorrentes
             </div>
           </div>
         </div>

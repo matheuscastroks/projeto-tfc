@@ -17,17 +17,16 @@ import {
   useLeadProfile,
 } from '@/lib/hooks/useInsights'
 import { Alert, AlertDescription } from '@ui/alert'
-import { ConversionDistributionChart } from './_components/ConversionDistributionChart'
-import { ConversionSourcesChart } from './_components/ConversionSourcesChart'
-import { LeadProfileSection } from './_components/LeadProfileSection'
+import { AcquisitionPanel } from './_components/AcquisitionPanel'
+import { LeadDNACard } from './_components/LeadDNACard'
 import {
   DetailsModal,
   type DetailsDataItem,
 } from '@/lib/components/insights/DetailsModal'
 import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
-import { EnhancedMetricCard, SectionHeader } from '@/lib/components/dashboard'
+import { EnhancedMetricCard } from '@/lib/components/dashboard'
 import { Badge } from '@ui/badge'
-import { TrendingUp, Target, Users, MoreHorizontal } from 'lucide-react'
+import { TrendingUp, Target, Users } from 'lucide-react'
 import type { InsightsQuery } from '@/lib/types/insights'
 import { formatDateToISO } from '@/lib/utils'
 
@@ -189,108 +188,18 @@ export default function ConversionAnalyticsPage() {
         />
       </div>
 
-      {/* Conversion Charts */}
-      <div className="space-y-4">
-        <SectionHeader
-          title="Análise de Conversões"
-          description="Entenda quais tipos de conversão e fontes de tráfego geram mais resultados"
+      {/* Acquisition & Conversion Panel */}
+      <div className="h-[450px]">
+        <AcquisitionPanel
+          summaryData={summaryData}
+          sourcesData={sourcesData}
+          isLoading={summaryLoading || sourcesLoading}
         />
-        <div className="grid gap-4 md:grid-cols-2">
-          {/* Conversion Distribution */}
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Conversões por Tipo</CardTitle>
-                <CardDescription>
-                  Distribuição dos eventos de conversão
-                </CardDescription>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const types = summaryData?.conversionsByType || []
-                  openDetailsModal(
-                    'Conversões Detalhadas por Tipo',
-                    types.map((t) => ({
-                      label: t.type,
-                      value: t.count,
-                      percentage:
-                        (t.count / (summaryData?.totalConversions || 1)) * 100,
-                    })),
-                    'Análise completa de todos os tipos de conversão',
-                    [
-                      `O tipo mais comum é ${types[0]?.type || 'N/A'}`,
-                      'Otimize os CTAs dos tipos com menor volume',
-                      'Considere A/B tests para melhorar conversões',
-                    ]
-                  )
-                }}
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <ConversionDistributionChart
-                data={summaryData}
-                isLoading={summaryLoading}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Conversion Sources */}
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Fontes de Conversão</CardTitle>
-                <CardDescription>
-                  De onde vêm as suas conversões
-                </CardDescription>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const sources = sourcesData?.sources || []
-                  openDetailsModal(
-                    'Fontes de Conversão Detalhadas',
-                    sources.map((s) => ({
-                      label: s.source,
-                      value: s.conversions,
-                      subValue: `Percentual: ${s.percentage.toFixed(2)}%`,
-                      percentage: s.percentage,
-                    })),
-                    'Análise completa de todas as fontes de tráfego',
-                    [
-                      'Invista mais nas fontes com maior taxa de conversão',
-                      'Analise fontes com alto tráfego mas baixa conversão',
-                      'Crie campanhas específicas para cada fonte',
-                    ],
-                    'list'
-                  )
-                }}
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <ConversionSourcesChart
-                data={sourcesData}
-                isLoading={sourcesLoading}
-              />
-            </CardContent>
-          </Card>
-        </div>
       </div>
 
-      {/* Lead Profile Section */}
-      <div className="space-y-6">
-        <SectionHeader
-          icon={Users}
-          title="Perfil dos Leads"
-          description="Características demográficas e comportamentais dos seus leads"
-        />
-        <LeadProfileSection
+      {/* Lead DNA Panel */}
+      <div className="min-h-[500px]">
+        <LeadDNACard
           data={leadProfileData}
           isLoading={leadProfileLoading}
         />
