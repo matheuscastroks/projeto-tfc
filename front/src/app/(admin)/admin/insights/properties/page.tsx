@@ -162,7 +162,7 @@ export default function PropertiesAnalyticsPage() {
         </div>
 
         {/* Right Column: Top Properties Chart */}
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200 col-span-2">
+        <Card className="border-2 hover:border-primary/50 transition-all duration-200 col-span-2 h-full flex flex-col">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle>Top 5 Imóveis Mais Populares</CardTitle>
@@ -198,7 +198,7 @@ export default function PropertiesAnalyticsPage() {
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 min-h-[300px]">
             <PopularPropertiesChart
               data={popularData}
               isLoading={popularLoading}
