@@ -20,7 +20,6 @@ export class SearchService {
 
     const normalized = value.toLowerCase().replace(/[-_]/g, ' ').trim();
 
-    // Divide por espaços e capitaliza cada palavra
     return normalized
       .split(/\s+/)
       .map((word) => {
@@ -30,9 +29,6 @@ export class SearchService {
       .join(' ');
   }
 
-  /**
-   * Formata os valores de uma combinação de filtros
-   */
   private formatFilterCombination(
     combination: Record<string, string | string[]>,
   ): Record<string, string | string[]> {
@@ -57,8 +53,6 @@ export class SearchService {
     const now = new Date();
 
     if (dateFilter === DateFilter.CUSTOM && startDate && endDate) {
-      // Ensure dates are interpreted as start/end of day in local timezone
-      // If date is in YYYY-MM-DD format, add time component
       const startStr = startDate.includes('T')
         ? startDate
         : `${startDate}T00:00:00`;
@@ -109,7 +103,6 @@ export class SearchService {
       return { start, end };
     }
 
-    // Padrão: últimos 30 dias
     const start = new Date(now);
     start.setDate(now.getDate() - 30);
     start.setHours(0, 0, 0, 0);

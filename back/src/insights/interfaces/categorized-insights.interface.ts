@@ -1,11 +1,3 @@
-/**
- * Interfaces de resposta para os endpoints de insights categorizados
- */
-
-// =====================
-// BUSCA E FILTROS
-// =====================
-
 export interface SearchAnalyticsResponse {
   totalSearches: number;
   topFinalidades: Array<{
@@ -99,11 +91,6 @@ export interface TopConvertingFiltersResponse {
     end: string;
   };
 }
-
-// =====================
-// CONVERSÃO
-// =====================
-
 export interface ConversionRateResponse {
   totalConversions: number;
   totalSessions: number;
@@ -118,7 +105,6 @@ export interface ConversionRateResponse {
     end: string;
   };
 }
-
 export interface ConversionSourcesResponse {
   sources: Array<{
     source: string;
@@ -130,7 +116,6 @@ export interface ConversionSourcesResponse {
     end: string;
   };
 }
-
 export interface LeadProfileResponse {
   topInterests: Array<{
     interest: string;
@@ -156,10 +141,6 @@ export interface LeadProfileResponse {
   };
 }
 
-// =====================
-// IMÓVEIS
-// =====================
-
 export interface PopularPropertiesResponse {
   properties: Array<{
     codigo: string;
@@ -174,7 +155,6 @@ export interface PopularPropertiesResponse {
     end: string;
   };
 }
-
 export interface PropertyEngagementResponse {
   totalViews: number;
   totalFavorites: number;
@@ -183,7 +163,6 @@ export interface PropertyEngagementResponse {
     end: string;
   };
 }
-
 export interface PropertyFunnelResponse {
   views: number;
   favorites: number;
@@ -194,7 +173,6 @@ export interface PropertyFunnelResponse {
     end: string;
   };
 }
-
 export interface UnderperformingPropertiesResponse {
   properties: Array<{
     codigo: string;
@@ -221,11 +199,6 @@ export interface StagnantPropertiesResponse {
     end: string;
   };
 }
-
-// =====================
-// JORNADA
-// =====================
-
 export interface JourneyResponse {
   avgTimeOnSite: number; // em segundos
   avgPageDepth: number;
@@ -235,4 +208,3 @@ export interface JourneyResponse {
     end: string;
   };
 }
-

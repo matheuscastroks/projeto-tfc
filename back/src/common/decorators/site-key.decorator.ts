@@ -6,10 +6,8 @@ import { RequestComAuthETenant } from '../guards/unified.guard';
  * O UnifiedGuard com @RequireTenant() garante que o tenant exista
  */
 export const SiteKey = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): string => {
-    // Pega o objeto request tipado
+  (_data: unknown, ctx: ExecutionContext): string => {
     const request = ctx.switchToHttp().getRequest<RequestComAuthETenant>();
-    // Retorna a chave do site do tenant já validado
     return request.tenant!.siteKey;
   },
 );

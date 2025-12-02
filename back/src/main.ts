@@ -1,23 +1,3 @@
-/**
- * main.ts - Início da aplicação
- *
- * Responsável por:
- * - Iniciar o NestJS
- * - Configurar Helmet (segurança)
- * - Configurar compressão e leitura de cookies
- * - Ativar validação global dos DTOs
- * - Ativar documentação Swagger/OpenAPI
- * - Ativar logging global das requisições
- *
- * Passos:
- * 1. Criar app NestJS
- * 2. Ler as configs do ambiente
- * 3. Aplicar middlewares de segurança
- * 4. Ativar validação global
- * 5. Configurar Swagger
- * 6. Subir o servidor HTTP
- */
-
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -30,26 +10,19 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
-/**
- * Função para iniciar e configurar a aplicação
- */
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
   try {
-    // Cria app NestJS com todos logs habilitados e Express para arquivos estáticos
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
       logger: ['error', 'warn', 'log', 'debug', 'verbose'],
     });
 
-    // Busca configs do ambiente (variáveis)
     const configService = app.get(ConfigService);
     const port = configService.get<number>('port') || 3001;
 
-    // Middleware de segurança Helmet, libera SDK para qualquer site
     app.use(
       helmet({
-        // CSP liberado para execução em qualquer site
         contentSecurityPolicy: {
           directives: {
             defaultSrc: ["'self'"],
@@ -76,11 +49,9 @@ async function bootstrap() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     app.use(compression());
 
-    // Middleware de leitura de cookies HTTP (req.cookies)
     app.use(cookieParser());
 
     // Config CORS: Libera qualquer origem para endpoints do SDK
-    // (e permite origens não informadas, tipo apps mobile)
     app.enableCors({
       origin: (origin, callback) => {
         callback(null, true);
@@ -90,7 +61,6 @@ async function bootstrap() {
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Site-Key'],
     });
 
-    // Validação de todos os DTOs nas rotas
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true, // Remove o que não está no DTO
@@ -122,25 +92,21 @@ async function bootstrap() {
     );
 
     // Servir arquivos estáticos da pasta public/
-    // (Ex: SDK JS direto do backend)
     app.useStaticAssets(join(__dirname, 'public'), {
       prefix: '/static/', // /static/arquivo.js
     });
 
-    // Todas rotas começam com /api (ex: /api/auth)
     app.setGlobalPrefix('api');
 
-    // Ativa interceptor de log global (log de toda request/response)
     app.useGlobalInterceptors(new LoggingInterceptor());
 
-    // Configuração da documentação Swagger/OpenAPI
     const swaggerConfig = new DocumentBuilder()
       .setTitle('InsightHouse Analytics API')
       .setDescription(
         'API de analytics web e rastreamento de eventos com multi-clientes. ' +
           'Monitore usuários, conversões e veja insights.',
       )
-      .setVersion('1.0.0')
+      .setVersion('1.0.1')
       .setContact(
         'Equipe InsightHouse',
         'https://github.com/Couks',
@@ -168,7 +134,6 @@ async function bootstrap() {
         },
         'session-auth',
       )
-      // Auth por header para multi-tenant
       .addApiKey(
         {
           type: 'apiKey',
@@ -179,17 +144,14 @@ async function bootstrap() {
         },
         'site-key',
       )
-      // Servidor principal da API
       .addServer('https://api.matheuscastroks.com.br')
       .build();
 
-    // Cria o documento OpenAPI (IDs de operação únicos)
     const document = SwaggerModule.createDocument(app, swaggerConfig, {
       operationIdFactory: (controllerKey: string, methodKey: string) =>
         `${controllerKey}_${methodKey}`,
     });
 
-    // Ativa a interface Swagger UI em /api/docs
     SwaggerModule.setup('api/docs', app, document, {
       swaggerOptions: {
         persistAuthorization: true, // Mantém login entre reloads
@@ -211,7 +173,6 @@ async function bootstrap() {
       `,
     });
 
-    // Sobe o servidor HTTP na porta configurada
     await app.listen(port);
 
     logger.log(`Env: ${configService.get<string>('nodeEnv')}`);
@@ -228,7 +189,6 @@ async function bootstrap() {
   }
 }
 
-// Inicia a função bootstrap e trata erro fatal
 bootstrap().catch((error) => {
   console.error('Erro fatal no bootstrap:', error);
   process.exit(1);

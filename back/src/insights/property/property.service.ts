@@ -1,6 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
 import { InsightsQueryDto } from '../dto/insights-query.dto';
 import { DateFilter } from '../../events/dto/get-events.dto';
 import {

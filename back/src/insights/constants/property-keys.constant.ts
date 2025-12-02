@@ -1,5 +1,4 @@
 export const PropertyKeys = {
-  // Search Filters
   STATUS: 'status', // finalidade (venda/aluguel)
   TYPE: 'type', // tipos de imóvel
   CITY: 'city',

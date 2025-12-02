@@ -54,10 +54,6 @@ export class PrismaService
     });
   }
 
-  /**
-   * Hook executado quando o módulo é inicializado
-   * Estabelece conexão com o banco de dados
-   */
   async onModuleInit() {
     try {
       // Conecta ao PostgreSQL usando a URL do .env
@@ -70,12 +66,7 @@ export class PrismaService
     }
   }
 
-  /**
-   * Hook executado quando o módulo é destruído
-   * Fecha a conexão com o banco de dados gracefully
-   */
   async onModuleDestroy() {
-    // Desconecta e fecha todas as conexões do pool
     await this.$disconnect();
     this.logger.log('Database disconnected');
   }
