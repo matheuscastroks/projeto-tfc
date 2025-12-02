@@ -140,33 +140,33 @@ window.MyAnalytics.debug = true;
 
 ```mermaid
 flowchart TD
-  ClientSite[Real estate website] --> Snippet[Loader snippet\n<script ...loader?site=SITE_KEY>]
+  ClientSite[Site imobiliário] --> Snippet[Snippet do Loader\n<script ...loader?site=SITE_KEY>]
   Snippet --> LoaderEndpoint[/GET /api/sdk/loader/]
-  LoaderEndpoint --> ValidateDomain[Validate location.hostname\nagainst allowedDomains]
-  ValidateDomain --> InjectScript[Inject capture-filtros.js]
-  InjectScript --> Capture[Capture search & conversion events]
+  LoaderEndpoint --> ValidateDomain[Validar location.hostname\ncontra allowedDomains]
+  ValidateDomain --> InjectScript[Injetar capture-filtros.js]
+  InjectScript --> Capture[Capturar eventos de busca & conversão]
   Capture --> EventsBackend[/POST /api/events/track or /batch/]
 
-  Admin[Admin user] --> Dashboard[Next.js Admin Dashboard]
-  Dashboard -->|React Query hooks| InsightsAPI[/GET /api/insights/*?site=SITE_KEY/]
-  InsightsAPI --> Charts[Cards, tables, charts]
+  Admin[Usuário Admin] --> Dashboard[Dashboard Admin Next.js]
+  Dashboard -->|Hooks React Query| InsightsAPI[/GET /api/insights/*?site=SITE_KEY/]
+  InsightsAPI --> Charts[Cards, tabelas, gráficos]
 ```
 
 ### Fluxo de Dados do Dashboard com React Query
 
 ```mermaid
 flowchart LR
-  Page[Next.js App Router page\n(Server Component)] --> Hydrate[HydrationBoundary\n+ QueryClient.dehydrate]
-  Hydrate --> DashboardClient[Dashboard Client Component]
+  Page[Página Next.js App Router\n(Server Component)] --> Hydrate[HydrationBoundary\n+ QueryClient.dehydrate]
+  Hydrate --> DashboardClient[Componente Client do Dashboard]
 
-  subgraph ReactQuery[React Query Layer]
-    Hooks[Custom hooks\nuseSites · useOverview · useProperties]
-    Cache[Query Cache]
+  subgraph ReactQuery[Camada React Query]
+    Hooks[Hooks customizados\nuseSites · useOverview · useProperties]
+    Cache[Cache de Query]
   end
 
   DashboardClient --> Hooks
-  Hooks --> APIClient[API client\n(fetch /api/* with credentials)]
-  APIClient --> Backend[/NestJS backend /api routes/]
+  Hooks --> APIClient[Cliente de API\n(fetch /api/* com credenciais)]
+  APIClient --> Backend[/Rotas /api do backend NestJS/]
   Hooks --> Cache
   Cache --> DashboardClient
 ```

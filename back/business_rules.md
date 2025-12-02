@@ -152,59 +152,59 @@ Organiza os tipos de eventos capturados em categorias lógicas para facilitar a 
 
 ```mermaid
 flowchart TD
-  Start_Overview[[Start Overview Aggregation]] --> LoadEvents[Load events filtered by site and date range]
-  LoadEvents --> UniqueSessions[Compute distinct sessionId]
-  UniqueSessions --> UniqueVisitors[Unique Visitors = count(sessionId)]
+  Start_Overview[[Iniciar Agregação de Visão Geral]] --> LoadEvents[Carregar eventos filtrados por site e data]
+  LoadEvents --> UniqueSessions[Calcular sessionId distintos]
+  UniqueSessions --> UniqueVisitors[Visitantes Únicos = contagem(sessionId)]
 
-  LoadEvents --> LeadEvents[Filter lead events\nconversion_whatsapp_click · thank_you_view · conversion_generate_lead]
-  LeadEvents --> LeadsCount[Leads Generated = count(lead events)]
+  LoadEvents --> LeadEvents[Filtrar eventos de lead\nconversion_whatsapp_click · thank_you_view · conversion_generate_lead]
+  LeadEvents --> LeadsCount[Leads Gerados = contagem(eventos de lead)]
 
-  LoadEvents --> PropertyViews[Filter events name = property_page_view]
-  PropertyViews --> ViewsPerSession[Group by sessionId and count]
-  ViewsPerSession --> AvgViews[Avg Properties Viewed = total_views / Unique Visitors]
+  LoadEvents --> PropertyViews[Filtrar eventos com nome = property_page_view]
+  PropertyViews --> ViewsPerSession[Agrupar por sessionId e contar]
+  ViewsPerSession --> AvgViews[Média de Imóveis Vistos = total_views / Visitantes Únicos]
 
-  LoadEvents --> FavoriteEvents[Filter favorite_toggle where action = add]
-  FavoriteEvents --> FavoritesCount[Total Favorites = count(events)]
+  LoadEvents --> FavoriteEvents[Filtrar favorite_toggle onde action = add]
+  FavoriteEvents --> FavoritesCount[Total de Favoritos = contagem(eventos)]
 
-  UniqueVisitors --> ConversionRate[(Conversion Rate = Leads / Unique Visitors * 100)]
+  UniqueVisitors --> ConversionRate[(Taxa de Conversão = Leads / Visitantes Únicos * 100)]
   LeadsCount --> ConversionRate
 
-  ConversionRate --> KPIs[Return overview KPIs JSON]
+  ConversionRate --> KPIs[Retornar JSON de KPIs de Visão Geral]
 ```
 
 ```mermaid
 flowchart LR
-  Search[search_submit\n(Search performed)] --> Click[results_item_click\n(Result click)]
-  Click --> View[property_page_view\n(Property view)]
-  View --> Favorite[favorite_toggle (add)\n(Add to favorites)]
-  Favorite --> Lead[Lead events\nwhatsapp / thank_you_view / generate_lead]
+  Search[search_submit\n(Busca realizada)] --> Click[results_item_click\n(Clique no resultado)]
+  Click --> View[property_page_view\n(Visualização do imóvel)]
+  View --> Favorite[favorite_toggle (add)\n(Adicionar aos favoritos)]
+  Favorite --> Lead[Eventos de Lead\nwhatsapp / thank_you_view / generate_lead]
 
-  Search -->|dropoff 1| Drop1[(Abandon after search)]
-  Click -->|dropoff 2| Drop2[(Abandon after click)]
-  View -->|dropoff 3| Drop3[(Abandon after property view)]
-  Favorite -->|dropoff 4| Drop4[(Abandon after favorite)]
+  Search -->|dropoff 1| Drop1[(Abandono após busca)]
+  Click -->|dropoff 2| Drop2[(Abandono após clique)]
+  View -->|dropoff 3| Drop3[(Abandono após visualização do imóvel)]
+  Favorite -->|dropoff 4| Drop4[(Abandono após favorito)]
 ```
 
 ### Conversion – Taxas por Tipo e Perfil de Lead
 
 ```mermaid
 flowchart TD
-  StartConv[[Start Conversion Analytics]] --> LoadSessions[Load events filtered by site/date]
-  LoadSessions --> DistinctSessions[Compute distinct sessionId]
-  DistinctSessions --> TotalSessions[Total Sessions]
+  StartConv[[Iniciar Análise de Conversão]] --> LoadSessions[Carregar eventos filtrados por site/data]
+  LoadSessions --> DistinctSessions[Calcular sessionId distintos]
+  DistinctSessions --> TotalSessions[Total de Sessões]
 
-  LoadSessions --> ConvEvents[Filter conversion events\nthank_you_view · conversion_whatsapp_click]
-  ConvEvents --> MapTypes[Map event name to conversion type]
-  MapTypes --> ConvAgg[Aggregate by type\n(count, rate)]
+  LoadSessions --> ConvEvents[Filtrar eventos de conversão\nthank_you_view · conversion_whatsapp_click]
+  ConvEvents --> MapTypes[Mapear nome do evento para tipo de conversão]
+  MapTypes --> ConvAgg[Agregar por tipo\n(contagem, taxa)]
 
-  ConvEvents --> TYEvents[Filter only thank_you_view]
-  TYEvents --> ExtractProps[Extract properties\n(city, type, category, price, rent)]
-  ExtractProps --> LeadProfileAgg[Aggregate lead profile metrics]
+  ConvEvents --> TYEvents[Filtrar apenas thank_you_view]
+  TYEvents --> ExtractProps[Extrair propriedades\n(cidade, tipo, categoria, preço, aluguel)]
+  ExtractProps --> LeadProfileAgg[Agregar métricas de perfil de lead]
 
-  TotalSessions --> ConvRate[(Conversion Rate = total_conversions / Total Sessions)]
+  TotalSessions --> ConvRate[(Taxa de Conversão = total_conversions / Total de Sessões)]
   ConvAgg --> ConvRate
 
-  ConvRate --> ResultConv[Return conversion KPIs + breakdown]
+  ConvRate --> ResultConv[Retornar KPIs de conversão + detalhamento]
   LeadProfileAgg --> ResultConv
 ```
 
@@ -212,23 +212,23 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  StartJourney[[Start Journey Analytics]] --> LoadJourneyEvents[Load events by site/date]
+  StartJourney[[Iniciar Análise de Jornada]] --> LoadJourneyEvents[Carregar eventos por site/data]
 
-  LoadJourneyEvents --> GroupBySession[Group events by sessionId]
+  LoadJourneyEvents --> GroupBySession[Agrupar eventos por sessionId]
 
-  GroupBySession --> TimePerSession[Compute time per session\nMAX(ts) - MIN(ts)]
-  TimePerSession --> AvgTimeOnSite[Average time on site]
+  GroupBySession --> TimePerSession[Calcular tempo por sessão\nMAX(ts) - MIN(ts)]
+  TimePerSession --> AvgTimeOnSite[Tempo médio no site]
 
-  GroupBySession --> PageViewEvents[Filter page view events\nproperty_page_view · search_submit · home_view · results_view]
-  PageViewEvents --> DepthPerSession[Count page views per session]
-  DepthPerSession --> AvgDepth[Average page depth]
+  GroupBySession --> PageViewEvents[Filtrar eventos de visualização de página\nproperty_page_view · search_submit · home_view · results_view]
+  PageViewEvents --> DepthPerSession[Contar visualizações de página por sessão]
+  DepthPerSession --> AvgDepth[Profundidade média de página]
 
-  LoadJourneyEvents --> CurrentPeriodUsers[Compute distinct userId in period]
-  CurrentPeriodUsers --> CheckHistory[Check events before start date per user]
-  CheckHistory --> ReturningUsers[Returning users count]
-  ReturningUsers --> RecurringRate[(Recurring visitors % = Returning / Current)]
+  LoadJourneyEvents --> CurrentPeriodUsers[Calcular userId distintos no período]
+  CurrentPeriodUsers --> CheckHistory[Verificar eventos antes da data de início por usuário]
+  CheckHistory --> ReturningUsers[Contagem de usuários recorrentes]
+  ReturningUsers --> RecurringRate[(Visitantes Recorrentes % = Recorrentes / Atuais)]
 
-  AvgTimeOnSite --> JourneyKPIs[Return journey KPIs]
+  AvgTimeOnSite --> JourneyKPIs[Retornar KPIs de jornada]
   AvgDepth --> JourneyKPIs
   RecurringRate --> JourneyKPIs
 ```
@@ -237,23 +237,23 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  StartProperty[[Start Property Analytics]] --> LoadPropertyEvents[Load events filtered by site/date]
+  StartProperty[[Iniciar Análise de Imóveis]] --> LoadPropertyEvents[Carregar eventos filtrados por site/data]
 
-  LoadPropertyEvents --> PV[Filter property_page_view]
-  PV --> ViewsByProperty[Group views by propertyCode]
+  LoadPropertyEvents --> PV[Filtrar property_page_view]
+  PV --> ViewsByProperty[Agrupar visualizações por propertyCode]
 
-  LoadPropertyEvents --> Fav[Filter favorite_toggle (add)]
-  Fav --> FavoritesByProperty[Group favorites by propertyCode]
+  LoadPropertyEvents --> Fav[Filtrar favorite_toggle (add)]
+  Fav --> FavoritesByProperty[Agrupar favoritos por propertyCode]
 
-  ViewsByProperty --> EngagementScore[(Engagement score = views * 1 + favorites * 3)]
+  ViewsByProperty --> EngagementScore[(Score de engajamento = visualizações * 1 + favoritos * 3)]
   FavoritesByProperty --> EngagementScore
 
-  EngagementScore --> PopularProps[Sort properties by engagement score]
+  EngagementScore --> PopularProps[Ordenar imóveis por score de engajamento]
 
-  ViewsByProperty --> Underperforming[Filter properties\nviews > 10 AND leads low]
-  ViewsByProperty --> Stagnant[Filter properties\nviews < 50 AND firstSeen > 30 days ago]
+  ViewsByProperty --> Underperforming[Filtrar imóveis\nvisualizações > 10 E leads baixos]
+  ViewsByProperty --> Stagnant[Filtrar imóveis\nvisualizações < 50 E firstSeen > 30 dias atrás]
 
-  PopularProps --> ResultProperty[Return popular + underperforming + stagnant lists]
+  PopularProps --> ResultProperty[Retornar listas de populares + baixo desempenho + estagnados]
   Underperforming --> ResultProperty
   Stagnant --> ResultProperty
 ```
@@ -262,23 +262,23 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  StartSearch[[Start Search Analytics]] --> LoadSearchEvents[Load events filtered by site/date]
+  StartSearch[[Iniciar Análise de Busca]] --> LoadSearchEvents[Carregar eventos filtrados por site/data]
 
-  LoadSearchEvents --> SearchSubmit[Filter search_submit events]
-  SearchSubmit --> TotalSearches[Total Searches = count(search_submit)]
+  LoadSearchEvents --> SearchSubmit[Filtrar eventos search_submit]
+  SearchSubmit --> TotalSearches[Total de Buscas = contagem(search_submit)]
 
-  SearchSubmit --> ExtractFilters[Extract filter fields\n(purpose, type, city, priceRange, rooms, etc.)]
-  ExtractFilters --> Normalize[Normalize values\n(capitalize, remove hyphens/underscores)]
-  Normalize --> TopFilters[Count occurrences per filter value]
+  SearchSubmit --> ExtractFilters[Extrair campos de filtro\n(finalidade, tipo, cidade, faixa de preço, quartos, etc.)]
+  ExtractFilters --> Normalize[Normalizar valores\n(capitalizar, remover hífens/underscores)]
+  Normalize --> TopFilters[Contar ocorrências por valor de filtro]
 
-  ExtractFilters --> Combos[Build filter combinations\n(only combos with >= 2 filters)]
-  Combos --> ComboAgg[Aggregate and rank combinations]
+  ExtractFilters --> Combos[Construir combinações de filtros\n(apenas combos com >= 2 filtros)]
+  Combos --> ComboAgg[Agregar e ranquear combinações]
 
-  LoadSearchEvents --> SearchSessions[Sessions with search_submit]
-  SearchSessions --> JoinConversions[Join with sessions that converted\n(thank_you_view, etc.)]
-  JoinConversions --> ConvertingFilters[Identify filters that correlate with conversions]
+  LoadSearchEvents --> SearchSessions[Sessões com search_submit]
+  SearchSessions --> JoinConversions[Juntar com sessões que converteram\n(thank_you_view, etc.)]
+  JoinConversions --> ConvertingFilters[Identificar filtros que correlacionam com conversões]
 
-  TotalSearches --> SearchKPIs[Return search analytics JSON]
+  TotalSearches --> SearchKPIs[Retornar JSON de analytics de busca]
   TopFilters --> SearchKPIs
   ComboAgg --> SearchKPIs
   ConvertingFilters --> SearchKPIs

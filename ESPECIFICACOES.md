@@ -99,11 +99,11 @@ Guards e Decorators
 ```mermaid
 flowchart TB
   subgraph client[Cliente]
-    Browser
+    Browser[Navegador]
     SDK[Loader do SDK JS]
   end
   subgraph frontend[Frontend Next.js]
-    Middleware[Middleware de Autenticacao]
+    Middleware[Middleware de Autenticação]
     AppRouter[App Router]
     Query[Cache do React Query]
   end
@@ -111,8 +111,8 @@ flowchart TB
     Main[Bootstrap]
     Controllers[Controladores REST]
     Guards[Guard Unificado]
-    Services[Servicos de Negocio]
-    Prisma[Servico Prisma]
+    Services[Serviços de Negócio]
+    Prisma[Serviço Prisma]
   end
   DB[PostgreSQL]
 
@@ -283,21 +283,21 @@ pnpm test:cov
 
 ```mermaid
 flowchart TD
-  User[Admin User] --> LoginPage[Next.js /login page]
+  User[Usuário Admin] --> LoginPage[Página de login Next.js]
   LoginPage -->|POST /api/auth/login| AuthController[AuthController.login]
   AuthController --> AuthService[AuthService.login]
-  AuthService --> VerifyCreds[Verify email/password with scrypt]
-  VerifyCreds -->|invalid| Error401[401 Unauthorized]
-  VerifyCreds -->|valid| IssueJWT[Issue signed JWT]
-  IssueJWT --> SetCookie[Set admin_session HttpOnly cookie]
+  AuthService --> VerifyCreds[Verificar email/senha com scrypt]
+  VerifyCreds -->|inválido| Error401[401 Unauthorized]
+  VerifyCreds -->|válido| IssueJWT[Emitir JWT assinado]
+  IssueJWT --> SetCookie[Definir cookie HttpOnly admin_session]
   SetCookie --> LoginResponse[200 OK + Set-Cookie]
 
-  subgraph ProtectedRequest[Subsequent protected request]
-    Req[/GET /api/sites or /api/insights/*/] --> Guard[Unified Guard]
-    Guard --> ReadCookie[Read admin_session cookie]
-    ReadCookie --> VerifyJWT2[Verify signature + expiry]
-    VerifyJWT2 --> AttachSession[Attach authSession to request]
-    AttachSession --> Controller[Controller handler]
+  subgraph ProtectedRequest[Requisição protegida subsequente]
+    Req[/GET /api/sites or /api/insights/*/] --> Guard[Guard Unificado]
+    Guard --> ReadCookie[Ler cookie admin_session]
+    ReadCookie --> VerifyJWT2[Verificar assinatura + validade]
+    VerifyJWT2 --> AttachSession[Anexar authSession à requisição]
+    AttachSession --> Controller[Handler do Controller]
   end
 ```
 
@@ -305,59 +305,59 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  ClientSite[Real estate website] --> Snippet[Loader snippet\n<script ...loader?site=SITE_KEY>]
+  ClientSite[Site imobiliário] --> Snippet[Snippet do Loader\n<script ...loader?site=SITE_KEY>]
   Snippet --> LoaderEndpoint[/GET /api/sdk/loader/]
-  LoaderEndpoint --> ValidateHost[Validate location.hostname\nagainst Domain table]
-  ValidateHost --> InjectCapture[Inject capture-filtros.js]
+  LoaderEndpoint --> ValidateHost[Validar location.hostname\nna tabela Domain]
+  ValidateHost --> InjectCapture[Injetar capture-filtros.js]
 
-  InjectCapture --> CaptureEvents[Capture search + property + conversion events]
-  CaptureEvents --> BatchPayload[Build single/batch payload\nwith X-Site-Key header]
+  InjectCapture --> CaptureEvents[Capturar eventos de busca + imóvel + conversão]
+  CaptureEvents --> BatchPayload[Construir payload único/lote\ncom header X-Site-Key]
   BatchPayload --> EventsEndpoint[/POST /api/events/track or /batch/]
 
   subgraph NestBackend[Backend NestJS]
-    EventsEndpoint --> GuardTenant[Unified Guard\nvalidate X-Site-Key and site status]
+    EventsEndpoint --> GuardTenant[Guard Unificado\nvalidar X-Site-Key e status do site]
     GuardTenant --> EventsService[EventsService]
-    EventsService --> Enrich[Enrich data\n(timestamp, UA, anonymized IP)]
-    Enrich --> Chunk[Chunk & batch insert]
+    EventsService --> Enrich[Enriquecer dados\n(timestamp, UA, IP anonimizado)]
+    Enrich --> Chunk[Dividir em chunks e inserir em lote]
     Chunk --> PrismaEvents[Prisma createMany]
-    PrismaEvents --> EventTable[(Event table\nJSONB properties)]
+    PrismaEvents --> EventTable[(Tabela Event\npropriedades JSONB)]
   end
 
-  EventsService --> AckEvents[{Return { success, count }}]
+  EventsService --> AckEvents[{Retornar { success, count }}]
 ```
 
 ### 13.3 Fluxo de Consultas de Insights
 
 ```mermaid
 flowchart TD
-  Admin[Admin User] --> Dashboard[Next.js Admin Dashboard]
-  Dashboard -->|React Query hooks\n+ ?site=SITE_KEY| InsightsAPI[/GET /api/insights/*/]
+  Admin[Usuário Admin] --> Dashboard[Dashboard Admin Next.js]
+  Dashboard -->|Hooks React Query\n+ ?site=SITE_KEY| InsightsAPI[/GET /api/insights/*/]
 
-  subgraph InsightsBackend[Insights modules]
-    InsightsAPI --> GuardTenant2[Unified Guard\nresolve tenant from siteKey]
+  subgraph InsightsBackend[Módulos de Insights]
+    InsightsAPI --> GuardTenant2[Guard Unificado\nresolver tenant pelo siteKey]
     GuardTenant2 --> InsightsService[Overview · Search · Property · Conversion · Journey]
-    InsightsService --> PrismaRead[Prisma client (read)]
+    InsightsService --> PrismaRead[Cliente Prisma (leitura)]
     PrismaRead --> EventAndMeta[(Event + Site + Domain + Setting)]
-    InsightsService --> KPIs[Aggregated JSON KPIs]
+    InsightsService --> KPIs[KPIs JSON Agregados]
   end
 
   KPIs --> Dashboard
-  Dashboard --> Charts[Cards, tables, charts]
+  Dashboard --> Charts[Cards, tabelas, gráficos]
 ```
 
 ### 13.4 Fluxo de Instalação do Rastreador
 
 ```mermaid
 flowchart LR
-  AdminUser[Admin user] --> AdminInstall[/Next.js route /admin/install/]
-  AdminInstall --> LoadSites[Load active sites for user]
-  LoadSites --> SelectSite[Pick first active site or chosen site]
-  SelectSite --> GenerateSnippet[Generate loader snippet\nwith siteKey and app origin]
-  GenerateSnippet --> ShowSnippet[Render snippet and instructions]
+  AdminUser[Usuário Admin] --> AdminInstall[/Rota Next.js /admin/install/]
+  AdminInstall --> LoadSites[Carregar sites ativos do usuário]
+  LoadSites --> SelectSite[Selecionar primeiro site ativo ou site escolhido]
+  SelectSite --> GenerateSnippet[Gerar snippet do loader\ncom siteKey e origem do app]
+  GenerateSnippet --> ShowSnippet[Renderizar snippet e instruções]
 
-  ShowSnippet --> CopyPaste[Admin copies snippet to client site's <head>]
-  CopyPaste --> ClientTraffic[End users visit real estate website]
-  ClientTraffic --> LoaderExec[Loader executes and starts data collection]
+  ShowSnippet --> CopyPaste[Admin copia snippet para o <head> do site cliente]
+  CopyPaste --> ClientTraffic[Usuários finais visitam site imobiliário]
+  ClientTraffic --> LoaderExec[Loader executa e inicia coleta de dados]
 ```
 
 ## 14. Riscos e Evoluções Futuras

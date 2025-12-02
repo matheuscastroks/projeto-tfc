@@ -108,20 +108,20 @@ back/
 
 ```mermaid
 flowchart LR
-  Client[Client and Admin UI] -->|HTTP /api/*| Main[main.ts]
+  Client[Cliente e UI Admin] -->|HTTP /api/*| Main[main.ts]
   Main --> AppModule[AppModule]
   AppModule --> Modules[Auth, Sites, Events, Insights, SDK, Health, Config, Prisma, Common]
 
   Client -->|/api/auth/*| AuthController[AuthController]
   Client -->|/api/sites/*| SitesController[SitesController]
   Client -->|/api/events/*| EventsController[EventsController]
-  Client -->|/api/insights/*| InsightsController[Insights controllers]
+  Client -->|/api/insights/*| InsightsController[Controladores de Insights]
   Client -->|/api/sdk/*| SdkController[SdkController]
 
-  subgraph Common[Common layer]
-    Guards[Unified Guard\nAuth cookie and site key]
-    Decorators[CurrentUser and SiteKey decorators]
-    Interceptors[Logging and throttling interceptors]
+  subgraph Common[Camada Comum]
+    Guards[Guard Unificado\nCookie de auth e chave do site]
+    Decorators[Decorators CurrentUser e SiteKey]
+    Interceptors[Interceptors de Logging e throttling]
   end
 
   AuthController --> Guards
@@ -130,7 +130,7 @@ flowchart LR
   InsightsController --> Guards
   SdkController --> Guards
 
-  Guards --> Services[Domain Services]
+  Guards --> Services[Serviços de Domínio]
   Services --> Prisma[PrismaService]
   Prisma --> DB[(PostgreSQL)]
 ```
@@ -139,18 +139,18 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-  SDK[JS SDK / client app] -->|X-Site-Key + payload| EventsEndpoint[/POST /api/events/track or /batch/]
+  SDK[SDK JS / app cliente] -->|X-Site-Key + payload| EventsEndpoint[/POST /api/events/track or /batch/]
 
-  EventsEndpoint --> UnifiedGuard_Backend[Unified Guard\nvalidate X-Site-Key and site status]
-  UnifiedGuard_Backend -->|site resolved| EventsService[EventsService]
+  EventsEndpoint --> UnifiedGuard_Backend[Guard Unificado\nvalidar X-Site-Key e status do site]
+  UnifiedGuard_Backend -->|site resolvido| EventsService[EventsService]
 
-  EventsService --> Enrich[Enrich event\n(timestamp, user agent, anonymized IP)]
-  Enrich --> Validate[Validate payload\n(whitelist + DTOs)]
-  Validate --> Chunk[Batch & chunk events]
+  EventsService --> Enrich[Enriquecer evento\n(timestamp, user agent, IP anonimizado)]
+  Enrich --> Validate[Validar payload\n(whitelist + DTOs)]
+  Validate --> Chunk[Lote & chunk de eventos]
   Chunk --> Persist[Prisma createMany]
-  Persist --> EventsTable[(Event table\nJSONB properties)]
+  Persist --> EventsTable[(Tabela Event\npropriedades JSONB)]
 
-  EventsService --> Ack[{Build response}]
+  EventsService --> Ack[{Construir resposta}]
   Ack --> ClientResponse[{JSON { success, count }}]
 ```
 
@@ -160,17 +160,17 @@ flowchart TD
 flowchart TD
   LoginReq[/POST /api/auth/login/] --> AuthController_Login[AuthController.login]
   AuthController_Login --> AuthService_Login[AuthService.login]
-  AuthService_Login --> HashVerify[Verify password with scrypt]
-  HashVerify -->|valid| IssueJWT[Issue signed JWT payload]
-  IssueJWT --> SetCookie[Set admin_session HttpOnly cookie]
+  AuthService_Login --> HashVerify[Verificar senha com scrypt]
+  HashVerify -->|válido| IssueJWT[Emitir payload JWT assinado]
+  IssueJWT --> SetCookie[Definir cookie HttpOnly admin_session]
   SetCookie --> LoginRes[200 OK + cookie]
 
-  subgraph Guard_Flow[Guard flow]
-    ProtectedReq[Protected /api/* request] --> UnifiedGuard[Unified Guard]
-    UnifiedGuard --> ReadCookie[Read admin_session cookie]
-    ReadCookie --> VerifyJWT[Verify signature + expiry]
-    VerifyJWT --> AttachSession[Attach authSession to request]
-    AttachSession --> Continue[Call controller]
+  subgraph Guard_Flow[Fluxo do Guard]
+    ProtectedReq[Requisição protegida /api/*] --> UnifiedGuard[Guard Unificado]
+    UnifiedGuard --> ReadCookie[Ler cookie admin_session]
+    ReadCookie --> VerifyJWT[Verificar assinatura + validade]
+    VerifyJWT --> AttachSession[Anexar authSession à requisição]
+    AttachSession --> Continue[Chamar controller]
   end
 ```
 
