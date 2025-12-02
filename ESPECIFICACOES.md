@@ -336,7 +336,7 @@ flowchart TD
   subgraph InsightsBackend[Módulos de Insights]
     InsightsAPI --> GuardTenant2[Guard Unificado\nresolver tenant pelo siteKey]
     GuardTenant2 --> InsightsService[Overview · Search · Property · Conversion · Journey]
-    InsightsService --> PrismaRead[Cliente Prisma (leitura)]
+    InsightsService --> PrismaRead["Cliente Prisma (leitura)"]
     PrismaRead --> EventAndMeta[(Event + Site + Domain + Setting)]
     InsightsService --> KPIs[KPIs JSON Agregados]
   end

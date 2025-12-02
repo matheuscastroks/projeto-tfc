@@ -80,7 +80,7 @@ flowchart TB
     Guards["Guard Unificado (JWT + X-Site-Key)"]
     Controllers[Controladores HTTP]
     Services[Serviços de Domínio\nAuth · Sites · Events · Insights · SDK · Health]
-    Prisma[PrismaService (PostgreSQL)]
+    Prisma["PrismaService (PostgreSQL)"]
   end
   DB[(PostgreSQL)]
 
@@ -109,7 +109,7 @@ flowchart TD
   Cookie --> BE_Response[HTTP 200 + Set-Cookie]
   BE_Response --> FE_Browser[Navegador armazena cookie]
   FE_Browser --> MW[Middleware de auth Next.js]
-  MW -->|requisições subsequentes| ProtectedRoutes[/Rotas Admin (App Router)/]
+  MW -->|requisições subsequentes| ProtectedRoutes[/"Rotas Admin (App Router)"/]
 ```
 
 ### Fluxo de Ingestão de Eventos
@@ -117,15 +117,15 @@ flowchart TD
 ```mermaid
 flowchart TD
   subgraph ClientSite[Site Imobiliário]
-    Script[Snippet do loader injetado] --> SDK_Client[Script de captura\n(capture-filtros.js)]
-    SDK_Client --> EventsJSON[Payload de eventos (busca/interação)]
+    Script[Snippet do loader injetado] --> SDK_Client["Script de captura\n(capture-filtros.js)"]
+    SDK_Client --> EventsJSON["Payload de eventos (busca/interação)"]
   end
 
   EventsJSON -->|X-Site-Key header| BE_Track[/POST /api/events/track or /batch/]
 
   subgraph Backend[Backend NestJS]
     BE_Track --> Guard[Guard Unificado\nvalidar X-Site-Key + status do site]
-    Guard --> EventsService[EventsService\n(enriquecer + inserir em lote)]
+    Guard --> EventsService["EventsService\n(enriquecer + inserir em lote)"]
     EventsService --> PrismaEvents[Cliente Prisma]
     PrismaEvents --> EventsTable[(Tabela Event\npropriedades JSONB)]
   end
@@ -139,7 +139,7 @@ flowchart TD
   FE_Dashboard -->|Hooks React Query\nGET /api/insights/*?site=KEY| BE_Insights[InsightsController]
   BE_Insights --> Guard_Tenant[Guard Unificado\nresolver tenant pelo siteKey]
   Guard_Tenant --> InsightsService[Serviços de Insights\nVisão Geral · Busca · Imóvel · Conversão · Jornada]
-  InsightsService --> Prisma_Read[Cliente Prisma (leitura)]
+  InsightsService --> Prisma_Read["Cliente Prisma (leitura)"]
   Prisma_Read --> DB_Events[(Event + Site + Domain)]
   InsightsService --> JSON_KPIs[KPIs JSON Agregados]
   JSON_KPIs --> FE_Dashboard
