@@ -227,7 +227,10 @@
         bedrooms: qs.get('dormitorios'),
         garage: qs.get('vagas'),
         title: qs.get('titulo_anuncio'),
-        // se necessário, extrair outros parâmetros
+        // Anonymized PII flags (LGPD/GDPR)
+        hasName: !!(qs.get('nome') || qs.get('name')),
+        hasEmail: !!(qs.get('email') || qs.get('e-mail')),
+        hasPhone: !!(qs.get('telefone') || qs.get('phone') || qs.get('celular') || qs.get('whatsapp')),
       };
     },
   };

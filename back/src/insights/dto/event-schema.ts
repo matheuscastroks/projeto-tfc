@@ -82,8 +82,9 @@ export interface ClickContactPayload {
 export interface SubmitLeadFormPayload {
   propertyId?: string;
   source: 'modal' | 'page_bottom' | 'thank_you_page';
-  name?: string;
-  email?: string;
-  phone?: string;
+  // Anonymized flags (LGPD/GDPR compliant - no PII stored)
+  hasName?: boolean;
+  hasEmail?: boolean;
+  hasPhone?: boolean;
   interest?: string;
 }

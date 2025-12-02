@@ -1,8 +1,3 @@
-/**
- * Categorias de eventos
- * Organiza os tipos de eventos capturados pelo sistema de analytics em categorias lógicas
- */
-
 export enum EventCategory {
   SEARCH = 'search',
   NAVIGATION = 'navigation',
@@ -10,9 +5,6 @@ export enum EventCategory {
   PROPERTY = 'property',
 }
 
-/**
- * Mapeia os nomes dos eventos para suas categorias correspondentes
- */
 export const EVENT_CATEGORY_MAP: Record<string, EventCategory> = {
   // Busca
   search: EventCategory.SEARCH,

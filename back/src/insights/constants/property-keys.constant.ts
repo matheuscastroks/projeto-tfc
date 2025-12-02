@@ -3,21 +3,21 @@ export const PropertyKeys = {
   STATUS: 'status', // finalidade (venda/aluguel)
   TYPE: 'type', // tipos de imóvel
   CITY: 'city',
-  NEIGHBORHOOD: 'neighborhood', // bairros
-  BEDROOMS: 'bedrooms', // quartos
+  NEIGHBORHOOD: 'neighborhood',
+  BEDROOMS: 'bedrooms',
   SUITES: 'suites',
   BATHROOMS: 'bathrooms',
-  GARAGE: 'garage', // vagas
-  LIVING_ROOMS: 'living_rooms', // salas
-  WAREHOUSES: 'warehouses', // galpoes
-  ROOMS: 'rooms', // comodos
-  LEISURE: 'leisure', // lazer
-  SECURITY: 'security', // seguranca
-  AMENITIES: 'amenities', // comodidades
+  GARAGE: 'garage',
+  LIVING_ROOMS: 'living_rooms',
+  WAREHOUSES: 'warehouses',
+  ROOMS: 'rooms',
+  LEISURE: 'leisure',
+  SECURITY: 'security',
+  AMENITIES: 'amenities',
 
   // Price & Area
-  PRICE_SALE: 'price_sale', // preco_venda
-  PRICE_RENT: 'price_rent', // preco_aluguel
+  PRICE_SALE: 'price_sale',
+  PRICE_RENT: 'price_rent',
   AREA: 'area',
 
   // Switches / Booleans
@@ -40,9 +40,9 @@ export const PropertyKeys = {
 
   // Lead / Contact
   LEAD_SOURCE: 'source',
-  LEAD_NAME: 'name',
-  LEAD_EMAIL: 'email',
-  LEAD_PHONE: 'phone',
+  LEAD_HAS_NAME: 'hasName',
+  LEAD_HAS_EMAIL: 'hasEmail',
+  LEAD_HAS_PHONE: 'hasPhone',
   LEAD_INTEREST: 'interest',
   LEAD_CATEGORY: 'category',
   LEAD_VALUE: 'value',
