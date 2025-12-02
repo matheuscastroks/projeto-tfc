@@ -64,25 +64,25 @@ projeto-tfc/
 
 ```mermaid
 flowchart TB
-  subgraph client[Cliente]
+  subgraph client[Client]
     Browser
-    SDK[Loader do SDK JS]
+    SDK[JS SDK Loader]
   end
   subgraph frontend[Frontend Next.js]
-    AppRouter[App Router RSC and Client]
-    Middleware[Middleware de Autenticacao]
-    Query[Cache do React Query]
+    AppRouter[App Router (RSC + Client)]
+    Middleware[Auth Middleware]
+    Query[React Query Cache]
   end
   subgraph backend[Backend NestJS]
     Main[Bootstrap main.ts]
     AppModule[AppModule]
-    Middlewares[Middlewares Globais]
-    Guards[UnifiedGuard cookie JWT and X-Site-Key]
-    Controllers[Controladores API]
-    Services[Servicos Auth Sites Events Insights SDK Health]
-    Prisma[PrismaService singleton]
+    Middlewares[Global Middlewares]
+    Guards[Unified Guard (JWT + X-Site-Key)]
+    Controllers[HTTP Controllers]
+    Services[Domain Services\nAuth · Sites · Events · Insights · SDK · Health]
+    Prisma[PrismaService (PostgreSQL)]
   end
-  DB[PostgreSQL]
+  DB[(PostgreSQL)]
 
   Browser --> SDK
   Browser --> AppRouter
@@ -93,6 +93,75 @@ flowchart TB
   Controllers --> Services
   Services --> Prisma --> DB
   Main --> AppModule --> Middlewares --> Controllers
+```
+
+## Diagramas de Fluxo (End‑to‑End)
+
+### Fluxo de Autenticação (Login e Sessão)
+
+```mermaid
+flowchart TD
+  U[Admin User] -->|email/password| FE_Login[Next.js /login page]
+  FE_Login -->|POST /api/auth/login| BE_Login[AuthController.login]
+  BE_Login --> AuthService[AuthService]
+  AuthService -->|validate with scrypt| DB_Users[(User table)]
+  AuthService -->|issue JWT| Cookie[admin_session HttpOnly cookie]
+  Cookie --> BE_Response[HTTP 200 + Set-Cookie]
+  BE_Response --> FE_Browser[Browser stores cookie]
+  FE_Browser --> MW[Next.js auth middleware]
+  MW -->|subsequent requests| ProtectedRoutes[/Admin routes (App Router)/]
+```
+
+### Fluxo de Ingestão de Eventos
+
+```mermaid
+flowchart TD
+  subgraph ClientSite[Real Estate Website]
+    Script[Injected loader snippet] --> SDK_Client[Capture script\n(capture-filtros.js)]
+    SDK_Client --> EventsJSON[Events payload (search/interaction)]
+  end
+
+  EventsJSON -->|X-Site-Key header| BE_Track[/POST /api/events/track or /batch/]
+
+  subgraph Backend[NestJS backend]
+    BE_Track --> Guard[Unified Guard\nvalidate X-Site-Key + site status]
+    Guard --> EventsService[EventsService\n(enrich + batch insert)]
+    EventsService --> PrismaEvents[Prisma Client]
+    PrismaEvents --> EventsTable[(Event table\nJSONB properties)]
+  end
+```
+
+### Fluxo de Consultas de Insights
+
+```mermaid
+flowchart TD
+  Admin[Admin User] --> FE_Dashboard[Next.js Admin Dashboard]
+  FE_Dashboard -->|React Query hooks\nGET /api/insights/*?site=KEY| BE_Insights[InsightsController]
+  BE_Insights --> Guard_Tenant[Unified Guard\nresolve tenant from siteKey]
+  Guard_Tenant --> InsightsService[Insights services\nOverview · Search · Property · Conversion · Journey]
+  InsightsService --> Prisma_Read[Prisma Client (read)]
+  Prisma_Read --> DB_Events[(Event + Site + Domain)]
+  InsightsService --> JSON_KPIs[Aggregated JSON KPIs]
+  JSON_KPIs --> FE_Dashboard
+  FE_Dashboard --> Charts[Cards, charts and tables]
+```
+
+### Visão de Multi‑Tenancy (Domínio de Dados)
+
+```mermaid
+flowchart LR
+  User[[User]]
+  Site[[Site]]
+  Domain[[Domain]]
+  Setting[[Setting]]
+  Event[[Event]]
+
+  User o--o Site:::rel
+  Site o--o Domain:::rel
+  Site o--o Setting:::rel
+  Site o--o Event:::rel
+
+  classDef rel fill:#f3f4ff,stroke:#3730a3,stroke-width:1px
 ```
 
 ## Superfície da API (Principais Endpoints)

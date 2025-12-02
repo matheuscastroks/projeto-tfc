@@ -102,6 +102,78 @@ back/
     └── rules/                 # Regras da IA do Cursor
 ```
 
+## Diagramas de Arquitetura do Backend
+
+### Módulos NestJS e Fluxo de Requisição
+
+```mermaid
+flowchart LR
+  Client[Client and Admin UI] -->|HTTP /api/*| Main[main.ts]
+  Main --> AppModule[AppModule]
+  AppModule --> Modules[Auth, Sites, Events, Insights, SDK, Health, Config, Prisma, Common]
+
+  Client -->|/api/auth/*| AuthController[AuthController]
+  Client -->|/api/sites/*| SitesController[SitesController]
+  Client -->|/api/events/*| EventsController[EventsController]
+  Client -->|/api/insights/*| InsightsController[Insights controllers]
+  Client -->|/api/sdk/*| SdkController[SdkController]
+
+  subgraph Common[Common layer]
+    Guards[Unified Guard\nAuth cookie and site key]
+    Decorators[CurrentUser and SiteKey decorators]
+    Interceptors[Logging and throttling interceptors]
+  end
+
+  AuthController --> Guards
+  SitesController --> Guards
+  EventsController --> Guards
+  InsightsController --> Guards
+  SdkController --> Guards
+
+  Guards --> Services[Domain Services]
+  Services --> Prisma[PrismaService]
+  Prisma --> DB[(PostgreSQL)]
+```
+
+### Fluxo Detalhado de Ingestão de Eventos
+
+```mermaid
+flowchart TD
+  SDK[JS SDK / client app] -->|X-Site-Key + payload| EventsEndpoint[/POST /api/events/track or /batch/]
+
+  EventsEndpoint --> UnifiedGuard_Backend[Unified Guard\nvalidate X-Site-Key and site status]
+  UnifiedGuard_Backend -->|site resolved| EventsService[EventsService]
+
+  EventsService --> Enrich[Enrich event\n(timestamp, user agent, anonymized IP)]
+  Enrich --> Validate[Validate payload\n(whitelist + DTOs)]
+  Validate --> Chunk[Batch & chunk events]
+  Chunk --> Persist[Prisma createMany]
+  Persist --> EventsTable[(Event table\nJSONB properties)]
+
+  EventsService --> Ack[{Build response}]
+  Ack --> ClientResponse[{JSON { success, count }}]
+```
+
+### Fluxo de Autenticação no Backend
+
+```mermaid
+flowchart TD
+  LoginReq[/POST /api/auth/login/] --> AuthController_Login[AuthController.login]
+  AuthController_Login --> AuthService_Login[AuthService.login]
+  AuthService_Login --> HashVerify[Verify password with scrypt]
+  HashVerify -->|valid| IssueJWT[Issue signed JWT payload]
+  IssueJWT --> SetCookie[Set admin_session HttpOnly cookie]
+  SetCookie --> LoginRes[200 OK + cookie]
+
+  subgraph Guard_Flow[Guard flow]
+    ProtectedReq[Protected /api/* request] --> UnifiedGuard[Unified Guard]
+    UnifiedGuard --> ReadCookie[Read admin_session cookie]
+    ReadCookie --> VerifyJWT[Verify signature + expiry]
+    VerifyJWT --> AttachSession[Attach authSession to request]
+    AttachSession --> Continue[Call controller]
+  end
+```
+
 ## Scripts Disponíveis
 
 - `pnpm run start` - Inicia o servidor em modo produção.

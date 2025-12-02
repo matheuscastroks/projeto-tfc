@@ -277,7 +277,90 @@ pnpm test:cov
 - Events: SDK envia lotes → guard valida tenant → serviço enriquece e insere em chunks.
 - Insights: frontend chama com `?site=` → guard valida tenant → serviços agregam via JSONB/SQL.
 
-## 13. Riscos e Evoluções Futuras
+## 13. Diagramas de Fluxo (Mermaid)
+
+### 13.1 Fluxo de Autenticação (Sessão com Cookie)
+
+```mermaid
+flowchart TD
+  User[Admin User] --> LoginPage[Next.js /login page]
+  LoginPage -->|POST /api/auth/login| AuthController[AuthController.login]
+  AuthController --> AuthService[AuthService.login]
+  AuthService --> VerifyCreds[Verify email/password with scrypt]
+  VerifyCreds -->|invalid| Error401[401 Unauthorized]
+  VerifyCreds -->|valid| IssueJWT[Issue signed JWT]
+  IssueJWT --> SetCookie[Set admin_session HttpOnly cookie]
+  SetCookie --> LoginResponse[200 OK + Set-Cookie]
+
+  subgraph ProtectedRequest[Subsequent protected request]
+    Req[/GET /api/sites or /api/insights/*/] --> Guard[Unified Guard]
+    Guard --> ReadCookie[Read admin_session cookie]
+    ReadCookie --> VerifyJWT2[Verify signature + expiry]
+    VerifyJWT2 --> AttachSession[Attach authSession to request]
+    AttachSession --> Controller[Controller handler]
+  end
+```
+
+### 13.2 Fluxo de Ingestão de Eventos (SDK → Backend)
+
+```mermaid
+flowchart TD
+  ClientSite[Real estate website] --> Snippet[Loader snippet\n<script ...loader?site=SITE_KEY>]
+  Snippet --> LoaderEndpoint[/GET /api/sdk/loader/]
+  LoaderEndpoint --> ValidateHost[Validate location.hostname\nagainst Domain table]
+  ValidateHost --> InjectCapture[Inject capture-filtros.js]
+
+  InjectCapture --> CaptureEvents[Capture search + property + conversion events]
+  CaptureEvents --> BatchPayload[Build single/batch payload\nwith X-Site-Key header]
+  BatchPayload --> EventsEndpoint[/POST /api/events/track or /batch/]
+
+  subgraph NestBackend[Backend NestJS]
+    EventsEndpoint --> GuardTenant[Unified Guard\nvalidate X-Site-Key and site status]
+    GuardTenant --> EventsService[EventsService]
+    EventsService --> Enrich[Enrich data\n(timestamp, UA, anonymized IP)]
+    Enrich --> Chunk[Chunk & batch insert]
+    Chunk --> PrismaEvents[Prisma createMany]
+    PrismaEvents --> EventTable[(Event table\nJSONB properties)]
+  end
+
+  EventsService --> AckEvents[{Return { success, count }}]
+```
+
+### 13.3 Fluxo de Consultas de Insights
+
+```mermaid
+flowchart TD
+  Admin[Admin User] --> Dashboard[Next.js Admin Dashboard]
+  Dashboard -->|React Query hooks\n+ ?site=SITE_KEY| InsightsAPI[/GET /api/insights/*/]
+
+  subgraph InsightsBackend[Insights modules]
+    InsightsAPI --> GuardTenant2[Unified Guard\nresolve tenant from siteKey]
+    GuardTenant2 --> InsightsService[Overview · Search · Property · Conversion · Journey]
+    InsightsService --> PrismaRead[Prisma client (read)]
+    PrismaRead --> EventAndMeta[(Event + Site + Domain + Setting)]
+    InsightsService --> KPIs[Aggregated JSON KPIs]
+  end
+
+  KPIs --> Dashboard
+  Dashboard --> Charts[Cards, tables, charts]
+```
+
+### 13.4 Fluxo de Instalação do Rastreador
+
+```mermaid
+flowchart LR
+  AdminUser[Admin user] --> AdminInstall[/Next.js route /admin/install/]
+  AdminInstall --> LoadSites[Load active sites for user]
+  LoadSites --> SelectSite[Pick first active site or chosen site]
+  SelectSite --> GenerateSnippet[Generate loader snippet\nwith siteKey and app origin]
+  GenerateSnippet --> ShowSnippet[Render snippet and instructions]
+
+  ShowSnippet --> CopyPaste[Admin copies snippet to client site's <head>]
+  CopyPaste --> ClientTraffic[End users visit real estate website]
+  ClientTraffic --> LoaderExec[Loader executes and starts data collection]
+```
+
+## 14. Riscos e Evoluções Futuras
 
 - Migrar caches em memória para Redis visando escalabilidade horizontal
 - Introduzir filas (Bull/BullMQ) para ingestão/agragações offline
@@ -285,7 +368,7 @@ pnpm test:cov
 - Servir o SDK via CDN e habilitar cache com ETag
 - Canais WebSocket para dashboards quase em tempo real
 
-## 14. Referências (Context7)
+## 15. Referências (Context7)
 
 - Next.js: `/vercel/next.js`
 - NestJS: `/nestjs/docs.nestjs.com`, `/nestjs/nest`

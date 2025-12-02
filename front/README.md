@@ -138,6 +138,39 @@ window.MyAnalytics.debug = true;
 5. Admin visita o Dashboard. Rotas de API consultam dados processados e computam insights para o `SITE_KEY` dado.
 6. Resultados são renderizados como cards/tabelas.
 
+```mermaid
+flowchart TD
+  ClientSite[Real estate website] --> Snippet[Loader snippet\n<script ...loader?site=SITE_KEY>]
+  Snippet --> LoaderEndpoint[/GET /api/sdk/loader/]
+  LoaderEndpoint --> ValidateDomain[Validate location.hostname\nagainst allowedDomains]
+  ValidateDomain --> InjectScript[Inject capture-filtros.js]
+  InjectScript --> Capture[Capture search & conversion events]
+  Capture --> EventsBackend[/POST /api/events/track or /batch/]
+
+  Admin[Admin user] --> Dashboard[Next.js Admin Dashboard]
+  Dashboard -->|React Query hooks| InsightsAPI[/GET /api/insights/*?site=SITE_KEY/]
+  InsightsAPI --> Charts[Cards, tables, charts]
+```
+
+### Fluxo de Dados do Dashboard com React Query
+
+```mermaid
+flowchart LR
+  Page[Next.js App Router page\n(Server Component)] --> Hydrate[HydrationBoundary\n+ QueryClient.dehydrate]
+  Hydrate --> DashboardClient[Dashboard Client Component]
+
+  subgraph ReactQuery[React Query Layer]
+    Hooks[Custom hooks\nuseSites · useOverview · useProperties]
+    Cache[Query Cache]
+  end
+
+  DashboardClient --> Hooks
+  Hooks --> APIClient[API client\n(fetch /api/* with credentials)]
+  APIClient --> Backend[/NestJS backend /api routes/]
+  Hooks --> Cache
+  Cache --> DashboardClient
+```
+
 ### Modelo de Banco de Dados (Prisma)
 
 - `User`: dono da conta (raiz multi-tenant)
