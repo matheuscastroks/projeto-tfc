@@ -236,23 +236,3 @@ export interface JourneyResponse {
   };
 }
 
-export interface DemandVsSupplyResponse {
-  demand: Array<{
-    category: string; // e.g., '3 quartos', 'Casa', 'Centro'
-    count: number;
-    percentage: number;
-  }>;
-  supply: Array<{
-    category: string;
-    count: number;
-    percentage: number;
-  }>;
-  gap: Array<{
-    category: string;
-    gapScore: number; // Positive = High Demand/Low Supply
-  }>;
-  period: {
-    start: string;
-    end: string;
-  };
-}

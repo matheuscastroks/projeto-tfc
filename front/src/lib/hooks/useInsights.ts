@@ -18,7 +18,6 @@ import type {
   UnderperformingPropertiesResponse,
   StagnantPropertiesResponse,
   JourneyResponse,
-  DemandVsSupplyResponse,
 } from '../types/insights'
 
 // =====================================================
@@ -110,20 +109,6 @@ export function useTopConvertingFilters(
   })
 }
 
-export function useDemandVsSupply(siteKey: string, query?: InsightsQuery) {
-  return useQuery<DemandVsSupplyResponse>({
-    queryKey: queryKeys.insights.search.demandVsSupply(siteKey, query),
-    queryFn: () =>
-      apiClient.get<DemandVsSupplyResponse>(
-        `/api/insights/search/demand-vs-supply`,
-        {
-          siteKey,
-          ...query,
-        }
-      ),
-    enabled: !!siteKey,
-  })
-}
 
 // =====================================================
 // PROPERTY INSIGHTS

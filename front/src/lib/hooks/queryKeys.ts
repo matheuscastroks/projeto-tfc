@@ -63,13 +63,6 @@ export const queryKeys = {
           siteKey,
           params,
         ] as const,
-      demandVsSupply: (siteKey: string, params?: any) =>
-        [
-          ...queryKeys.insights.search.all(),
-          'demandVsSupply',
-          siteKey,
-          params,
-        ] as const,
     },
     property: {
       all: () => [...queryKeys.insights.all, 'property'] as const,

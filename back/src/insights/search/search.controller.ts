@@ -7,7 +7,6 @@ import { InsightsQueryDto } from '../dto/insights-query.dto';
 import {
   SearchAnalyticsResponse,
   TopConvertingFiltersResponse,
-  DemandVsSupplyResponse,
 } from '../interfaces/categorized-insights.interface';
 import { SearchService } from './search.service';
 
@@ -56,19 +55,4 @@ export class SearchController {
     return this.searchService.getTopConvertingFilters(siteKey, queryDto);
   }
 
-  @Get('demand-vs-supply')
-  @ApiOperation({
-    summary: 'Obter demanda vs oferta',
-    description: 'Compara o que os usuários buscam com o estoque disponível.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Dados de demanda vs oferta retornados com sucesso.',
-  })
-  async getDemandVsSupply(
-    @SiteKey() siteKey: string,
-    @Query() queryDto: InsightsQueryDto,
-  ): Promise<DemandVsSupplyResponse> {
-    return this.searchService.getDemandVsSupply(siteKey, queryDto);
-  }
 }

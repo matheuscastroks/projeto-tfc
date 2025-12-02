@@ -13,13 +13,11 @@ import {
   useUnderperformingProperties,
   useStagnantProperties,
   useJourneyStats,
-  useDemandVsSupply,
 } from '@/lib/hooks/useInsights'
 import { useCampaignRecommendations } from '@/lib/hooks/useCampaignRecommendations'
 import { KPISection } from './_components/KPISection'
 import { FunnelSection } from './_components/FunnelSection'
 import { PropertySection } from './_components/PropertySection'
-import { DemandSection } from './_components/DemandSection'
 import { JourneySection } from './_components/JourneySection'
 import { RecommendationCard } from '@/lib/components/insights/RecommendationCard'
 import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
@@ -92,10 +90,6 @@ export default function InsightsOverviewPage() {
     dateQuery
   )
 
-  const { data: demandData, isLoading: isLoadingDemand } = useDemandVsSupply(
-    selectedSiteKey || '',
-    dateQuery
-  )
 
   // --- EXISTING HOOKS (Keep for recommendations and other charts) ---
   const { data: searchData, isLoading: searchLoading } = useSearchSummary(

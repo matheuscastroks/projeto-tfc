@@ -289,23 +289,3 @@ export interface JourneyResponse {
   }
 }
 
-export interface DemandVsSupplyResponse {
-  demand: Array<{
-    category: string
-    count: number
-    percentage: number
-  }>
-  supply: Array<{
-    category: string
-    count: number
-    percentage: number
-  }>
-  gap: Array<{
-    category: string
-    gapScore: number
-  }>
-  period: {
-    start: string
-    end: string
-  }
-}

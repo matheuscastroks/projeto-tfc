@@ -112,20 +112,6 @@ Analisa o que os usuários estão procurando e compara com o estoque.
     *   Cruza sessões que fizeram busca (`search_submit`) com sessões que converteram (`thank_you_view`, etc.).
     *   Identifica quais critérios de busca levam a mais leads.
 
-### Demanda vs Oferta (Demand vs Supply)
-Esta é uma análise complexa que compara o que é buscado com o que existe no site.
-
-*   **Oferta (Supply):**
-    1.  Busca o **Sitemap XML** do site (`/xml/{dominio}/sitemap-imoveis.xml`) para obter a lista de códigos de imóveis ativos.
-    2.  Para cada código ativo, busca o evento `property_page_view` mais recente no banco de dados para inferir suas características (ex: número de quartos).
-    3.  Agrega a contagem de imóveis por categoria (atualmente focado em "Quartos").
-*   **Demanda (Demand):**
-    *   Agrega os filtros de "Quartos" utilizados nos eventos de busca (`search_submit`).
-*   **Gap Score (Oportunidade):**
-    *   Calcula a diferença percentual entre Demanda e Oferta.
-    *   `Gap = % Demanda - % Oferta`
-    *   **Positivo:** Muita procura, pouco imóvel (Oportunidade).
-    *   **Negativo:** Muito imóvel, pouca procura (Sobrecarga).
 
 ---
 
@@ -135,7 +121,6 @@ Ao analisar ou modificar estes controllers, faça as seguintes perguntas:
 1.  **Definição de Sessão:** O `sessionId` está sendo gerado e mantido corretamente no frontend? A quebra de sessão afeta diretamente métricas como "Visitantes Únicos" e "Taxa de Conversão".
 2.  **Nomes de Eventos:** Os nomes dos eventos (`search_submit`, `property_page_view`, etc.) correspondem exatamente ao que o frontend envia? Mudanças no frontend podem quebrar essas regras.
 3.  **Estrutura do JSON `properties`:** As regras dependem fortemente da estrutura do objeto `properties` dentro do evento. Ex: `properties->>'quartos'` vs `properties->'quartos'->>0`. A consistência desses dados é crucial.
-4.  **Sitemap:** A lógica de "Oferta" depende do sitemap estar acessível e atualizado. Se o sitemap falhar, a análise de "Demand vs Supply" retornará dados incompletos.
 5.  **Filtros de Data:** Todas as queries respeitam o `dateRange`? A conversão de datas (UTC vs Local) está sendo tratada consistentemente?
 
 ---
