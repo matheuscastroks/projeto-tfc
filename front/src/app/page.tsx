@@ -115,7 +115,7 @@ export default async function HomePage() {
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                 Descubra exatamente quais cidades, tipos de imóveis e faixas de
-                preço geram mais interesse — e converta mais leads em vendas.
+                preço geram mais interesse e converta mais leads em vendas.
               </p>
             </div>
 
