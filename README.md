@@ -11,7 +11,8 @@ projeto-tfc/
 │  │  ├─ auth/           # Autenticação (login/register/me/logout)
 │  │  ├─ sites/          # Sites e domínios (multi‑tenancy)
 │  │  ├─ events/         # Ingestão de eventos (lote/único)
-│  │  ├─ insights/       # Módulos de analytics (overview/search/property/conversion)
+│  │  ├─ insights/       # Módulos de analytics (overview/search/property/conversion/journey)
+│  │  │  └─ categories/  # Classificação de tipos de eventos
 │  │  ├─ sdk/            # Loader do SDK JS e configuração por site
 │  │  ├─ health/         # Health checks
 │  │  ├─ prisma/         # Serviço do Prisma (ciclo de vida da conexão)
@@ -33,7 +34,7 @@ projeto-tfc/
 - Backend (NestJS)
   - Middlewares globais: Helmet, CORS, Compression, Cookie Parser, ValidationPipe, Throttler
   - Camada de segurança: guard unificado valida o cookie de sessão JWT (`admin_session`) e o tenant via `X-Site-Key`
-  - Módulos de negócio: `auth`, `sites`, `events`, `insights`, `sdk`, `health`
+  - Módulos de negócio: `auth`, `sites`, `events`, `insights` (com sub-módulos), `sdk`, `health`
   - Persistência: Prisma client (PostgreSQL), migrações em `back/prisma/migrations`
   - Documentação: Swagger UI em `/api/docs`
 

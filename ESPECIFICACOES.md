@@ -14,7 +14,8 @@ Este documento detalha o projeto lógico, os fluxos principais, o diagrama arqui
     - `auth`: autenticação baseada em sessão e gerenciamento de usuários.
     - `sites`: gestão de sites e domínios (multi‑tenancy).
     - `events`: ingestão de eventos de analytics em alta taxa (único/lote).
-    - `insights`: consultas de analytics (devices/search/property/conversion).
+    - `insights`: consultas de analytics (overview/search/property/conversion/journey).
+    - `categories`: utilitário de categorização de eventos.
     - `sdk`: entrega do loader JavaScript e configurações por site.
     - `health`: verificações de saúde do app e do banco.
   - Persistência
@@ -63,6 +64,13 @@ Comportamento esperado
 - `siteKey` é identificador único referenciado pelo SDK e pelas consultas.
 - Endpoints de CRUD exigem sessão admin válida; domínios são únicos por site.
 
+### 2.5 Instalação do Rastreador
+
+- Admin acessa `/admin/install`.
+- Sistema gera snippet HTML com `siteKey` do primeiro site ativo.
+- Usuário copia e cola o snippet no `<head>` do site alvo.
+- Script carrega assincronamente e inicia coleta automática.
+
 ## 3. Módulos, Serviços e Contratos
 
 - Auth
@@ -75,7 +83,10 @@ Comportamento esperado
 - Events
   - Endpoints: `POST /events/track`, `POST /events/track/batch` (com `X-Site-Key`).
 - Insights
-  - Endpoints: devices, search analytics, filters usage, conversion (rate/sources), properties (popular/engagement).
+  - Endpoints: devices, search analytics, filters usage, conversion (rate/sources), properties (popular/engagement), journey metrics.
+  - Módulos internos: `Overview`, `Search`, `Property`, `Conversion`, `Journey`.
+- Categories
+  - Utilitário compartilhado para classificar eventos em `SEARCH`, `NAVIGATION`, `CONVERSION`, `PROPERTY`.
 - Health
   - Endpoints: `/health`, `/health/db`.
 

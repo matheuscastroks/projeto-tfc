@@ -137,3 +137,26 @@ Ao analisar ou modificar estes controllers, faça as seguintes perguntas:
 3.  **Estrutura do JSON `properties`:** As regras dependem fortemente da estrutura do objeto `properties` dentro do evento. Ex: `properties->>'quartos'` vs `properties->'quartos'->>0`. A consistência desses dados é crucial.
 4.  **Sitemap:** A lógica de "Oferta" depende do sitemap estar acessível e atualizado. Se o sitemap falhar, a análise de "Demand vs Supply" retornará dados incompletos.
 5.  **Filtros de Data:** Todas as queries respeitam o `dateRange`? A conversão de datas (UTC vs Local) está sendo tratada consistentemente?
+
+---
+
+## 6. Categorias de Eventos (Categories)
+**Arquivo:** `src/insights/categories/event-categories.ts`
+
+Organiza os tipos de eventos capturados em categorias lógicas para facilitar a análise e filtragem.
+
+### Categorias Definidas
+*   **SEARCH (`search`):** Eventos relacionados a buscas realizadas pelo usuário.
+*   **NAVIGATION (`navigation`):** Eventos de navegação, como visualização de imóveis ou cliques em cards.
+*   **CONVERSION (`conversion`):** Eventos que representam uma conversão ou intenção clara de contato.
+*   **PROPERTY (`property`):** Eventos de engajamento direto com o imóvel, como favoritar.
+
+### Mapeamento Atual
+| Evento | Categoria |
+| :--- | :--- |
+| `search` | SEARCH |
+| `click_property_card` | NAVIGATION |
+| `view_property` | NAVIGATION |
+| `toggle_favorite` | PROPERTY |
+| `click_contact` | CONVERSION |
+| `submit_lead_form` | CONVERSION |
