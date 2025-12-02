@@ -323,7 +323,7 @@ flowchart TD
     PrismaEvents --> EventTable[(Tabela Event\npropriedades JSONB)]
   end
 
-  EventsService --> AckEvents[{Retornar { success, count }}]
+  EventsService --> AckEvents["{Retornar { success, count }}"]
 ```
 
 ### 13.3 Fluxo de Consultas de Insights

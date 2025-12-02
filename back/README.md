@@ -150,8 +150,8 @@ flowchart TD
   Chunk --> Persist[Prisma createMany]
   Persist --> EventsTable[(Tabela Event\npropriedades JSONB)]
 
-  EventsService --> Ack[{Construir resposta}]
-  Ack --> ClientResponse[{JSON { success, count }}]
+  EventsService --> Ack["{Construir resposta}"]
+  Ack --> ClientResponse["{JSON { success, count }}"]
 ```
 
 ### Fluxo de Autenticação no Backend
