@@ -156,7 +156,7 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-  Page[Página Next.js App Router\n(Server Component)] --> Hydrate[HydrationBoundary\n+ QueryClient.dehydrate]
+  Page["Página Next.js App Router\n(Server Component)"] --> Hydrate["HydrationBoundary\n+ QueryClient.dehydrate"]
   Hydrate --> DashboardClient[Componente Client do Dashboard]
 
   subgraph ReactQuery[Camada React Query]
@@ -165,7 +165,7 @@ flowchart LR
   end
 
   DashboardClient --> Hooks
-  Hooks --> APIClient[Cliente de API\n(fetch /api/* com credenciais)]
+  Hooks --> APIClient["Cliente de API\n(fetch /api/* com credenciais)"]
   APIClient --> Backend[/Rotas /api do backend NestJS/]
   Hooks --> Cache
   Cache --> DashboardClient

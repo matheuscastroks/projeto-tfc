@@ -69,7 +69,7 @@ flowchart TB
     SDK[Loader do SDK JS]
   end
   subgraph frontend[Frontend Next.js]
-    AppRouter[App Router (RSC + Client)]
+    AppRouter["App Router (RSC + Client)"]
     Middleware[Middleware de Autenticação]
     Query[Cache do React Query]
   end
@@ -77,7 +77,7 @@ flowchart TB
     Main[Bootstrap main.ts]
     AppModule[AppModule]
     Middlewares[Middlewares Globais]
-    Guards[Guard Unificado (JWT + X-Site-Key)]
+    Guards["Guard Unificado (JWT + X-Site-Key)"]
     Controllers[Controladores HTTP]
     Services[Serviços de Domínio\nAuth · Sites · Events · Insights · SDK · Health]
     Prisma[PrismaService (PostgreSQL)]

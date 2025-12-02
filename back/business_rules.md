@@ -195,10 +195,10 @@ flowchart TD
 
   LoadSessions --> ConvEvents[Filtrar eventos de conversão\nthank_you_view · conversion_whatsapp_click]
   ConvEvents --> MapTypes[Mapear nome do evento para tipo de conversão]
-  MapTypes --> ConvAgg[Agregar por tipo\n(contagem, taxa)]
+  MapTypes --> ConvAgg["Agregar por tipo\n(contagem, taxa)"]
 
   ConvEvents --> TYEvents[Filtrar apenas thank_you_view]
-  TYEvents --> ExtractProps[Extrair propriedades\n(cidade, tipo, categoria, preço, aluguel)]
+  TYEvents --> ExtractProps["Extrair propriedades\n(cidade, tipo, categoria, preço, aluguel)"]
   ExtractProps --> LeadProfileAgg[Agregar métricas de perfil de lead]
 
   TotalSessions --> ConvRate[(Taxa de Conversão = total_conversions / Total de Sessões)]
@@ -267,15 +267,15 @@ flowchart TD
   LoadSearchEvents --> SearchSubmit[Filtrar eventos search_submit]
   SearchSubmit --> TotalSearches[Total de Buscas = contagem(search_submit)]
 
-  SearchSubmit --> ExtractFilters[Extrair campos de filtro\n(finalidade, tipo, cidade, faixa de preço, quartos, etc.)]
-  ExtractFilters --> Normalize[Normalizar valores\n(capitalizar, remover hífens/underscores)]
+  SearchSubmit --> ExtractFilters["Extrair campos de filtro\n(finalidade, tipo, cidade, faixa de preço, quartos, etc.)"]
+  ExtractFilters --> Normalize["Normalizar valores\n(capitalizar, remover hífens/underscores)"]
   Normalize --> TopFilters[Contar ocorrências por valor de filtro]
 
-  ExtractFilters --> Combos[Construir combinações de filtros\n(apenas combos com >= 2 filtros)]
+  ExtractFilters --> Combos["Construir combinações de filtros\n(apenas combos com >= 2 filtros)"]
   Combos --> ComboAgg[Agregar e ranquear combinações]
 
   LoadSearchEvents --> SearchSessions[Sessões com search_submit]
-  SearchSessions --> JoinConversions[Juntar com sessões que converteram\n(thank_you_view, etc.)]
+  SearchSessions --> JoinConversions["Juntar com sessões que converteram\n(thank_you_view, etc.)"]
   JoinConversions --> ConvertingFilters[Identificar filtros que correlacionam com conversões]
 
   TotalSearches --> SearchKPIs[Retornar JSON de analytics de busca]

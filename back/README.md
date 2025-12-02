@@ -144,8 +144,8 @@ flowchart TD
   EventsEndpoint --> UnifiedGuard_Backend[Guard Unificado\nvalidar X-Site-Key e status do site]
   UnifiedGuard_Backend -->|site resolvido| EventsService[EventsService]
 
-  EventsService --> Enrich[Enriquecer evento\n(timestamp, user agent, IP anonimizado)]
-  Enrich --> Validate[Validar payload\n(whitelist + DTOs)]
+  EventsService --> Enrich["Enriquecer evento\n(timestamp, user agent, IP anonimizado)"]
+  Enrich --> Validate["Validar payload\n(whitelist + DTOs)"]
   Validate --> Chunk[Lote & chunk de eventos]
   Chunk --> Persist[Prisma createMany]
   Persist --> EventsTable[(Tabela Event\npropriedades JSONB)]

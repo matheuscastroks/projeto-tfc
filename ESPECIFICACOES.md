@@ -317,7 +317,7 @@ flowchart TD
   subgraph NestBackend[Backend NestJS]
     EventsEndpoint --> GuardTenant[Guard Unificado\nvalidar X-Site-Key e status do site]
     GuardTenant --> EventsService[EventsService]
-    EventsService --> Enrich[Enriquecer dados\n(timestamp, UA, IP anonimizado)]
+    EventsService --> Enrich["Enriquecer dados\n(timestamp, UA, IP anonimizado)"]
     Enrich --> Chunk[Dividir em chunks e inserir em lote]
     Chunk --> PrismaEvents[Prisma createMany]
     PrismaEvents --> EventTable[(Tabela Event\npropriedades JSONB)]
