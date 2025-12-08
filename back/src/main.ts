@@ -1,9 +1,14 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger, BadRequestException } from '@nestjs/common';
+import {
+  ValidationPipe,
+  Logger,
+  BadRequestException,
+  ValidationError,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
+
 import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
@@ -73,16 +78,18 @@ async function bootstrap() {
           target: false, // não mostra objeto original no erro
           value: false, // não mostra valor inválido (evita expor dados sensíveis)
         },
-        exceptionFactory: (errors) => {
+        exceptionFactory: (errors: ValidationError[]) => {
           // Formata os erros para facilitar debug
-          const formatted = errors.map((e) => ({
-            property: e.property,
-            constraints: e.constraints,
-            children: e.children?.map((c) => ({
-              property: c.property,
-              constraints: c.constraints,
-            })),
-          }));
+          const formatError = (error: ValidationError) => ({
+            property: error.property,
+            constraints: error.constraints,
+            children: error.children?.map(formatError),
+          });
+          const formatted = errors.map(formatError);
+          console.error(
+            'Validation Errors:',
+            JSON.stringify(formatted, null, 2),
+          );
           return new BadRequestException({
             message: 'Validation failed',
             errors: formatted,
@@ -90,11 +97,6 @@ async function bootstrap() {
         },
       }),
     );
-
-    // Servir arquivos estáticos da pasta public/
-    app.useStaticAssets(join(__dirname, 'public'), {
-      prefix: '/static/', // /static/arquivo.js
-    });
 
     app.setGlobalPrefix('api');
 
@@ -144,6 +146,7 @@ async function bootstrap() {
         },
         'site-key',
       )
+      .addServer('http://localhost:3001')
       .addServer('https://api.matheuscastroks.com.br')
       .build();
 

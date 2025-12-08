@@ -118,17 +118,16 @@ export class SdkService {
       // Salva a config globalmente
       window.__INSIGHTHOUSE_CONFIG__ = config;
 
-      // Carrega o script principal do SDK do endpoint na API backend
-      // O arquivo capture-filters.js é servido pelo endpoint /api/sdk/capture-filters.js
       var script = document.createElement('script');
-      script.src = API_URL + '/api/sdk/capture-filters.js';
+      // Carrega do endpoint da API conforme solicitado
+      script.src = API_URL + '/api/sdk/tracker.js';
       script.async = true;
-      // script.onload = function() {
-      //   console.log('[InsightHouse] SDK carregado');
-      // };
-      // script.onerror = function() {
-      //   console.error('[InsightHouse] Falha ao carregar o SDK');
-      // };
+      script.onload = function() {
+        console.log('[InsightHouse] SDK carregado');
+      };
+      script.onerror = function() {
+        console.error('[InsightHouse] Falha ao carregar o SDK');
+      };
       document.head.appendChild(script);
     })
     .catch(function(err) {

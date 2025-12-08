@@ -105,36 +105,26 @@ export class SdkController {
   }
 
   /**
-   * Serve o arquivo capture-filters.js diretamente
+   * Serve o arquivo tracker.js diretamente
    * @param res Resposta Express
    */
-  @Get('capture-filters.js')
+  @Get('tracker.js')
   @ApiOperation({
-    summary: 'Servir arquivo capture-filters.js',
+    summary: 'Servir arquivo tracker.js',
     description:
-      'Retorna o arquivo JavaScript capture-filters.js para rastreamento de eventos.',
+      'Retorna o arquivo JavaScript tracker.js para rastreamento de eventos.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Arquivo capture-filters.js retornado com sucesso.',
+    description: 'Arquivo tracker.js retornado com sucesso.',
   })
   @ApiResponse({ status: 404, description: 'Arquivo não encontrado.' })
-  serveCaptureFilters(@Res() res: Response) {
+  serveTrackerJs(@Res() res: Response) {
     try {
       // Tenta encontrar o arquivo em caminhos diferentes
       const possiblePaths = [
-        join(__dirname, '..', '..', 'public', 'static', 'capture-filters.js'),
-        join(
-          __dirname,
-          '..',
-          '..',
-          '..',
-          'public',
-          'static',
-          'capture-filters.js',
-        ),
-        join(process.cwd(), 'public', 'static', 'capture-filters.js'),
-        join(process.cwd(), 'dist', 'public', 'static', 'capture-filters.js'),
+        join(process.cwd(), 'dist', 'public', 'tracker.js'),
+        join(process.cwd(), 'public', 'tracker.js'),
       ];
 
       let fileContent = '';
@@ -159,7 +149,7 @@ export class SdkController {
       }
 
       res.setHeader('Content-Type', 'application/javascript');
-      res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutos
+      res.setHeader('Cache-Control', 'public, max-age=3600'); // 1 hora
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -172,12 +162,12 @@ export class SdkController {
   }
 
   /**
-   * Responde às requisições OPTIONS para capture-filters.js
+   * Responde às requisições OPTIONS para tracker.js
    * @param res Resposta Express
    */
-  @Options('capture-filters.js')
+  @Options('tracker.js')
   @ApiExcludeEndpoint()
-  handleCaptureFiltersOptions(@Res() res: Response) {
+  handleTrackerJsOptions(@Res() res: Response) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');

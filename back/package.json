@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "postbuild": "mkdir -p dist/public/static && cp -r public/static/* dist/public/static/ || true",
+    "postbuild": "echo 'Build complete'",
     "start:prod": "node dist/main.js",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",

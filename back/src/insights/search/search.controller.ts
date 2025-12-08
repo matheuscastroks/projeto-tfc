@@ -54,5 +54,4 @@ export class SearchController {
   ): Promise<TopConvertingFiltersResponse> {
     return this.searchService.getTopConvertingFilters(siteKey, queryDto);
   }
-
 }
