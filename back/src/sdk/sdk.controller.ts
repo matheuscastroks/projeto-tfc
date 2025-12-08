@@ -121,12 +121,15 @@ export class SdkController {
   @ApiResponse({ status: 404, description: 'Arquivo não encontrado.' })
   serveTrackerJs(@Res() res: Response) {
     try {
-      // Tenta encontrar o arquivo em caminhos diferentes
+      // Tenta encontrar o arquivo em caminhos diferentes (prioriza minificado)
       const possiblePaths = [
+        join(process.cwd(), 'dist', 'public', 'tracker.min.js'),
+        join(process.cwd(), 'public', 'tracker.min.js'),
         join(process.cwd(), 'dist', 'public', 'tracker.js'),
         join(process.cwd(), 'public', 'tracker.js'),
       ];
 
+      // Valida se arquivo existe e define content-type
       let fileContent = '';
       let found = false;
 
@@ -136,7 +139,7 @@ export class SdkController {
           found = true;
           break;
         } catch {
-          // Tenta o próximo caminho
+          console.log(`Arquivo não encontrado em: ${filePath}`);
         }
       }
 

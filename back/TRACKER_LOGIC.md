@@ -15,6 +15,7 @@ O script pode ser carregado de duas formas, garantindo flexibilidade e compatibi
     *   O loader injeta configurações dinâmicas e carrega assincronamente o arquivo principal via URL estática.
 2.  **Via Arquivo Estático (Alta Performance):**
     *   **Método Principal**: O loader aponta para este endpoint.
+    *   **Minificação**: Em produção, este endpoint serve automaticamente a versão minificada (`tracker.min.js`) para segurança e performance.
 
 ## 3. Arquitetura Interna
 
