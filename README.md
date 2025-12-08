@@ -44,21 +44,9 @@ projeto-tfc/
   - Busca/cache de dados via hooks do TanStack Query
   - Tailwind CSS + Radix UI para o design system
 
-## Fluxos Principais
+## Fluxos e Detalhes Técnicos
 
-- Autenticação
-  - Backend valida credenciais (hash de senha com scrypt) e emite JWT armazenado em cookie HttpOnly (`admin_session`).
-  - Middleware do frontend bloqueia rotas protegidas quando o cookie estiver ausente/inválido.
-
-- Rastreamento de Eventos
-  - SDK envia eventos para `/api/events/track` ou `/batch` com header `X-Site-Key`.
-  - Guard resolve o tenant (site) e exige status ativo; o serviço enriquece e insere em lotes.
-
-- Insights
-  - Next.js chama `/api/insights/*?site=KEY`, o guard valida o tenant e os serviços executam agregações SQL/JSONB otimizadas.
-
-- Multi‑tenancy
-  - Admin cria sites e domínios permitidos. Todas as requisições de analytics validam contra `siteKey` (header ou query param).
+Para documentação detalhada sobre fluxos de autenticação, ingestão de eventos, especificações da API, modelo de banco de dados e requisitos, consulte o arquivo **[ESPECIFICACOES.md](./ESPECIFICACOES.md)**.
 
 ## Diagrama de Arquitetura (Alto Nível)
 
@@ -95,129 +83,158 @@ flowchart TB
   Main --> AppModule --> Middlewares --> Controllers
 ```
 
-## Diagramas de Fluxo (End‑to‑End)
+## Diagramas de Sequência (Fluxos Principais)
 
-### Fluxo de Autenticação (Login e Sessão)
-
-```mermaid
-flowchart TD
-  U[Usuário Admin] -->|email/password| FE_Login[Página de login Next.js]
-  FE_Login -->|POST /api/auth/login| BE_Login[AuthController.login]
-  BE_Login --> AuthService[AuthService]
-  AuthService -->|validar com scrypt| DB_Users[(Tabela User)]
-  AuthService -->|emitir JWT| Cookie[cookie HttpOnly admin_session]
-  Cookie --> BE_Response[HTTP 200 + Set-Cookie]
-  BE_Response --> FE_Browser[Navegador armazena cookie]
-  FE_Browser --> MW[Middleware de auth Next.js]
-  MW -->|requisições subsequentes| ProtectedRoutes[/"Rotas Admin (App Router)"/]
-```
-
-### Fluxo de Ingestão de Eventos
+### Fluxo Completo do Sistema (Visão Geral)
 
 ```mermaid
-flowchart TD
-  subgraph ClientSite[Site Imobiliário]
-    Script[Snippet do loader injetado] --> SDK_Client["Script de captura\n(capture-filtros.js)"]
-    SDK_Client --> EventsJSON["Payload de eventos (busca/interação)"]
-  end
+sequenceDiagram
+    participant User as Usuário Admin
+    participant Browser as Navegador
+    participant Frontend as Next.js Frontend
+    participant Backend as NestJS Backend
+    participant DB as PostgreSQL
 
-  EventsJSON -->|X-Site-Key header| BE_Track[/POST /api/events/track or /batch/]
+    Note over User,DB: 1. Autenticação e Acesso ao Dashboard
+    User->>Browser: Acessa /login
+    Browser->>Frontend: GET /login
+    Frontend-->>Browser: Página de login
+    User->>Browser: Preenche email/password
+    Browser->>Backend: POST /api/auth/login
+    Backend->>DB: Verificar credenciais (scrypt)
+    DB-->>Backend: User válido
+    Backend->>Backend: Emitir JWT
+    Backend-->>Browser: 200 OK + Set-Cookie (admin_session)
+    Browser->>Frontend: GET /admin/dashboard (com cookie)
+    Frontend->>Backend: GET /api/auth/me (com cookie)
+    Backend->>Backend: Validar JWT do cookie
+    Backend-->>Frontend: Dados do usuário
+    Frontend-->>Browser: Dashboard renderizado
 
-  subgraph Backend[Backend NestJS]
-    BE_Track --> Guard[Guard Unificado\nvalidar X-Site-Key + status do site]
-    Guard --> EventsService["EventsService\n(enriquecer + inserir em lote)"]
-    EventsService --> PrismaEvents[Cliente Prisma]
-    PrismaEvents --> EventsTable[(Tabela Event\npropriedades JSONB)]
-  end
+    Note over User,DB: 2. Consulta de Insights
+    User->>Browser: Visualiza métricas
+    Browser->>Frontend: Componente Client (React Query)
+    Frontend->>Backend: GET /api/insights/overview?site=SITE_KEY
+    Backend->>Backend: Guard: validar cookie + resolver tenant
+    Backend->>DB: Agregações SQL/JSONB (Event table)
+    DB-->>Backend: KPIs agregados
+    Backend-->>Frontend: JSON com métricas
+    Frontend->>Frontend: Cache no React Query
+    Frontend-->>Browser: Cards e gráficos atualizados
 ```
 
-### Fluxo de Consultas de Insights
+### Fluxo de Ingestão de Eventos (SDK → Backend)
 
 ```mermaid
-flowchart TD
-  Admin[Usuário Admin] --> FE_Dashboard[Dashboard Admin Next.js]
-  FE_Dashboard -->|Hooks React Query\nGET /api/insights/*?site=KEY| BE_Insights[InsightsController]
-  BE_Insights --> Guard_Tenant[Guard Unificado\nresolver tenant pelo siteKey]
-  Guard_Tenant --> InsightsService[Serviços de Insights\nVisão Geral · Busca · Imóvel · Conversão · Jornada]
-  InsightsService --> Prisma_Read["Cliente Prisma (leitura)"]
-  Prisma_Read --> DB_Events[(Event + Site + Domain)]
-  InsightsService --> JSON_KPIs[KPIs JSON Agregados]
-  JSON_KPIs --> FE_Dashboard
-  FE_Dashboard --> Charts[Cards, gráficos e tabelas]
+sequenceDiagram
+    participant Site as Site Imobiliário
+    participant SDK as SDK JavaScript
+    participant Backend as NestJS Backend
+    participant Guard as Unified Guard
+    participant EventsService as EventsService
+    participant DB as PostgreSQL
+
+    Note over Site,DB: 1. Carregamento do SDK
+    Site->>Backend: GET /api/sdk/loader?site=SITE_KEY
+    Backend->>DB: Verificar site e domínios permitidos
+    DB-->>Backend: Site config
+    Backend-->>Site: Script loader (JavaScript)
+    Site->>SDK: Executar loader no navegador
+    SDK->>Backend: GET /api/sdk/site-config?site=SITE_KEY
+    Backend-->>SDK: Config (allowedDomains, options)
+    SDK->>SDK: Validar location.hostname
+    SDK->>Backend: GET /api/sdk/tracker.js
+    Backend-->>SDK: Script de rastreamento
+
+    Note over Site,DB: 2. Captura e Envio de Eventos
+    Site->>SDK: Usuário interage (busca, clica, converte)
+    SDK->>SDK: Capturar evento (search_submit, view_property, etc.)
+    SDK->>SDK: Construir payload JSON
+    SDK->>Backend: POST /api/events/track/batch<br/>Header: X-Site-Key<br/>Body: { events: [...] }
+    Backend->>Guard: Validar X-Site-Key
+    Guard->>DB: Verificar site existe e está ativo
+    DB-->>Guard: Site válido
+    Guard-->>Backend: Tenant resolvido
+    Backend->>EventsService: Processar eventos
+    EventsService->>EventsService: Enriquecer (timestamp, UA, IP anonimizado)
+    EventsService->>EventsService: Dividir em chunks (batch)
+    EventsService->>DB: Prisma.createMany (Event table)
+    DB-->>EventsService: Eventos inseridos
+    EventsService-->>SDK: { success: true, count: N }
+    SDK->>SDK: Limpar fila de eventos
 ```
 
-### Visão de Multi‑Tenancy (Domínio de Dados)
+### Fluxo de Consulta de Insights (Dashboard → Analytics)
 
 ```mermaid
-flowchart LR
-  User[[Usuário]]
-  Site[[Site]]
-  Domain[[Domínio]]
-  Setting[[Configuração]]
-  Event[[Evento]]
+sequenceDiagram
+    participant Admin as Admin User
+    participant Dashboard as Dashboard Next.js
+    participant ReactQuery as React Query Cache
+    participant Backend as NestJS Backend
+    participant InsightsService as Insights Services
+    participant DB as PostgreSQL
 
-  User o--o Site:::rel
-  Site o--o Domain:::rel
-  Site o--o Setting:::rel
-  Site o--o Event:::rel
+    Note over Admin,DB: 1. Prefetch no Server Component
+    Admin->>Dashboard: Navega para /admin/insights
+    Dashboard->>Backend: Server Component prefetch<br/>GET /api/insights/overview?site=SITE_KEY
+    Backend->>Backend: Guard: validar cookie + siteKey
+    Backend->>InsightsService: OverviewService.getOverview()
+    InsightsService->>DB: Query SQL com agregações JSONB<br/>(COUNT, GROUP BY, properties->>'field')
+    DB-->>InsightsService: Dados agregados
+    InsightsService-->>Backend: KPIs (visitantes, leads, taxa conversão)
+    Backend-->>Dashboard: JSON response
+    Dashboard->>ReactQuery: HydrationBoundary (dehydrate)
+    Dashboard-->>Admin: Página renderizada (SSR)
 
-  classDef rel fill:#f3f4ff,stroke:#3730a3,stroke-width:1px
+    Note over Admin,DB: 2. Interação e Refetch
+    Admin->>Dashboard: Filtra por período
+    Dashboard->>ReactQuery: useOverview(siteKey, filters)
+    ReactQuery->>Backend: GET /api/insights/overview?site=KEY&startDate=...
+    Backend->>InsightsService: Recalcular com filtros
+    InsightsService->>DB: Query com WHERE ts BETWEEN ...
+    DB-->>InsightsService: Dados filtrados
+    InsightsService-->>Backend: KPIs atualizados
+    Backend-->>ReactQuery: Nova resposta
+    ReactQuery->>ReactQuery: Atualizar cache
+    ReactQuery-->>Dashboard: Re-render com novos dados
+    Dashboard-->>Admin: Gráficos atualizados
 ```
 
-## Superfície da API (Principais Endpoints)
+### Fluxo de Multi-Tenancy (Criação de Site)
 
-- Auth
-  - POST `/api/auth/register`
-  - POST `/api/auth/login`
-  - POST `/api/auth/logout`
-  - GET `/api/auth/me`
+```mermaid
+sequenceDiagram
+    participant Admin as Admin User
+    participant Frontend as Next.js Admin UI
+    participant Backend as NestJS Backend
+    participant SitesService as SitesService
+    participant DB as PostgreSQL
 
-- Sites
-  - GET `/api/sites`
-  - POST `/api/sites`
-  - GET `/api/sites/:id`
-  - PUT `/api/sites/:id`
-  - DELETE `/api/sites/:id`
+    Note over Admin,DB: Criação de Site e Configuração
+    Admin->>Frontend: Acessa /admin/sites/new
+    Frontend->>Backend: GET /api/auth/me (validar sessão)
+    Backend-->>Frontend: User data
+    Admin->>Frontend: Preenche formulário (nome, domínios)
+    Frontend->>Backend: POST /api/sites<br/>Body: { name, domains: [...] }
+    Backend->>Backend: Guard: validar cookie JWT
+    Backend->>SitesService: createSite(userId, data)
+    SitesService->>DB: Criar Site (gerar siteKey único)
+    SitesService->>DB: Criar Domain records
+    DB-->>SitesService: Site criado
+    SitesService-->>Backend: Site + siteKey
+    Backend-->>Frontend: { id, siteKey, loaderUrl }
+    Frontend->>Frontend: Exibir snippet de instalação
+    Frontend-->>Admin: Snippet HTML para copiar
+```
 
-- SDK
-  - GET `/api/sdk/loader?site=<siteKey>`
-  - GET `/api/sdk/site-config?site=<siteKey>`
 
-- Events
-  - POST `/api/events/track`
-  - POST `/api/events/track/batch`
-
-- Insights
-  - GET `/api/insights/devices`
-  - GET `/api/insights/devices/timeseries`
-  - GET `/api/insights/search/analytics`
-  - GET `/api/insights/filters/usage`
-  - GET `/api/insights/conversion/rate`
-  - GET `/api/insights/conversion/sources`
-  - GET `/api/insights/properties/popular`
-  - GET `/api/insights/properties/engagement`
-
-- Health
-  - GET `/api/health`
-  - GET `/api/health/db`
-
-Observações
-- Endpoints protegidos exigem cookie de sessão válido (`admin_session`).
-- Endpoints de event/insight exigem tenant válido via header `X-Site-Key` ou `?site=`.
-
-## Banco de Dados (Prisma)
-
-- Modelos: `User`, `Site`, `Domain`, `Setting`, `Event` (alto volume; campos JSONB).
-- Índices para consultas frequentes (site, período, tipo, etc.).
-- Migrações em `back/prisma/migrations`.
-
-## Requisitos
-
-- Node.js 20+ (imagem Docker do backend usa Node 22), pnpm 9+
-- PostgreSQL 15+
-- Portas: backend 3001, frontend 3002
 
 ## Desenvolvimento Local
+
+### Pré-requisitos
+- Node.js 20+ (imagem Docker do backend usa Node 22), pnpm 9+
+- PostgreSQL 15+
 
 1) Backend
 
@@ -259,13 +276,6 @@ Variáveis de ambiente comuns
 - Backend: Jest configurado (`pnpm test`, `pnpm test:watch`, `pnpm test:cov`).
 - Frontend: adicionar testes conforme a stack preferida (React Testing Library, Vitest/Jest).
 
-## Segurança e Performance (Destaques)
-
-- Cookie JWT HttpOnly para sessão admin, validado pelo guard unificado.
-- Isolamento de tenant via `X-Site-Key`; apenas sites ativos processam eventos.
-- Validação de entrada via `class-validator` + `ValidationPipe` (whitelist + transform).
-- Limitação de taxa e cabeçalhos de segurança via Throttler + Helmet.
-- Cache em memória para insights; inserts em lote e chunking para eventos.
 
 ## Referências (Docs)
 

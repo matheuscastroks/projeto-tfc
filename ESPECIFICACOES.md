@@ -240,42 +240,6 @@ Tratamento de erros
 - Frontend
   - `SITE_URL`, `NEXTAUTH_SECRET`
 
-Portas
-- Backend: 3001
-- Frontend: 3002
-
-## 11. Desenvolvimento Local e Testes
-
-Backend
-```bash
-cd back
-pnpm install
-cp .env.example .env
-pnpm prisma migrate dev
-pnpm prisma generate
-pnpm start:dev
-```
-
-Frontend
-```bash
-cd front
-pnpm install
-cp .env.example .env # se existir
-pnpm dev
-```
-
-Testes (backend)
-```bash
-pnpm test
-pnpm test:watch
-pnpm test:cov
-```
-
-## 12. Fluxo de Dados (Resumos de Sequência)
-
-- Auth: `login` emite cookie → guard valida nas próximas requisições → `me` retorna dados do usuário.
-- Events: SDK envia lotes → guard valida tenant → serviço enriquece e insere em chunks.
-- Insights: frontend chama com `?site=` → guard valida tenant → serviços agregam via JSONB/SQL.
 
 ## 13. Diagramas de Fluxo (Mermaid)
 
@@ -308,7 +272,7 @@ flowchart TD
   ClientSite[Site imobiliário] --> Snippet[Snippet do Loader\n<script ...loader?site=SITE_KEY>]
   Snippet --> LoaderEndpoint[/GET /api/sdk/loader/]
   LoaderEndpoint --> ValidateHost[Validar location.hostname\nna tabela Domain]
-  ValidateHost --> InjectCapture[Injetar capture-filtros.js]
+  ValidateHost --> InjectCapture[Injetar tracker.js]
 
   InjectCapture --> CaptureEvents[Capturar eventos de busca + imóvel + conversão]
   CaptureEvents --> BatchPayload[Construir payload único/lote\ncom header X-Site-Key]
@@ -358,6 +322,36 @@ flowchart LR
   ShowSnippet --> CopyPaste[Admin copia snippet para o <head> do site cliente]
   CopyPaste --> ClientTraffic[Usuários finais visitam site imobiliário]
   ClientTraffic --> LoaderExec[Loader executa e inicia coleta de dados]
+```
+
+### 13.5 Diagrama de Caso de Uso
+
+```mermaid
+flowchart TD
+    Admin["👤 Admin (Cliente SaaS)"]
+    Visitor["👤 Visitante (Site Imobiliário)"]
+
+    subgraph System["InsightHouse Analytics"]
+        UC1([Fazer Login/Logout])
+        UC2([Gerenciar Sites e Domínios])
+        UC3([Obter Snippet de Instalação])
+        UC4([Visualizar Dashboard de Insights])
+        UC5([Filtrar Métricas Data/Site])
+        UC6([Rastrear Eventos SDK])
+        UC7([Processar e Validar Eventos])
+        UC8([Calcular Agregações])
+    end
+
+    Admin --> UC1
+    Admin --> UC2
+    Admin --> UC3
+    Admin --> UC4
+    Admin --> UC5
+
+    Visitor --> UC6
+
+    UC6 -.->|include| UC7
+    UC4 -.->|include| UC8
 ```
 
 ## 14. Riscos e Evoluções Futuras

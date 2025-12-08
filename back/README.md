@@ -206,6 +206,7 @@ Todos os endpoints protegidos requerem autenticação via cookie de sessão. End
 
 - `GET /api/sdk/loader?site=<siteKey>` - Retorna o script do loader do SDK.
 - `GET /api/sdk/site-config?site=<siteKey>` - Retorna a configuração do site para o SDK.
+- `GET /api/sdk/tracker.js` - Script principal do rastreador. Detalhes em **[TRACKER_LOGIC.md](./TRACKER_LOGIC.md)**.
 
 ### Rastreamento de Eventos
 
