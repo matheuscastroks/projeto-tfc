@@ -21,6 +21,13 @@ Backend de análise e rastreamento de eventos construído com NestJS, TypeScript
 - **Segurança**: Helmet, CORS, Throttler
 - **Gerenciador de Pacotes**: pnpm
 
+## Documentação Técnica
+Para detalhes específicos de implementação e regras de negócio:
+
+- **[Arquitetura do Sistema](./docs/architecture.md)**: Visão geral C4, diagramas ER e fluxos de segurança.
+- **[Regras de Negócio](./docs/business_rules.md)**: Definições de métricas, KPIs e algoritmos de analytics.
+- **[Lógica do Tracker](./docs/tracker_logic.md)**: Detalhes do funcionamento do script de coleta client-side.
+
 ## Como Começar
 
 ### Pré-requisitos
@@ -206,7 +213,7 @@ Todos os endpoints protegidos requerem autenticação via cookie de sessão. End
 
 - `GET /api/sdk/loader?site=<siteKey>` - Retorna o script do loader do SDK.
 - `GET /api/sdk/site-config?site=<siteKey>` - Retorna a configuração do site para o SDK.
-- `GET /api/sdk/tracker.js` - Script principal do rastreador. Detalhes em **[TRACKER_LOGIC.md](./TRACKER_LOGIC.md)**.
+- `GET /api/sdk/tracker.js` - Script principal do rastreador. Detalhes em **[TRACKER_LOGIC.md](./docs/TRACKER_LOGIC.md)**.
 
 ### Rastreamento de Eventos
 
