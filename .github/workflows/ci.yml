@@ -49,6 +49,8 @@ jobs:
 
     - name: Build Workspace
       run: pnpm build
+      env:
+        NEXT_PUBLIC_API_BASE_URL: "https://api.matheuscastroks.com.br"
 
     - name: Test Workspace
       run: pnpm test

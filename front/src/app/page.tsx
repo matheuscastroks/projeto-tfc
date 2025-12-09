@@ -30,12 +30,15 @@ import logo from '@/assets/logo-insighthouse-fundo-preto.png'
 
 async function getEventsCount() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/events/stats`,
-      {
-        next: { revalidate: 300 }, // Revalidate every 5 minutes
-      }
-    )
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+    if (!baseUrl) {
+      console.warn('NEXT_PUBLIC_API_BASE_URL is not defined')
+      return null
+    }
+
+    const res = await fetch(`${baseUrl}/api/events/stats`, {
+      next: { revalidate: 300 }, // Revalidate every 5 minutes
+    })
     if (!res.ok) return null
     const data = await res.json()
     return data.totalEvents || 0
@@ -57,7 +60,8 @@ function formatNumber(num: number): string {
 
 export default async function HomePage() {
   const eventsCount = await getEventsCount()
-  const displayCount = eventsCount ?? formatNumber(eventsCount)
+  const displayCount =
+    eventsCount !== null ? formatNumber(eventsCount) : '---'
 
   return (
     <main className="min-h-screen bg-background text-foreground">
