@@ -22,7 +22,7 @@ import {
   ArrowRight,
   Activity,
   CheckCircle2,
-  Play,
+
   Star,
 } from 'lucide-react'
 import { ThemeToggle } from '@/lib/components/ThemeToggle'
@@ -135,17 +135,7 @@ export default async function HomePage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="px-8 py-6 text-lg h-auto"
-              >
-                <Link href="#demo">
-                  <Play className="mr-2 h-5 w-5" />
-                  Ver como funciona
-                </Link>
-              </Button>
+
             </div>
 
             {/* Risk Reducers */}
@@ -262,34 +252,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Video Demo Section */}
-      <section id="demo" className="py-24 px-6 bg-muted/30">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Veja como funciona
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Em menos de 2 minutos você vai entender por que imobiliárias estão
-              deixando de perder vendas
-            </p>
-          </div>
 
-          {/* Video Placeholder */}
-          <div className="relative aspect-video bg-muted rounded-2xl border-2 border-border overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-              <div className="text-center space-y-4">
-                <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto shadow-lg cursor-pointer hover:scale-110 transition-transform">
-                  <Play className="h-10 w-10 text-primary-foreground ml-1" />
-                </div>
-                <p className="text-lg font-medium text-foreground">
-                  Assista à demonstração (1:47)
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Testimonials - Social Proof */}
       <section className="py-24 px-6">
@@ -681,13 +644,7 @@ export default async function HomePage() {
               >
                 Entrar
               </Link>
-              <Link
-                href="#demo"
-                className="hover:text-foreground transition-colors"
-              >
-                Demo
-              </Link>
-              <span>•</span>
+
               <p>&copy; 2025 Insight House</p>
             </div>
           </div>
