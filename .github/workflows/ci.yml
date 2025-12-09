@@ -44,20 +44,11 @@ jobs:
     - name: Install Dependencies
       run: pnpm install --frozen-lockfile
 
-    - name: Lint Backend
-      run: pnpm --filter back lint
+    - name: Lint Workspace
+      run: pnpm lint
 
-    - name: Build Backend
-      run: pnpm --filter back build
+    - name: Build Workspace
+      run: pnpm build
 
-    - name: Test Backend
-      run: pnpm --filter back test
-
-    - name: Lint Frontend
-      run: pnpm --filter front lint
-
-    # Frontend build requires environment variables usually, so we might skip it or use a dummy build
-    # For now, we just lint to ensure code quality.
-    # Uncomment if you want to check build (might need .env mock)
-    # - name: Build Frontend
-    #   run: pnpm --filter front build
+    - name: Test Workspace
+      run: pnpm test

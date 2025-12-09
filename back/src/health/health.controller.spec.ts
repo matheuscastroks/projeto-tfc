@@ -1,4 +1,3 @@
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { HealthController } from './health.controller';
 import { HealthService } from './health.service';
@@ -42,6 +41,7 @@ describe('HealthController', () => {
         status: 'ok',
         environment: 'test',
       });
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.check).toHaveBeenCalled();
     });
   });
@@ -53,6 +53,7 @@ describe('HealthController', () => {
         status: 'ok',
         database: 'connected',
       });
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.checkDatabase).toHaveBeenCalled();
     });
   });

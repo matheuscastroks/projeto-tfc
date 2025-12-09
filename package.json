@@ -1,0 +1,13 @@
+{
+  "name": "insight-house-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  }
+}
