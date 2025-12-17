@@ -45,25 +45,25 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Mobile Header */}
       <header className="lg:hidden border-b border-border">
-        <div className="px-6 py-4">
+        <div className="px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="text-xl font-semibold tracking-tight hover:text-primary transition-colors"
+              className="text-lg sm:text-xl font-semibold tracking-tight hover:text-primary transition-colors"
             >
               InsightHouse
             </Link>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <ThemeToggle />
               <Button
                 asChild
                 variant="ghost"
-                size="default"
-                className="hover:scale-105 transition-transform"
+                size="sm"
+                className="hover:scale-105 transition-transform text-xs sm:text-sm"
               >
-                <Link href="/" className="flex items-center gap-2">
-                  <ArrowLeft className="h-4 w-4" />
-                  Voltar
+                <Link href="/" className="flex items-center gap-1.5 sm:gap-2">
+                  <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden xs:inline">Voltar</span>
                 </Link>
               </Button>
             </div>
@@ -73,31 +73,31 @@ export default function RegisterPage() {
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-0 py-0">
-        <div className="w-full h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-2">
+        <div className="w-full min-h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-2">
           {/* Left Side - Register Form */}
-          <div className="flex items-center justify-center p-6 lg:p-12 bg-sidebar-accent order-2 lg:order-1 border-r border-border/30 dark:border-border/20">
+          <div className="flex items-center justify-center p-4 sm:p-6 lg:p-12 bg-sidebar-accent order-2 lg:order-1 border-r border-border/30 dark:border-border/20">
             <div className="w-full max-w-md">
               <Card className="border-0 bg-transparent">
-                <CardHeader className="space-y-2 text-center pb-6">
-                  <CardTitle className="text-2xl font-bold">
+                <CardHeader className="space-y-2 text-center pb-4 sm:pb-6">
+                  <CardTitle className="text-xl sm:text-2xl font-bold">
                     Comece grátis agora
                   </CardTitle>
-                  <p className="text-muted-foreground">
+                  <p className="text-sm sm:text-base text-muted-foreground">
                     Crie sua conta em menos de 1 minuto
                   </p>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4 sm:space-y-6">
                   <form
                     onSubmit={onSubmit}
-                    className="space-y-4 xs:space-y-5 md:space-y-6"
+                    className="space-y-4 sm:space-y-5 md:space-y-6"
                   >
                     {/* Name & Email row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 xs:gap-5">
-                      <div className="space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                      <div className="space-y-1.5 sm:space-y-2">
                         <label
                           htmlFor="name"
-                          className="text-xs xs:text-sm font-medium text-muted-foreground"
+                          className="text-xs sm:text-sm font-medium text-muted-foreground"
                         >
                           Nome completo
                         </label>
@@ -110,10 +110,10 @@ export default function RegisterPage() {
                         />
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-1.5 sm:space-y-2">
                         <label
                           htmlFor="email"
-                          className="text-xs xs:text-sm font-medium text-muted-foreground"
+                          className="text-xs sm:text-sm font-medium text-muted-foreground"
                         >
                           Email profissional
                         </label>
@@ -129,10 +129,10 @@ export default function RegisterPage() {
                     </div>
 
                     {/* Password */}
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <label
                         htmlFor="password"
-                        className="text-xs xs:text-sm font-medium text-muted-foreground"
+                        className="text-xs sm:text-sm font-medium text-muted-foreground"
                       >
                         Senha
                       </label>
@@ -163,28 +163,28 @@ export default function RegisterPage() {
 
                       {/* Password Strength Indicator */}
                       {password && (
-                        <div className="space-y-2 p-4 bg-muted/30 rounded-lg border border-border/40">
+                        <div className="space-y-2 p-3 sm:p-4 bg-muted/30 rounded-lg border border-border/40">
                           <div className="flex items-center justify-between mb-2">
-                            <p className="text-xs text-muted-foreground font-medium">
+                            <p className="text-xs sm:text-sm text-muted-foreground font-medium">
                               Requisitos da senha:
                             </p>
                             {allPasswordChecksMet && (
                               <Badge
                                 variant="default"
-                                className="bg-green-500/10 text-green-600 border-green-500/20"
+                                className="bg-green-500/10 text-green-600 border-green-500/20 text-xs"
                               >
                                 Forte
                               </Badge>
                             )}
                           </div>
-                          <div className="space-y-2">
+                          <div className="space-y-1.5 sm:space-y-2">
                             {passwordChecks.map((check, index) => (
                               <div
                                 key={index}
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-1.5 sm:gap-2"
                               >
                                 <CheckCircle2
-                                  className={`h-4 w-4 ${
+                                  className={`h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 ${
                                     check.met
                                       ? 'text-green-500'
                                       : 'text-muted-foreground/30'
@@ -207,7 +207,7 @@ export default function RegisterPage() {
                     </div>
 
                     {registerMutation.isError && (
-                      <div className="text-xs text-center text-destructive bg-destructive/10 border border-destructive/20 rounded-lg py-2 px-4">
+                      <div className="text-xs text-center text-destructive bg-destructive/10 border border-destructive/20 rounded-lg py-2 px-3 sm:px-4">
                         {registerMutation.error instanceof Error
                           ? registerMutation.error.message
                           : 'Não foi possível criar a conta. Tente novamente.'}
@@ -216,7 +216,7 @@ export default function RegisterPage() {
 
                     {/* Footer row - privacy + button */}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
-                      <p className="text-[10px] xs:text-xs text-muted-foreground/70 max-w-xs">
+                      <p className="text-[10px] sm:text-xs text-muted-foreground/70 max-w-xs">
                         Suas informações são seguras e nunca serão
                         compartilhadas com terceiros.
                       </p>
@@ -239,7 +239,7 @@ export default function RegisterPage() {
                       </Button>
                     </div>
 
-                    <p className="text-[10px] xs:text-xs text-center text-muted-foreground/70">
+                    <p className="text-[10px] sm:text-xs text-center text-muted-foreground/70">
                       Ao criar uma conta, você concorda com nossos Termos de Uso
                       e Política de Privacidade
                     </p>
@@ -251,7 +251,7 @@ export default function RegisterPage() {
                       <div className="w-full border-t border-border" />
                     </div>
                     <div className="relative flex justify-center text-xs">
-                      <span className="bg-muted px-3 text-muted-foreground font-medium">
+                      <span className="bg-sidebar-accent px-3 text-muted-foreground font-medium">
                         Já tem uma conta?
                       </span>
                     </div>
@@ -276,7 +276,7 @@ export default function RegisterPage() {
 
           {/* Right Side - Information Section */}
           <div className="hidden lg:flex relative overflow-hidden bg-gradient-to-br from-secondary via-card/80 to-accent/60 dark:from-secondary dark:via-secondary/95 dark:to-secondary/90 order-1 lg:order-2 border-l border-border/50 dark:border-border/30">
-            <div className="relative z-10 flex flex-col justify-between p-12 text-foreground w-full">
+            <div className="relative z-10 flex flex-col justify-between p-8 lg:p-12 text-foreground w-full">
               <div className="flex-1 flex flex-col">
                 {/* Header in information section */}
                 <div className="mb-8 flex items-center justify-between">
