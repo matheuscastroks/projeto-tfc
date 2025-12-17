@@ -1,10 +1,8 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { Button } from '@ui/button'
 import { Card, CardContent } from '@ui/card'
 import { ThemeToggle } from '@/lib/components/ThemeToggle'
 import { ArrowLeft, Home, Search } from 'lucide-react'
-import logo from '@/assets/logo-insighthouse-fundo-preto.png'
 
 export default function NotFound() {
   return (
@@ -14,13 +12,7 @@ export default function NotFound() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center">
-              <Image
-                src={logo}
-                alt="Insighthouse"
-                width={180}
-                height={45}
-                className="h-10 w-auto dark:invert-0 invert"
-              />
+              <span className="text-2xl font-bold">Insight House</span>
             </Link>
             <div className="flex items-center gap-4">
               <ThemeToggle />

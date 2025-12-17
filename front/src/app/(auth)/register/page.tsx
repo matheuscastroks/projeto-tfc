@@ -3,23 +3,15 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import salesIllustration from '@/assets/illustrations/auth/sales.svg'
 import { Button } from '@ui/button'
 import { Input } from '@ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/card'
 import { Badge } from '@ui/badge'
 import { ThemeToggle } from '@/lib/components/ThemeToggle'
 import { Spinner } from '@ui/spinner'
-import {
-  ArrowLeft,
-  Eye,
-  EyeOff,
-  CheckCircle2,
-  Zap,
-  Shield,
-  TrendingUp,
-} from 'lucide-react'
+import { ArrowLeft, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
 import { useRegister } from '@/lib/hooks'
-import logo from '@/assets/logo-insighthouse-fundo-preto.png'
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -51,22 +43,24 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center">
-              <Image
-                src={logo}
-                alt="Insighthouse"
-                width={180}
-                height={45}
-                className="h-10 w-auto dark:invert-0 invert"
-              />
+      {/* Mobile Header */}
+      <header className="lg:hidden border-b border-border">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <Link
+              href="/"
+              className="text-xl font-semibold tracking-tight hover:text-primary transition-colors"
+            >
+              InsightHouse
             </Link>
             <div className="flex items-center gap-4">
               <ThemeToggle />
-              <Button asChild variant="ghost" size="default">
+              <Button
+                asChild
+                variant="ghost"
+                size="default"
+                className="hover:scale-105 transition-transform"
+              >
                 <Link href="/" className="flex items-center gap-2">
                   <ArrowLeft className="h-4 w-4" />
                   Voltar
@@ -78,119 +72,67 @@ export default function RegisterPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left Side - Value Proposition */}
-          <div className="hidden lg:block space-y-8">
-            <div className="space-y-4">
-              <Badge variant="secondary" className="px-4 py-2">
-                <Zap className="w-4 h-4 mr-2" />
-                Comece grátis
-              </Badge>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-                Transforme visitantes
-                <br />
-                em <span className="text-primary">vendas</span>
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Junte-se a centenas de imobiliárias que já descobriram o que
-                seus clientes realmente procuram.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">
-                    Teste grátis por 14 dias
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    Sem cartão de crédito. Cancele quando quiser.
+      <main className="flex-1 flex items-center justify-center px-0 py-0">
+        <div className="w-full h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-2">
+          {/* Left Side - Register Form */}
+          <div className="flex items-center justify-center p-6 lg:p-12 bg-sidebar-accent order-2 lg:order-1 border-r border-border/30 dark:border-border/20">
+            <div className="w-full max-w-md">
+              <Card className="border-0 bg-transparent">
+                <CardHeader className="space-y-2 text-center pb-6">
+                  <CardTitle className="text-2xl font-bold">
+                    Comece grátis agora
+                  </CardTitle>
+                  <p className="text-muted-foreground">
+                    Crie sua conta em menos de 1 minuto
                   </p>
-                </div>
-              </div>
+                </CardHeader>
 
-              <div className="flex items-start gap-3">
-                <TrendingUp className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">
-                    Instalação em 5 minutos
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    Cole um código no seu site e pronto. Dados em tempo real.
-                  </p>
-                </div>
-              </div>
+                <CardContent className="space-y-6">
+                  <form
+                    onSubmit={onSubmit}
+                    className="space-y-4 xs:space-y-5 md:space-y-6"
+                  >
+                    {/* Name & Email row */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 xs:gap-5">
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="name"
+                          className="text-xs xs:text-sm font-medium text-muted-foreground"
+                        >
+                          Nome completo
+                        </label>
+                        <Input
+                          id="name"
+                          placeholder="Como devo te chamar?"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          required
+                        />
+                      </div>
 
-              <div className="flex items-start gap-3">
-                <Shield className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">
-                    Dados 100% seguros
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    First-party data sem dependência de cookies terceiros.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Side - Register Form */}
-          <div className="w-full max-w-md mx-auto lg:mx-0">
-            <Card className="border-2 shadow-xl">
-              <CardHeader className="space-y-2 text-center pb-6">
-                <CardTitle className="text-2xl font-bold">
-                  Comece grátis agora
-                </CardTitle>
-                <p className="text-muted-foreground">
-                  Crie sua conta em menos de 1 minuto
-                </p>
-              </CardHeader>
-
-              <CardContent className="space-y-6">
-                <form onSubmit={onSubmit} className="space-y-4">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="name"
-                        className="text-sm font-medium text-foreground"
-                      >
-                        Nome completo
-                      </label>
-                      <Input
-                        id="name"
-                        placeholder="João Silva"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                        className="h-12 text-base"
-                      />
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="email"
+                          className="text-xs xs:text-sm font-medium text-muted-foreground"
+                        >
+                          Email profissional
+                        </label>
+                        <Input
+                          id="email"
+                          placeholder="Seu melhor email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="email"
-                        className="text-sm font-medium text-foreground"
-                      >
-                        Email profissional
-                      </label>
-                      <Input
-                        id="email"
-                        placeholder="seu@email.com"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="h-12 text-base"
-                      />
-                    </div>
-
+                    {/* Password */}
                     <div className="space-y-2">
                       <label
                         htmlFor="password"
-                        className="text-sm font-medium text-foreground"
+                        className="text-xs xs:text-sm font-medium text-muted-foreground"
                       >
                         Senha
                       </label>
@@ -202,24 +144,26 @@ export default function RegisterPage() {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           required
-                          className="h-12 text-base pr-12"
+                          className="pr-12"
                         />
-                        <button
+                        <Button
                           type="button"
+                          variant="ghost"
+                          size="icon"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 h-auto w-auto p-0 text-muted-foreground hover:text-foreground"
                         >
                           {showPassword ? (
                             <EyeOff className="h-5 w-5" />
                           ) : (
                             <Eye className="h-5 w-5" />
                           )}
-                        </button>
+                        </Button>
                       </div>
 
                       {/* Password Strength Indicator */}
                       {password && (
-                        <div className="space-y-2 p-4 bg-muted/30 rounded-xl border border-border">
+                        <div className="space-y-2 p-4 bg-muted/30 rounded-lg border border-border/40">
                           <div className="flex items-center justify-between mb-2">
                             <p className="text-xs text-muted-foreground font-medium">
                               Requisitos da senha:
@@ -261,71 +205,135 @@ export default function RegisterPage() {
                         </div>
                       )}
                     </div>
-                  </div>
 
-                  {registerMutation.isError && (
-                    <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-xl p-4">
-                      {registerMutation.error instanceof Error
-                        ? registerMutation.error.message
-                        : 'Não foi possível criar a conta. Tente novamente.'}
-                    </div>
-                  )}
-
-                  <Button
-                    type="submit"
-                    className="w-full h-12 text-base font-semibold"
-                    size="lg"
-                    disabled={registerMutation.isPending}
-                  >
-                    {registerMutation.isPending && (
-                      <Spinner className="mr-2 h-4 w-4" />
+                    {registerMutation.isError && (
+                      <div className="text-xs text-center text-destructive bg-destructive/10 border border-destructive/20 rounded-lg py-2 px-4">
+                        {registerMutation.error instanceof Error
+                          ? registerMutation.error.message
+                          : 'Não foi possível criar a conta. Tente novamente.'}
+                      </div>
                     )}
-                    {registerMutation.isPending
-                      ? 'Criando conta...'
-                      : 'Criar conta grátis'}
-                  </Button>
 
-                  <p className="text-xs text-center text-muted-foreground">
-                    Ao criar uma conta, você concorda com nossos Termos de Uso e
-                    Política de Privacidade
-                  </p>
-                </form>
+                    {/* Footer row - privacy + button */}
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
+                      <p className="text-[10px] xs:text-xs text-muted-foreground/70 max-w-xs">
+                        Suas informações são seguras e nunca serão
+                        compartilhadas com terceiros.
+                      </p>
 
-                {/* Divider */}
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-border" />
+                      <Button
+                        type="submit"
+                        variant="primary-rounded"
+                        size="lg-rounded"
+                        disabled={registerMutation.isPending}
+                        className="sm:w-auto w-full"
+                      >
+                        {registerMutation.isPending ? (
+                          <>
+                            <Spinner className="w-4 h-4 animate-spin" />
+                            <span>Criando conta...</span>
+                          </>
+                        ) : (
+                          <span>Criar conta grátis</span>
+                        )}
+                      </Button>
+                    </div>
+
+                    <p className="text-[10px] xs:text-xs text-center text-muted-foreground/70">
+                      Ao criar uma conta, você concorda com nossos Termos de Uso
+                      e Política de Privacidade
+                    </p>
+                  </form>
+
+                  {/* Divider */}
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-border" />
+                    </div>
+                    <div className="relative flex justify-center text-xs">
+                      <span className="bg-muted px-3 text-muted-foreground font-medium">
+                        Já tem uma conta?
+                      </span>
+                    </div>
                   </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="bg-card px-3 text-muted-foreground font-medium">
-                      Já tem uma conta?
-                    </span>
-                  </div>
-                </div>
 
-                {/* Sign In Link */}
-                <div className="text-center">
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="lg"
-                    className="w-full h-12 font-semibold"
+                  {/* Sign In Link */}
+                  <div className="text-center">
+                    <Button
+                      type="button"
+                      variant="outline-rounded"
+                      size="lg-rounded"
+                      onClick={() => router.push('/login')}
+                      className="w-full"
+                    >
+                      <span>Fazer login</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Right Side - Information Section */}
+          <div className="hidden lg:flex relative overflow-hidden bg-gradient-to-br from-secondary via-card/80 to-accent/60 dark:from-secondary dark:via-secondary/95 dark:to-secondary/90 order-1 lg:order-2 border-l border-border/50 dark:border-border/30">
+            <div className="relative z-10 flex flex-col justify-between p-12 text-foreground w-full">
+              <div className="flex-1 flex flex-col">
+                {/* Header in information section */}
+                <div className="mb-8 flex items-center justify-between">
+                  <Link
+                    href="/"
+                    className="text-2xl font-bold tracking-tight text-foreground hover:text-primary/80 transition-colors"
                   >
-                    <Link href="/login">Fazer login</Link>
-                  </Button>
+                    InsightHouse
+                  </Link>
+                  <div className="flex items-center gap-4">
+                    <ThemeToggle />
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="default"
+                      className="hover:scale-105 transition-transform hover:bg-foreground/10 dark:hover:bg-foreground/10"
+                    >
+                      <Link href="/" className="flex items-center gap-2">
+                        <ArrowLeft className="h-4 w-4" />
+                        Voltar
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                {/* Main Content - Título e Imagem lado a lado */}
+                <div className="flex-1 flex flex-col justify-center">
+                  <div className="grid grid-cols-2 gap-6 items-center">
+                    {/* Texto */}
+                    <div className="space-y-4">
+                      <h1 className="text-3xl md:text-4xl font-bold leading-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                        Transforme visitantes
+                        <br />
+                        em <span className="text-primary">vendas</span>
+                      </h1>
+                      <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-light">
+                        Junte-se a centenas de imobiliárias que já descobriram o
+                        que seus clientes realmente procuram.
+                      </p>
+                    </div>
+
+                    {/* Illustration - Destaque ao lado */}
+                    <div className="relative w-full aspect-square">
+                      <Image
+                        src={salesIllustration}
+                        alt="Transforme visitantes em vendas"
+                        fill
+                        className="object-contain dark:invert"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-border py-8 px-6">
-        <div className="max-w-6xl mx-auto text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 Insight House. Todos os direitos reservados.</p>
-        </div>
-      </footer>
     </div>
   )
 }

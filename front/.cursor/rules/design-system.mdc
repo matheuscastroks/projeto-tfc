@@ -1,0 +1,437 @@
+---
+description: Complete design system standards including typography, colors, components, layouts, and patterns for consistent UI across the application
+globs:
+  - src/**/*.tsx
+  - src/**/*.jsx
+  - src/**/*.css
+alwaysApply: true
+---
+
+# Design System - InsightHouse
+
+This document defines the complete design system standards for the InsightHouse project. All components, layouts, and styling must follow these guidelines.
+
+## Typography
+
+### Font Family
+- **Primary Font**: Geist Sans (applied globally via `layout.tsx`)
+- Applied to `<html>` element: `className={GeistSans.className}`
+- All text inherits Geist Sans automatically
+
+### Font Sizes
+- **Hero Titles**: `text-3xl md:text-4xl lg:text-5xl` (auth pages), `text-4xl md:text-5xl lg:text-6xl` (homepage)
+- **Section Titles**: `text-3xl md:text-4xl`
+- **Card Titles**: `text-lg` or `text-xl`
+- **Body Text**: `text-base md:text-lg`
+- **Small Text**: `text-sm` or `text-xs`
+- **Subtitles**: `text-xl md:text-2xl` (homepage), `text-base md:text-lg` (auth pages)
+
+### Font Weights
+- **Bold**: `font-bold` (headings)
+- **Semibold**: `font-semibold` (subheadings, card titles)
+- **Medium**: `font-medium` (labels, buttons)
+- **Light**: `font-light` (descriptions, subtitles)
+
+### Text Effects
+- **Gradient Text**: `bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent`
+- Use for main titles and hero headings
+
+## Colors
+
+### Color System
+All colors use HSL variables defined in `globals.css`. Always use semantic color names, never hardcode values.
+
+### Primary Colors
+- **Background**: `bg-background` (white in light, very dark in dark)
+- **Foreground**: `bg-foreground` (dark in light, light in dark)
+- **Card**: `bg-card` (white in light, dark in dark)
+- **Primary**: `bg-primary` (dark in light, light in dark)
+- **Secondary**: `bg-secondary` (light gray in light, dark gray in dark)
+- **Muted**: `bg-muted` (light gray in light, dark gray in dark)
+- **Accent**: `bg-accent` (light gray in light, dark gray in dark)
+
+### Form Colors
+- **Form Background**: `bg-sidebar-accent` (light gray: #fafafa equivalent)
+- **Input Background**: `bg-card` (white: `0 0% 100%`)
+- **Input Border**: `border-border/40` (subtle border)
+
+### Gradients
+- **Auth Pages (Light Mode)**: `bg-gradient-to-br from-secondary via-card/80 to-accent/60`
+- **Auth Pages (Dark Mode)**: `bg-gradient-to-br from-secondary via-secondary/95 to-secondary/90`
+- **Hero Sections**: Use gradient backgrounds for visual interest
+
+### Borders
+- **Default Border**: `border-border/50` (light mode), `border-border/30` (dark mode)
+- **Subtle Border**: `border-border/40` (inputs, cards)
+- **Strong Border**: `border-border` (dividers, containers)
+
+## Components
+
+### Button Component (`@/lib/components/ui/button.tsx`)
+
+#### Variants
+- **`default`**: Standard button with primary background
+- **`primary-rounded`**: Rounded full button with foreground background, includes hover lift effect
+- **`outline-rounded`**: Rounded full button with transparent background and border
+- **`outline-primary`**: Rounded full button with border, hover fills with primary
+- **`destructive`**: Red button for destructive actions
+- **`secondary`**: Secondary background button
+- **`ghost`**: Transparent button with hover background
+- **`link`**: Text link style
+
+#### Sizes
+- **`default`**: `h-9 px-4 py-2`
+- **`sm`**: `h-8 px-3 text-xs`
+- **`lg`**: `h-10 px-8`
+- **`lg-rounded`**: `h-10 px-5 xs:px-6` (for rounded buttons)
+- **`icon`**: `h-9 w-9`
+
+#### Hover Effects
+All rounded buttons include:
+- `hover:-translate-y-0.5` (lift effect)
+- `active:translate-y-0 active:scale-[0.98]` (press effect)
+- `hover:shadow-md` (for primary-rounded)
+
+#### Usage
+```tsx
+<Button variant="primary-rounded" size="lg-rounded">
+  Action
+</Button>
+```
+
+### Input Component (`@/lib/components/ui/input.tsx`)
+
+#### Base Styles
+- **Height**: `h-11 md:h-12` (responsive)
+- **Background**: `bg-card` (white)
+- **Border**: `border border-border/40`
+- **Border Radius**: `rounded-lg`
+- **Text Size**: `text-sm`
+- **Padding**: `px-3 py-1`
+- **Placeholder**: `placeholder:text-muted-foreground/50`
+- **Transitions**: `transition-all`
+
+#### Focus States
+- **Border**: `focus:border-primary/50`
+- **Ring**: `focus:ring-1 focus:ring-primary/20`
+- **Outline**: `focus:outline-none`
+
+#### Usage
+```tsx
+<Input
+  id="email"
+  placeholder="seu@email.com"
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+/>
+```
+
+### Card Component
+- **Background**: `bg-card` or `bg-card/50` (with transparency)
+- **Border**: `border-0` (no border by default) or `border border-border/40`
+- **Shadow**: `shadow-sm hover:shadow-lg` (with hover effect)
+- **Backdrop Blur**: `backdrop-blur-sm` (for glassmorphism effect)
+
+## Layout Patterns
+
+### Authentication Pages Layout
+
+#### Two-Column Grid
+- **Container**: `grid grid-cols-1 lg:grid-cols-2`
+- **Full Height**: `h-screen lg:h-screen`
+- **Column Separation**:
+  - Information column: `border-r border-border/50 dark:border-border/30`
+  - Form column: `border-l border-border/30 dark:border-border/20`
+
+#### Information Column
+- **Background Gradient (Light)**: `bg-gradient-to-br from-secondary via-card/80 to-accent/60`
+- **Background Gradient (Dark)**: `bg-gradient-to-br from-secondary via-secondary/95 to-secondary/90`
+- **Content Layout**: Grid 2 columns with title/subtitle on left, image on right
+- **Padding**: `p-12`
+- **Text Color**: `text-foreground`
+
+#### Form Column
+- **Background**: `bg-sidebar-accent` (#fafafa equivalent)
+- **Padding**: `p-6 lg:p-12`
+- **Centered Content**: `flex items-center justify-center`
+
+#### Title and Image Layout
+- **Grid**: `grid grid-cols-2 gap-6 items-center`
+- **Title Size**: `text-3xl md:text-4xl`
+- **Subtitle Size**: `text-sm md:text-base`
+- **Image**: `aspect-square` with `max-w-xl` or full width in grid
+
+### Homepage Hero Section
+- **Container**: `min-h-screen flex items-center`
+- **Grid**: `grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6`
+- **Text Alignment**: `text-center lg:text-left`
+- **Image**: `aspect-square` with responsive sizing
+
+## Spacing
+
+### Standard Spacing Scale
+- **Tight**: `space-y-2` or `gap-2`
+- **Small**: `space-y-3` or `gap-3`
+- **Medium**: `space-y-4` or `gap-4`
+- **Large**: `space-y-6` or `gap-6`
+- **Extra Large**: `space-y-8` or `gap-8`
+
+### Padding
+- **Cards**: `p-4` to `p-6`
+- **Sections**: `p-6 lg:p-12`
+- **Containers**: `px-6` (horizontal), `py-8` to `py-24` (vertical)
+
+### Margins
+- **Between Sections**: `mb-16` or `mb-24`
+- **Between Elements**: `mb-4` to `mb-8`
+- **Top Spacing**: `mt-8` for images after text
+
+## Borders and Radius
+
+### Border Radius
+- **Default**: `rounded-lg` (1rem)
+- **Rounded Full**: `rounded-full` (for buttons, badges)
+- **Small**: `rounded-md` or `rounded-sm`
+- **Large**: `rounded-xl` or `rounded-2xl`
+
+### Borders
+- **Subtle**: `border-border/40` or `border-border/30`
+- **Medium**: `border-border/50`
+- **Strong**: `border-border`
+
+## Shadows
+
+### Box Shadows
+- **Small**: `shadow-sm`
+- **Medium**: `shadow-md`
+- **Large**: `shadow-lg`
+- **Hover**: `hover:shadow-lg` or `hover:shadow-xl`
+
+### Custom Shadows
+- **Layer Shadows**: `shadow-layer-1` to `shadow-layer-5` (for depth)
+- **Inner Shadows**: `shadow-inner-1` to `shadow-inner-5` (for recessed effect)
+
+## Transitions and Animations
+
+### Standard Transitions
+- **All Properties**: `transition-all duration-200 ease-out`
+- **Transform Only**: `transition-transform duration-200`
+- **Colors**: `transition-colors`
+
+### Hover Effects
+- **Scale**: `hover:scale-105` (cards, buttons)
+- **Lift**: `hover:-translate-y-0.5` (buttons)
+- **Press**: `active:translate-y-0 active:scale-[0.98]` (buttons)
+- **Shadow**: `hover:shadow-md` or `hover:shadow-lg`
+
+### Icon Animations
+- **Scale on Hover**: `group-hover:scale-110` (within group)
+- **Color Change**: `group-hover:text-primary transition-colors`
+
+## Illustrations
+
+### SVG Handling
+- **Import**: Use direct imports from `@/assets/illustrations/`
+- **Dark Mode**: Apply `dark:invert` class for white lines in dark mode
+- **Light Mode**: SVGs display with black lines by default
+- **Container**: Use `aspect-square` or `aspect-video` for consistent sizing
+- **Object Fit**: `object-contain` to preserve aspect ratio
+
+### Illustration Locations
+- **Homepage Hero**: `@/assets/illustrations/heroImage.svg`
+- **Auth Login**: `@/assets/illustrations/auth/welcomeBack.svg`
+- **Auth Register**: `@/assets/illustrations/auth/sales.svg`
+- **Feature Cards**: Various SVGs from `@/assets/illustrations/`
+
+### Usage Pattern
+```tsx
+import illustration from '@/assets/illustrations/path/to/illustration.svg'
+
+<Image
+  src={illustration}
+  alt="Description"
+  fill
+  className="object-contain dark:invert"
+/>
+```
+
+## Responsive Design
+
+### Breakpoints
+- **Mobile**: Default (no prefix)
+- **Small**: `sm:` (640px+)
+- **Medium**: `md:` (768px+)
+- **Large**: `lg:` (1024px+)
+- **Extra Large**: `xl:` (1280px+)
+
+### Common Patterns
+- **Hide on Mobile**: `hidden lg:flex`
+- **Stack on Mobile**: `flex-col lg:flex-row`
+- **Responsive Text**: `text-base md:text-lg lg:text-xl`
+- **Responsive Spacing**: `gap-4 lg:gap-6`
+- **Responsive Padding**: `p-6 lg:p-12`
+
+## Dark Mode
+
+### Color Adaptation
+- Always use semantic color variables (never hardcode)
+- Colors automatically adapt via CSS variables
+- Test components in both modes
+
+### SVG Adaptation
+- Apply `dark:invert` to SVGs for proper contrast
+- Light mode: black lines
+- Dark mode: white lines (via invert)
+
+### Border Adaptation
+- Light mode: `border-border/50`
+- Dark mode: `border-border/30` (more subtle)
+
+## Form Patterns
+
+### Form Layout
+- **Container**: `bg-sidebar-accent` (light gray background)
+- **Card**: `bg-transparent border-0` (no card background, transparent)
+- **Inputs**: White background (`bg-card`) against gray form background
+- **Labels**: `text-xs xs:text-sm font-medium text-muted-foreground`
+- **Spacing**: `space-y-4 xs:space-y-5 md:space-y-6`
+
+### Form Sections
+- **Two-Column Inputs**: `grid grid-cols-1 sm:grid-cols-2 gap-4 xs:gap-5`
+- **Button Row**: `flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3`
+- **Privacy Text**: `text-[10px] xs:text-xs text-muted-foreground/70`
+
+## Card Patterns
+
+### Feature Cards
+- **Hover Effect**: `hover:scale-105` with `transition-all duration-300`
+- **Shadow**: `shadow-sm hover:shadow-lg`
+- **Group Hover**: Use `group` class for coordinated hover effects
+- **Icon Container**: `bg-gradient-to-br from-primary/20 to-primary/5`
+- **Icon Hover**: `group-hover:scale-110 transition-transform`
+
+### Information Cards
+- **Background**: `bg-card/50 backdrop-blur-sm`
+- **Border**: `border-0` (no border)
+- **Hover**: `hover:scale-[1.02]` (subtle scale)
+
+## Best Practices
+
+### Do's
+✅ Always use semantic color variables
+✅ Apply consistent spacing using Tailwind scale
+✅ Use responsive classes for all layouts
+✅ Test components in both light and dark modes
+✅ Apply transitions to interactive elements
+✅ Use `group` for coordinated hover effects
+✅ Import illustrations directly, don't use URLs
+✅ Apply `dark:invert` to SVGs for dark mode
+
+### Don'ts
+❌ Don't hardcode color values
+❌ Don't use inline styles
+❌ Don't skip responsive design
+❌ Don't forget dark mode testing
+❌ Don't use external image URLs for illustrations
+❌ Don't create custom components when shadcn/ui variants exist
+❌ Don't mix different transition patterns
+
+## Component Consistency
+
+### All UI Components Must:
+1. Use semantic color variables
+2. Support dark mode automatically
+3. Include proper focus states
+4. Have consistent spacing
+5. Use standard border radius
+6. Include appropriate transitions
+7. Be responsive by default
+
+### Refactoring Checklist
+When refactoring dashboard components:
+- [ ] Replace custom buttons with Button component variants
+- [ ] Replace custom inputs with Input component
+- [ ] Use semantic colors, not hardcoded values
+- [ ] Apply consistent spacing scale
+- [ ] Add hover effects where appropriate
+- [ ] Ensure dark mode compatibility
+- [ ] Test responsive behavior
+- [ ] Use Card component for containers
+- [ ] Apply consistent border radius
+- [ ] Include proper transitions
+
+## Examples
+
+### Button Usage
+```tsx
+// Primary action
+<Button variant="primary-rounded" size="lg-rounded">
+  Save Changes
+</Button>
+
+// Secondary action
+<Button variant="outline-rounded" size="lg-rounded">
+  Cancel
+</Button>
+
+// Icon button
+<Button variant="ghost" size="icon">
+  <Icon />
+</Button>
+```
+
+### Input Usage
+```tsx
+<div className="space-y-2">
+  <label htmlFor="email" className="text-xs xs:text-sm font-medium text-muted-foreground">
+    Email
+  </label>
+  <Input
+    id="email"
+    type="email"
+    placeholder="seu@email.com"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+  />
+</div>
+```
+
+### Card with Hover Effect
+```tsx
+<Card className="bg-card border-0 shadow-sm hover:shadow-lg transition-all duration-300 group hover:scale-105">
+  <CardHeader>
+    <CardTitle>Feature Title</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <p>Feature description</p>
+  </CardContent>
+</Card>
+```
+
+### Illustration Usage
+```tsx
+<div className="relative w-full aspect-square">
+  <Image
+    src={illustration}
+    alt="Description"
+    fill
+    className="object-contain dark:invert"
+  />
+</div>
+```
+
+## Dashboard Refactoring Guidelines
+
+When refactoring dashboard components, apply these patterns:
+
+1. **Replace all custom buttons** with Button component variants
+2. **Standardize all inputs** to use Input component
+3. **Use Card component** for all containers
+4. **Apply consistent spacing** using the scale
+5. **Add hover effects** to interactive elements
+6. **Ensure dark mode** works correctly
+7. **Use semantic colors** throughout
+8. **Apply transitions** to all interactive states
+9. **Use grid layouts** for responsive design
+10. **Test in both modes** before completing

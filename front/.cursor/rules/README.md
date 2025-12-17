@@ -18,6 +18,17 @@ Cursor Rules are instructions that guide the Cursor AI assistant when helping yo
   - Clean Code principles
   - Performance and security best practices
 
+- **`design-system.mdc`** - Complete design system standards
+  - Typography (Geist Sans)
+  - Color system and gradients
+  - Component patterns (Button, Input, Card)
+  - Layout patterns (Auth pages, Hero sections)
+  - Spacing and borders
+  - Transitions and animations
+  - Illustration handling
+  - Dark mode support
+  - Dashboard refactoring guidelines
+
 ### Auto-Attached by File Type
 
 These rules are automatically applied when working with specific file types:

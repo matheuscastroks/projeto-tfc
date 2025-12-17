@@ -68,7 +68,6 @@ export default {
         },
       },
       boxShadow: {
-
         'layer-0': 'none',
         'layer-1':
           'inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 1px rgba(0, 0, 0, 0.1), ' +
