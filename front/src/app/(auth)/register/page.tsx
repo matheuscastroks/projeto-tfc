@@ -44,9 +44,9 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Mobile Header */}
-      <header className="lg:hidden border-b border-border">
-        <div className="px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+      <header className="lg:hidden border-b border-border bg-background/80 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-14 sm:h-16">
             <Link
               href="/"
               className="text-lg sm:text-xl font-semibold tracking-tight hover:text-primary transition-colors"
@@ -275,7 +275,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Right Side - Information Section */}
-          <div className="hidden lg:flex relative overflow-hidden bg-gradient-to-br from-secondary via-card/80 to-accent/60 dark:from-secondary dark:via-secondary/95 dark:to-secondary/90 order-1 lg:order-2 border-l border-border/50 dark:border-border/30">
+          <div className="hidden lg:flex relative overflow-hidden bg-gradient-to-br from-secondary via-card/80 to-accent/60 dark:from-secondary dark:via-card/95 dark:to-secondary/90 order-1 lg:order-2 border-l border-border/50 dark:border-border/30">
             <div className="relative z-10 flex flex-col justify-between p-8 lg:p-12 text-foreground w-full">
               <div className="flex-1 flex flex-col">
                 {/* Header in information section */}

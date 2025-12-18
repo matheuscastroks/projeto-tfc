@@ -96,13 +96,7 @@ export default {
           'inset 0 5px 10px rgba(0, 0, 0, 0.18), inset 0 4px 8px rgba(0, 0, 0, 0.12)',
         'inner-5':
           'inset 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 5px 10px rgba(0, 0, 0, 0.15)',
-        // Sombras padrão estilo recessed
-        DEFAULT:
-          'inset 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.06)',
-        sm: 'inset 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.06)',
-        md: 'inset 0 3px 6px rgba(0, 0, 0, 0.12), inset 0 2px 4px rgba(0, 0, 0, 0.08)',
-        lg: 'inset 0 4px 8px rgba(0, 0, 0, 0.15), inset 0 3px 6px rgba(0, 0, 0, 0.1)',
-        xl: 'inset 0 5px 10px rgba(0, 0, 0, 0.18), inset 0 4px 8px rgba(0, 0, 0, 0.12)',
+
       },
       keyframes: {
         'accordion-down': {

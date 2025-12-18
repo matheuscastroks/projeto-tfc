@@ -34,9 +34,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Mobile Header */}
-      <header className="lg:hidden border-b border-border">
-        <div className="px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+      <header className="lg:hidden border-b border-border bg-background/80 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-14 sm:h-16">
             <Link
               href="/"
               className="text-lg sm:text-xl font-semibold tracking-tight hover:text-primary transition-colors"
@@ -65,7 +65,7 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center px-0 py-0">
         <div className="w-full h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-2">
           {/* Left Side - Information Section */}
-          <div className="hidden lg:flex relative overflow-hidden bg-gradient-to-br from-secondary via-card/80 to-accent/60 dark:from-secondary dark:via-secondary/95 dark:to-secondary/90 border-r border-border/50 dark:border-border/30">
+          <div className="hidden lg:flex relative overflow-hidden bg-gradient-to-br from-secondary via-card/80 to-accent/60 dark:from-secondary dark:via-card/95 dark:to-secondary/90 border-r border-border/50 dark:border-border/30">
             <div className="relative z-10 flex flex-col justify-between p-12 text-foreground w-full">
               <div className="flex-1 flex flex-col">
                 {/* Header in information section */}

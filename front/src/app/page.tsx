@@ -10,6 +10,13 @@ import conversionTracking from '@/assets/illustrations/homepage/conversionTracki
 import dashboardRealTime from '@/assets/illustrations/homepage/dashboardRealTime.svg'
 import userJourney from '@/assets/illustrations/homepage/userJourney.svg'
 
+// Swiper imports
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation, Pagination, Autoplay } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+
 import {
   Card,
   CardContent,
@@ -71,8 +78,59 @@ export default function HomePage() {
 
   const displayCount = eventsCount !== null ? formatNumber(eventsCount) : '---'
 
+  const featureCards = [
+    {
+      id: 1,
+      title: 'Análise geográfica',
+      description:
+        'Veja exatamente quais cidades e bairros seus visitantes mais buscam. Ajuste seu estoque baseado em demanda real.',
+      image: mapLocation,
+      alt: 'Análise geográfica',
+    },
+    {
+      id: 2,
+      title: 'Preferências de imóveis',
+      description:
+        'Apartamento, casa, comercial? Quantos quartos? Descubra o perfil exato do que seus clientes procuram.',
+      image: preferences,
+      alt: 'Preferências de imóveis',
+    },
+    {
+      id: 3,
+      title: 'Poder de compra',
+      description:
+        'Identifique as faixas de preço mais procuradas. Personalize sua oferta para o público certo.',
+      image: powerOfPurchase,
+      alt: 'Poder de compra',
+    },
+    {
+      id: 4,
+      title: 'Jornada do cliente',
+      description:
+        'Acompanhe cada passo: da primeira visita até o contato. Saiba onde estão os gargalos.',
+      image: userJourney,
+      alt: 'Jornada do cliente',
+    },
+    {
+      id: 5,
+      title: 'Conversões rastreadas',
+      description:
+        'Formulários, WhatsApp, telefone. Saiba exatamente quantos leads você está gerando.',
+      image: conversionTracking,
+      alt: 'Conversões rastreadas',
+    },
+    {
+      id: 6,
+      title: 'Dashboard em tempo real',
+      description:
+        'Todas as métricas que importam em um só lugar. Sem complicação, sem relatórios confusos.',
+      image: dashboardRealTime,
+      alt: 'Dashboard em tempo real',
+    },
+  ]
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="h-screen overflow-y-scroll snap-y snap-mandatory bg-background text-foreground">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -106,69 +164,69 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section - Redesigned like portfolio */}
-      <section className="min-h-screen flex items-center pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
-            <div className="text-center lg:text-left space-y-4 sm:space-y-5 lg:space-y-6 flex flex-col justify-center order-2 lg:order-1">
-              <div className="space-y-2 sm:space-y-3">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+      <section className="h-screen snap-start snap-always flex items-center pt-16 sm:pt-20 pb-8 sm:pb-12 px-4 sm:px-6 bg-gradient-to-br from-background via-secondary/30 to-card/40 dark:from-background dark:via-secondary/20 dark:to-card/30">
+        <div className="max-w-6xl mx-auto w-full h-full flex items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center w-full">
+            <div className="text-center lg:text-left space-y-3 sm:space-y-4 lg:space-y-5 flex flex-col justify-center order-2 lg:order-1">
+              <div className="space-y-1.5 sm:space-y-2">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                   InsightHouse
                 </h1>
-                <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground">
+                <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground">
                   Analytics para imobiliárias
                 </p>
               </div>
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 Focado em transformar dados imobiliários em insights
                 estratégicos. Pare de adivinhar o que seus clientes estão
                 procurando e descubra exatamente quais cidades, tipos de imóveis
                 e faixas de preço geram mais interesse no seu site.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center lg:justify-start pt-1">
                 <Button
                   asChild
                   variant="primary-rounded"
                   size="lg-rounded"
-                  className="hover:scale-105 shadow-lg hover:shadow-xl w-full sm:w-auto"
+                  className="hover:scale-105 shadow-lg hover:shadow-xl w-full sm:w-auto text-xs sm:text-sm"
                 >
                   <Link href="/login">
                     Começar Trial Grátis
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
                   </Link>
                 </Button>
                 <Button
                   asChild
                   variant="outline-primary"
                   size="lg-rounded"
-                  className="hover:scale-105 w-full sm:w-auto"
+                  className="hover:scale-105 w-full sm:w-auto text-xs sm:text-sm"
                 >
                   <Link href="#features">Ver Demo</Link>
                 </Button>
               </div>
 
-              <div className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm text-muted-foreground pt-2">
-                <span className="flex items-center gap-1.5 sm:gap-2">
-                  <Check className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3 md:gap-4 text-xs text-muted-foreground pt-1">
+                <span className="flex items-center gap-1 sm:gap-1.5">
+                  <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
                   <span>14 dias grátis</span>
                 </span>
-                <span className="flex items-center gap-1.5 sm:gap-2">
-                  <Check className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
+                <span className="flex items-center gap-1 sm:gap-1.5">
+                  <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
                   <span>Sem cartão de crédito</span>
                 </span>
-                <span className="flex items-center gap-1.5 sm:gap-2">
-                  <Check className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
+                <span className="flex items-center gap-1 sm:gap-1.5">
+                  <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
                   <span>5 min para instalar</span>
                 </span>
               </div>
             </div>
-            <div className="relative flex items-center justify-center min-h-[150px] sm:min-h-[200px] md:min-h-[300px] lg:min-h-[400px] h-full order-1 lg:order-2">
+            <div className="relative flex items-center justify-center h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] order-1 lg:order-2">
               <div className="w-full h-full relative flex items-center justify-center">
                 <Image
                   src={heroIllustration}
                   alt="Analytics Dashboard"
                   fill
-                  className="object-contain dark:invert"
+                  className="object-cover dark:invert"
                   priority
                 />
               </div>
@@ -266,172 +324,117 @@ export default function HomePage() {
       */}
 
       {/* Everything you need to sell more */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-muted/20">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8 sm:mb-12 md:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
+      <section
+        id="features"
+        className="h-screen snap-start snap-always flex items-center px-4 sm:px-6 bg-gradient-to-br from-secondary via-card/80 to-accent/60 dark:from-secondary dark:via-card/95 dark:to-secondary/90"
+      >
+        <div className="max-w-6xl mx-auto w-full h-full flex flex-col justify-center">
+          <div className="text-center mb-6 sm:mb-8 md:mb-10">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
               Tudo que você precisa para vender mais
             </h2>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
               Dados organizados e prontos para ação
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-            <Card className="bg-card border-0 shadow-sm hover:shadow-lg transition-all duration-300 group overflow-hidden hover:scale-105">
-              <div className="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-t-lg relative overflow-hidden group-hover:scale-105 transition-transform flex items-center justify-center">
-                <Image
-                  src={mapLocation}
-                  alt="Análise geográfica"
-                  fill
-                  className="object-contain p-3 sm:p-4 dark:invert"
-                />
-              </div>
-              <CardHeader className="p-4 sm:p-6">
-                <CardTitle className="text-base sm:text-lg">
-                  Análise geográfica
-                </CardTitle>
-                <CardDescription className="text-sm">
-                  Veja exatamente quais cidades e bairros seus visitantes mais
-                  buscam. Ajuste seu estoque baseado em demanda real.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-card border-0 shadow-sm hover:shadow-lg transition-all duration-300 group overflow-hidden hover:scale-105">
-              <div className="aspect-video bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-t-lg relative overflow-hidden group-hover:scale-105 transition-transform flex items-center justify-center">
-                <Image
-                  src={preferences}
-                  alt="Preferências de imóveis"
-                  fill
-                  className="object-contain p-4 dark:invert"
-                />
-              </div>
-              <CardHeader>
-                <CardTitle>Preferências de imóveis</CardTitle>
-                <CardDescription>
-                  Apartamento, casa, comercial? Quantos quartos? Descubra o
-                  perfil exato do que seus clientes procuram.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-card border-0 shadow-sm hover:shadow-lg transition-all duration-300 group overflow-hidden hover:scale-105">
-              <div className="aspect-video bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-t-lg relative overflow-hidden group-hover:scale-105 transition-transform flex items-center justify-center">
-                <Image
-                  src={powerOfPurchase || ''}
-                  alt="Poder de compra"
-                  fill
-                  className="object-contain p-4 dark:invert"
-                />
-              </div>
-              <CardHeader>
-                <CardTitle>Poder de compra</CardTitle>
-                <CardDescription>
-                  Identifique as faixas de preço mais procuradas. Personalize
-                  sua oferta para o público certo.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-card border-0 shadow-sm hover:shadow-lg transition-all duration-300 group overflow-hidden hover:scale-105">
-              <div className="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-t-lg relative overflow-hidden group-hover:scale-105 transition-transform flex items-center justify-center">
-                <Image
-                  src={userJourney || ''}
-                  alt="Jornada do cliente"
-                  fill
-                  className="object-contain p-4 dark:invert"
-                />
-              </div>
-              <CardHeader>
-                <CardTitle>Jornada do cliente</CardTitle>
-                <CardDescription>
-                  Acompanhe cada passo: da primeira visita até o contato. Saiba
-                  onde estão os gargalos.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-card border-0 shadow-sm hover:shadow-lg transition-all duration-300 group overflow-hidden hover:scale-105">
-              <div className="aspect-video bg-gradient-to-br from-red-500/20 to-orange-500/20 rounded-t-lg relative overflow-hidden group-hover:scale-105 transition-transform flex items-center justify-center">
-                <Image
-                  src={conversionTracking || ''}
-                  alt="Conversões rastreadas"
-                  fill
-                  className="object-contain p-4 dark:invert"
-                />
-              </div>
-              <CardHeader>
-                <CardTitle>Conversões rastreadas</CardTitle>
-                <CardDescription>
-                  Formulários, WhatsApp, telefone. Saiba exatamente quantos
-                  leads você está gerando.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-card border-0 shadow-sm hover:shadow-lg transition-all duration-300 group overflow-hidden hover:scale-105">
-              <div className="aspect-video bg-gradient-to-br from-teal-500/20 to-green-500/20 rounded-t-lg relative overflow-hidden group-hover:scale-105 transition-transform flex items-center justify-center">
-                <Image
-                  src={dashboardRealTime}
-                  alt="Dashboard em tempo real"
-                  fill
-                  className="object-contain p-4 dark:invert"
-                />
-              </div>
-              <CardHeader>
-                <CardTitle>Dashboard em tempo real</CardTitle>
-                <CardDescription>
-                  Todas as métricas que importam em um só lugar. Sem
-                  complicação, sem relatórios confusos.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={12}
+            slidesPerView={1}
+            navigation={false}
+            pagination={{ clickable: true }}
+            autoplay={{
+              delay: 4000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            loop={true}
+            breakpoints={{
+              640: {
+                slidesPerView: 2,
+                spaceBetween: 16,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 20,
+              },
+            }}
+            className="w-full !pb-10"
+          >
+            {featureCards.map((card) => (
+              <SwiperSlide key={card.id}>
+                <Card className="bg-card border-0 shadow-sm hover:shadow-lg transition-all duration-300 group overflow-hidden h-full flex flex-col">
+                  <div className="h-40 bg-muted/30 dark:bg-muted/20 rounded-t-lg relative overflow-hidden">
+                    <Image
+                      src={card.image}
+                      alt={card.alt}
+                      fill
+                      className="object-contain object-top dark:invert"
+                    />
+                  </div>
+                  <CardHeader className="p-4 sm:p-6 h-auto flex flex-col justify-center">
+                    <CardTitle className="text-base sm:text-lg md:text-xl font-semibold">
+                      {card.title}
+                    </CardTitle>
+                    <CardDescription className="text-xs sm:text-sm md:text-base leading-relaxed">
+                      {card.description}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       </section>
 
       {/* How It Works - Redesigned */}
-      <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+      <section className="h-screen snap-start snap-always flex items-center px-4 sm:px-6 bg-gradient-to-br from-accent/40 via-secondary/50 to-card/70 dark:from-accent/20 dark:via-secondary/30 dark:to-card/50">
+        <div className="max-w-4xl mx-auto w-full">
+          <div className="text-center mb-6 sm:mb-8 md:mb-10">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
               Simples como deve ser
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
               Sem necessidade de desenvolvedor. Sem integrações complexas.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="text-center space-y-4 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-full flex items-center justify-center mx-auto text-xl font-bold group-hover:scale-110 transition-transform shadow-lg group-hover:shadow-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
+            <div className="text-center space-y-2 sm:space-y-3 group">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-full flex items-center justify-center mx-auto text-base sm:text-lg md:text-xl font-bold group-hover:scale-110 transition-transform shadow-lg group-hover:shadow-xl">
                 1
               </div>
-              <h3 className="text-xl font-semibold">Adicione o Código</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-base sm:text-lg md:text-xl font-semibold">
+                Adicione o Código
+              </h3>
+              <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
                 Adicione uma linha no seu site. Funciona com qualquer
                 plataforma.
               </p>
             </div>
 
-            <div className="text-center space-y-4 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-full flex items-center justify-center mx-auto text-xl font-bold group-hover:scale-110 transition-transform shadow-lg group-hover:shadow-xl">
+            <div className="text-center space-y-2 sm:space-y-3 group">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-full flex items-center justify-center mx-auto text-base sm:text-lg md:text-xl font-bold group-hover:scale-110 transition-transform shadow-lg group-hover:shadow-xl">
                 2
               </div>
-              <h3 className="text-xl font-semibold">Aguarde</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-base sm:text-lg md:text-xl font-semibold">
+                Aguarde
+              </h3>
+              <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
                 Os dados começam a fluir automaticamente. Sem configurações
                 adicionais.
               </p>
             </div>
 
-            <div className="text-center space-y-4 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-full flex items-center justify-center mx-auto text-xl font-bold group-hover:scale-110 transition-transform shadow-lg group-hover:shadow-xl">
+            <div className="text-center space-y-2 sm:space-y-3 group">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-full flex items-center justify-center mx-auto text-base sm:text-lg md:text-xl font-bold group-hover:scale-110 transition-transform shadow-lg group-hover:shadow-xl">
                 3
               </div>
-              <h3 className="text-xl font-semibold">Tome Melhores Decisões</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-base sm:text-lg md:text-xl font-semibold">
+                Tome Melhores Decisões
+              </h3>
+              <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
                 Veja insights claros e tome decisões que impulsionam suas
                 vendas.
               </p>
@@ -441,52 +444,52 @@ export default function HomePage() {
       </section>
 
       {/* Contact - Redesigned like portfolio */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
+      <section className="h-screen snap-start snap-always flex items-center px-4 sm:px-6 bg-gradient-to-br from-card/60 via-accent/50 to-secondary/80 dark:from-card/40 dark:via-accent/30 dark:to-secondary/60">
+        <div className="max-w-4xl mx-auto w-full text-center">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
             Vamos Construir Algo Incrível
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 sm:mb-8">
+          <p className="text-xs sm:text-sm md:text-base text-muted-foreground mb-4 sm:mb-6">
             Pronto para parar de adivinhar e começar a saber exatamente o que
             seus clientes querem?
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center mb-4 sm:mb-6">
             <Button
               asChild
               variant="primary-rounded"
               size="lg-rounded"
-              className="hover:scale-105 shadow-lg hover:shadow-xl w-full sm:w-auto"
+              className="hover:scale-105 shadow-lg hover:shadow-xl w-full sm:w-auto text-xs sm:text-sm"
             >
               <Link href="/login">
                 Começar Trial Grátis
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
               </Link>
             </Button>
             <Button
               asChild
               variant="outline-primary"
               size="lg-rounded"
-              className="hover:scale-105 w-full sm:w-auto"
+              className="hover:scale-105 w-full sm:w-auto text-xs sm:text-sm"
             >
               <Link href="mailto:contact@insighthouse.com">
-                <Mail className="mr-2 h-4 w-4" />
+                <Mail className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                 Fale Conosco
               </Link>
             </Button>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 text-xs sm:text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5 sm:gap-2">
-              <Check className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm text-muted-foreground">
+            <span className="flex items-center gap-1 sm:gap-1.5">
+              <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
               <span>14 dias grátis</span>
             </span>
-            <span className="flex items-center gap-1.5 sm:gap-2">
-              <Check className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
+            <span className="flex items-center gap-1 sm:gap-1.5">
+              <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
               <span>Sem cartão de crédito</span>
             </span>
-            <span className="flex items-center gap-1.5 sm:gap-2">
-              <Check className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
+            <span className="flex items-center gap-1 sm:gap-1.5">
+              <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
               <span>Cancele a qualquer momento</span>
             </span>
           </div>
@@ -494,126 +497,37 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-8 sm:py-12 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8">
-            <div className="space-y-3 sm:space-y-4 col-span-2 sm:col-span-1">
+      <footer className="snap-start snap-always border-t py-8 sm:py-12 px-4 sm:px-6 min-h-screen flex items-center">
+        <div className="max-w-6xl mx-auto w-full">
+          <div className="flex flex-col items-center justify-center text-center space-y-6 sm:space-y-8">
+            <div className="space-y-3 sm:space-y-4">
               <h3 className="font-semibold text-base sm:text-lg">
                 InsightHouse
               </h3>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                Analytics for Real Estate. Stop guessing, start knowing.
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-md">
+                Analytics para imobiliárias. Pare de adivinhar, comece a saber.
               </p>
             </div>
 
-            <div className="space-y-3 sm:space-y-4">
-              <h4 className="font-medium text-sm sm:text-base">Product</h4>
-              <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
-                <Link
-                  href="#features"
-                  className="block hover:text-foreground transition-colors"
-                >
-                  Features
-                </Link>
-                <Link
-                  href="/login"
-                  className="block hover:text-foreground transition-colors"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/login"
-                  className="block hover:text-foreground transition-colors"
-                >
-                  Pricing
-                </Link>
-              </div>
-            </div>
-
-            <div className="space-y-3 sm:space-y-4">
-              <h4 className="font-medium text-sm sm:text-base">Company</h4>
-              <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
-                <Link
-                  href="/login"
-                  className="block hover:text-foreground transition-colors"
-                >
-                  About
-                </Link>
-                <Link
-                  href="/login"
-                  className="block hover:text-foreground transition-colors"
-                >
-                  Blog
-                </Link>
-                <Link
-                  href="/login"
-                  className="block hover:text-foreground transition-colors"
-                >
-                  Careers
-                </Link>
-              </div>
-            </div>
-
-            <div className="space-y-3 sm:space-y-4">
-              <h4 className="font-medium text-sm sm:text-base">Support</h4>
-              <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
-                <Link
-                  href="/login"
-                  className="block hover:text-foreground transition-colors"
-                >
-                  Help Center
-                </Link>
-                <Link
-                  href="/login"
-                  className="block hover:text-foreground transition-colors"
-                >
-                  Contact
-                </Link>
-                <Link
-                  href="/login"
-                  className="block hover:text-foreground transition-colors"
-                >
-                  Status
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 pt-6 sm:pt-8 border-t">
-            <span className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
-              © 2025 InsightHouse. All rights reserved.
-            </span>
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-              <Button
-                asChild
-                variant="ghost"
-                size="sm"
-                className="text-xs sm:text-sm"
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+              <Link
+                href="#features"
+                className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                <Link href="/login">Sign In</Link>
-              </Button>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  asChild
-                  className="h-8 w-8 sm:h-9 sm:w-9"
-                >
-                  <Link href="https://github.com" target="_blank">
-                    <Github className="h-3 w-3 sm:h-4 sm:w-4" />
-                  </Link>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  asChild
-                  className="h-8 w-8 sm:h-9 sm:w-9"
-                >
-                  <Link href="https://twitter.com" target="_blank">
-                    <Twitter className="h-3 w-3 sm:h-4 sm:w-4" />
-                  </Link>
-                </Button>
-              </div>
+                Funcionalidades
+              </Link>
+              <Link
+                href="/login"
+                className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Entrar
+              </Link>
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 pt-6 sm:pt-8 border-t w-full">
+              <span className="text-xs sm:text-sm text-muted-foreground">
+                © 2025 InsightHouse. Todos os direitos reservados.
+              </span>
             </div>
           </div>
         </div>
