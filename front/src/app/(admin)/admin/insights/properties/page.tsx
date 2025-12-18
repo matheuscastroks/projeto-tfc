@@ -101,18 +101,18 @@ export default function PropertiesAnalyticsPage() {
     totalViews > 0 ? ((totalFavorites / totalViews) * 100).toFixed(2) : '0'
 
   return (
-    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
+    <div className="space-y-4 sm:space-y-6 pb-4 sm:pb-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
-        <div className="space-y-2 sm:space-y-3">
-          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
-            <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
+        <div className="space-y-1.5 sm:space-y-2">
+          <Badge variant="secondary" className="px-2.5 py-0.5 text-xs">
+            <Building2 className="w-3 h-3 mr-1.5" />
             Análise de Imóveis
           </Badge>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
             Descubra seus imóveis mais populares
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
             Identifique quais imóveis geram mais interesse, visualizações e
             favoritos para priorizar suas estratégias de venda
           </p>
@@ -121,9 +121,9 @@ export default function PropertiesAnalyticsPage() {
       </div>
 
       {/* Metrics and Chart Grid */}
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
         {/* Left Column: Metrics Cards */}
-        <div className="space-y-4 col-span-1">
+        <div className="space-y-3 col-span-1">
           <EnhancedMetricCard
             title="Total de Visualizações"
             value={totalViews.toLocaleString()}
@@ -162,11 +162,11 @@ export default function PropertiesAnalyticsPage() {
         </div>
 
         {/* Right Column: Top Properties Chart */}
-        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out col-span-2 h-full flex flex-col group">
-          <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out col-span-2 h-full flex flex-col group">
+          <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4">
             <div>
-              <CardTitle>Top 5 Imóveis Mais Populares</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-sm sm:text-base">Top 5 Imóveis Mais Populares</CardTitle>
+              <CardDescription className="text-xs">
                 Imóveis com maior pontuação de engajamento
               </CardDescription>
             </div>
@@ -198,7 +198,7 @@ export default function PropertiesAnalyticsPage() {
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </CardHeader>
-          <CardContent className="flex-1 min-h-[300px]">
+          <CardContent className="flex-1 min-h-[250px] sm:min-h-[280px] p-3 sm:p-4">
             <PopularPropertiesChart
               data={popularData}
               isLoading={popularLoading}
@@ -208,13 +208,13 @@ export default function PropertiesAnalyticsPage() {
       </div>
 
       {/* Properties Table with Funnel */}
-      <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-3 sm:space-y-4">
         <SectionHeader
           title="Lista Completa de Imóveis"
           description="Todos os imóveis com métricas de engajamento e leads"
         />
-        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out">
-          <CardContent>
+        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out">
+          <CardContent className="p-3 sm:p-4">
             {popularLoading ? (
               <div className="space-y-2">
                 {[...Array(10)].map((_, i) => (

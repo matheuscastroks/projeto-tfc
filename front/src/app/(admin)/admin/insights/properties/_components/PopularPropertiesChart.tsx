@@ -38,18 +38,18 @@ export function PopularPropertiesChart({
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <Spinner className="h-8 w-8" />
+        <Spinner className="h-6 w-6" />
       </div>
     )
   }
 
   if (!data || !data.properties.length) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center h-full">
-        <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-          <Building2 className="h-8 w-8 text-muted-foreground" />
+      <div className="flex flex-col items-center justify-center py-8 sm:py-10 text-center h-full">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-muted flex items-center justify-center mb-3">
+          <Building2 className="h-6 w-6 sm:h-7 sm:w-7 text-muted-foreground" />
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Nenhum imóvel visualizado no período selecionado
         </p>
       </div>
@@ -69,35 +69,39 @@ export function PopularPropertiesChart({
         <ComposedChart
           data={chartData}
           layout="vertical"
-          margin={{ left: 0, right: 30, top: 10, bottom: 10 }}
+          margin={{ left: 0, right: 25, top: 5, bottom: 5 }}
           barGap={2}
         >
-          <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            horizontal={false}
+            strokeOpacity={0.3}
+          />
           <XAxis type="number" hide />
           <YAxis
             dataKey="codigo"
             type="category"
             tickLine={false}
-            tickMargin={10}
+            tickMargin={8}
             axisLine={false}
-            width={60}
-            className="text-xs font-medium"
+            width={50}
+            tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
           />
           <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-          <Legend />
+          <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }} />
           <Bar
             dataKey="views"
             name="Visualizações"
             fill="var(--color-views)"
             radius={[0, 4, 4, 0]}
-            barSize={20}
+            barSize={16}
           />
           <Bar
             dataKey="leads"
             name="Leads"
             fill="var(--color-leads)"
             radius={[0, 4, 4, 0]}
-            barSize={20}
+            barSize={16}
           />
         </ComposedChart>
       </ResponsiveContainer>

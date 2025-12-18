@@ -82,21 +82,23 @@ export function AcquisitionPanel({
   }
 
   return (
-    <div className="grid lg:grid-cols-2 gap-6 h-full">
+    <div className="grid lg:grid-cols-2 gap-3 sm:gap-4 h-full">
       {/* Sources Panel */}
-      <Card className="shadow-sm border-border/60 flex flex-col">
-        <CardHeader className="pb-2">
+      <Card className="bg-card border border-border/40 shadow-sm flex flex-col">
+        <CardHeader className="p-3 sm:p-4 pb-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Globe className="h-5 w-5 text-primary" />
-              <CardTitle className="text-base">Origem do Tráfego</CardTitle>
+              <Globe className="h-4 w-4 text-primary" />
+              <CardTitle className="text-sm sm:text-base">
+                Origem do Tráfego
+              </CardTitle>
             </div>
           </div>
-          <CardDescription>
+          <CardDescription className="text-xs">
             Canais que geraram conversões
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex-1 min-h-[300px]">
+        <CardContent className="flex-1 min-h-[250px] sm:min-h-[280px] p-3 sm:p-4 pt-0">
           {sourcesChartData.length > 0 ? (
             <ChartContainer config={sourcesConfig} className="w-full h-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -148,16 +150,14 @@ export function AcquisitionPanel({
               <CardTitle className="text-base">Tipos de Conversão</CardTitle>
             </div>
           </div>
-          <CardDescription>
-            Ações realizadas pelos leads
-          </CardDescription>
+          <CardDescription>Ações realizadas pelos leads</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 min-h-[300px] flex items-center justify-center">
           {typesChartData.length > 0 ? (
-            <div className="w-full h-full flex items-center gap-4">
+            <div className="w-full h-full flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
               <ChartContainer
                 config={typesConfig}
-                className="aspect-square h-full max-h-[250px] mx-auto"
+                className="aspect-square h-full max-h-[180px] sm:max-h-[200px] mx-auto"
               >
                 <PieChart>
                   <ChartTooltip

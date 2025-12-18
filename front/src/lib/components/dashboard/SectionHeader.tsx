@@ -17,20 +17,20 @@ export function SectionHeader({
   className,
 }: SectionHeaderProps) {
   return (
-    <div className={cn('flex items-start justify-between gap-3', className)}>
-      <div className="space-y-1">
-        <div className="flex items-center gap-2.5">
+    <div className={cn('flex items-start justify-between gap-2 sm:gap-3', className)}>
+      <div className="space-y-0.5 sm:space-y-1">
+        <div className="flex items-center gap-2">
           {Icon && (
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon className="h-4 w-4 text-primary" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             </div>
           )}
-          <h2 className="text-xl md:text-2xl font-bold tracking-tight">
+          <h2 className="text-base sm:text-lg md:text-xl font-bold tracking-tight">
             {title}
           </h2>
         </div>
         {description && (
-          <p className="text-muted-foreground text-sm leading-relaxed">
+          <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
             {description}
           </p>
         )}

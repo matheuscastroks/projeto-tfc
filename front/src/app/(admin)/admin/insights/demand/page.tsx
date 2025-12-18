@@ -113,18 +113,18 @@ export default function SearchAnalyticsPage() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
+    <div className="space-y-4 sm:space-y-6 pb-4 sm:pb-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
-        <div className="space-y-2 sm:space-y-3">
-          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
-            <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
+        <div className="space-y-1.5 sm:space-y-2">
+          <Badge variant="secondary" className="px-2.5 py-0.5 text-xs">
+            <Search className="w-3 h-3 mr-1.5" />
             Análise de Buscas
           </Badge>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
             Descubra o que seus clientes procuram
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
             Use estes insights para ajustar seu inventário e criar campanhas
             segmentadas para as localidades e características mais procuradas
           </p>
@@ -133,7 +133,7 @@ export default function SearchAnalyticsPage() {
       </div>
 
       {/* Quick Metrics Grid */}
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
         <EnhancedMetricCard
           title="Total de Buscas"
           value={searchData?.totalSearches.toLocaleString() || '0'}
@@ -150,24 +150,24 @@ export default function SearchAnalyticsPage() {
           isLoading={topConvertingFiltersLoading}
         />
 
-        <div className="md:col-span-2">
+        <div className="col-span-2 md:col-span-2">
           <DevicesChart data={devicesData} isLoading={devicesLoading} />
         </div>
       </div>
 
       {/* Section: Location Analysis */}
-      <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-3 sm:space-y-4">
         <SectionHeader
           icon={MapPin}
           title="Análise Geográfica"
           description="Entenda quais cidades e bairros seus visitantes mais procuram"
         />
-        <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
-          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out group">
-            <CardHeader className="flex flex-row items-center justify-between">
+        <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out group">
+            <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4">
               <div>
-                <CardTitle>Cidades Mais Buscadas</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-sm sm:text-base">Cidades Mais Buscadas</CardTitle>
+                <CardDescription className="text-xs">
                   Top 5 cidades com mais pesquisas
                 </CardDescription>
               </div>
@@ -196,10 +196,10 @@ export default function SearchAnalyticsPage() {
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-4">
               {searchLoading ? (
-                <div className="flex items-center justify-center h-48">
-                  <Spinner className="h-8 w-8" />
+                <div className="flex items-center justify-center h-40 sm:h-48">
+                  <Spinner className="h-6 w-6" />
                 </div>
               ) : (
                 <TopCidadesChart data={searchData} />
@@ -207,11 +207,11 @@ export default function SearchAnalyticsPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out group">
-            <CardHeader className="flex flex-row items-center justify-between">
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out group">
+            <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4">
               <div>
-                <CardTitle>Bairros Mais Buscados</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-sm sm:text-base">Bairros Mais Buscados</CardTitle>
+                <CardDescription className="text-xs">
                   Top 5 bairros com mais interesse
                 </CardDescription>
               </div>
@@ -239,18 +239,18 @@ export default function SearchAnalyticsPage() {
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-4">
               <TopBairrosChart data={searchData} isLoading={searchLoading} />
             </CardContent>
           </Card>
 
-          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out group">
-            <CardHeader className="flex flex-row items-center justify-between">
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out group">
+            <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4">
               <div className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
+                <Target className="h-4 w-4 text-primary" />
                 <div>
-                  <CardTitle>Finalidades Mais Buscadas</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-sm sm:text-base">Finalidades Mais Buscadas</CardTitle>
+                  <CardDescription className="text-xs">
                     Distribuição entre venda e aluguel
                   </CardDescription>
                 </div>
@@ -280,10 +280,10 @@ export default function SearchAnalyticsPage() {
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-4">
               {searchLoading ? (
-                <div className="flex items-center justify-center h-64">
-                  <Spinner className="h-8 w-8" />
+                <div className="flex items-center justify-center h-48 sm:h-56">
+                  <Spinner className="h-6 w-6" />
                 </div>
               ) : (
                 <TopFinalidadesChart data={searchData} />
@@ -294,7 +294,7 @@ export default function SearchAnalyticsPage() {
       </div>
 
       {/* Section: Property Features & Price/Area */}
-      <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-3 sm:space-y-4">
         <PropertyFeaturesPanel
           data={searchData}
           isLoading={searchLoading}
@@ -308,14 +308,14 @@ export default function SearchAnalyticsPage() {
       </div>
 
       {/* Section: Top Converting Filters */}
-      <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-3 sm:space-y-4">
         <SectionHeader
           icon={TrendingUp}
           title="Filtros que Mais Convertem"
           description="Combinações de filtros com maior taxa de conversão"
         />
-        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out">
-          <CardContent>
+        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out">
+          <CardContent className="p-3 sm:p-4">
             {topConvertingFiltersLoading ? (
               <div className="flex items-center justify-center h-48">
                 <Spinner className="h-8 w-8" />

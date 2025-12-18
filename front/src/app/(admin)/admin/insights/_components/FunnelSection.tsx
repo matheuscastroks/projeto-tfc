@@ -32,15 +32,15 @@ const COLORS = [
 export function FunnelSection({ data, isLoading }: FunnelSectionProps) {
   if (isLoading) {
     return (
-      <Card className="border-2 h-full">
-        <CardHeader>
-          <CardTitle>Funil de Conversão</CardTitle>
-          <CardDescription>
+      <Card className="bg-card border border-border/40 shadow-sm">
+        <CardHeader className="p-3 sm:p-4">
+          <CardTitle className="text-sm sm:text-base">Funil de Conversão</CardTitle>
+          <CardDescription className="text-xs">
             Jornada do usuário desde a busca até o lead
           </CardDescription>
         </CardHeader>
-        <CardContent className="h-[400px] flex items-center justify-center">
-          <Spinner className="h-8 w-8" />
+        <CardContent className="h-[300px] sm:h-[350px] flex items-center justify-center p-3 sm:p-4">
+          <Spinner className="h-6 w-6" />
         </CardContent>
       </Card>
     )
@@ -98,17 +98,17 @@ export function FunnelSection({ data, isLoading }: FunnelSectionProps) {
   }
 
   return (
-    <Card className="border-2 h-full flex flex-col">
-      <CardHeader>
-        <div className="flex items-center justify-between">
+    <Card className="bg-card border border-border/40 shadow-sm flex flex-col">
+      <CardHeader className="p-3 sm:p-4">
+        <div className="flex items-center justify-between gap-3 sm:gap-4">
           <div>
-            <CardTitle>Funil de Conversão</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-sm sm:text-base">Funil de Conversão</CardTitle>
+            <CardDescription className="text-xs">
               Visualização da jornada do cliente e taxas de conversão
             </CardDescription>
           </div>
-          <div className="text-right">
-            <div className="text-2xl font-bold text-emerald-600">
+          <div className="text-right flex-shrink-0">
+            <div className="text-lg sm:text-xl font-bold text-emerald-600">
               {((data.leads / (data.searches || 1)) * 100).toFixed(2)}%
             </div>
             <div className="text-xs text-muted-foreground">
@@ -117,7 +117,7 @@ export function FunnelSection({ data, isLoading }: FunnelSectionProps) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 min-h-[400px]">
+      <CardContent className="flex-1 min-h-[300px] sm:min-h-[350px] p-3 sm:p-4">
         <ChartContainer config={chartConfig} className="w-full h-full mx-auto max-w-3xl">
           <ResponsiveContainer width="100%" height="100%">
             <FunnelChart>

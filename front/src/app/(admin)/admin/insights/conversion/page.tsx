@@ -113,18 +113,18 @@ export default function ConversionAnalyticsPage() {
   const totalSessions = summaryData?.totalSessions || 0
 
   return (
-    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
+    <div className="space-y-4 sm:space-y-6 pb-4 sm:pb-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
-        <div className="space-y-2 sm:space-y-3">
-          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
-            <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
+        <div className="space-y-1.5 sm:space-y-2">
+          <Badge variant="secondary" className="px-2.5 py-0.5 text-xs">
+            <Target className="w-3 h-3 mr-1.5" />
             Análise de Conversões
           </Badge>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
             Acompanhe suas conversões e leads
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
             Entenda de onde vêm seus leads, quais ações geram mais conversões e
             o perfil dos seus visitantes que se tornam clientes
           </p>
@@ -189,7 +189,7 @@ export default function ConversionAnalyticsPage() {
       </div>
 
       {/* Acquisition & Conversion Panel */}
-      <div className="h-[450px]">
+      <div className="h-[350px] sm:h-[400px]">
         <AcquisitionPanel
           summaryData={summaryData}
           sourcesData={sourcesData}
@@ -198,7 +198,7 @@ export default function ConversionAnalyticsPage() {
       </div>
 
       {/* Lead DNA Panel */}
-      <div className="min-h-[500px]">
+      <div className="min-h-[400px] sm:min-h-[450px]">
         <LeadDNACard data={leadProfileData} isLoading={leadProfileLoading} />
       </div>
 

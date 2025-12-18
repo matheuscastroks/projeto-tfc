@@ -15,7 +15,7 @@ interface KPISectionProps {
 
 export function KPISection({ data, isLoading }: KPISectionProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
+    <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
       <EnhancedMetricCard
         title="Visitantes Únicos"
         value={data?.uniqueVisitors?.toLocaleString() || '0'}

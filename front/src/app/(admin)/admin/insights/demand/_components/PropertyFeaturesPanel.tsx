@@ -48,7 +48,7 @@ const FeatureChart = ({
   } satisfies ChartConfig
 
   return (
-    <ChartContainer config={config} className="h-[120px] w-full">
+    <ChartContainer config={config} className="h-[100px] sm:h-[110px] w-full">
       <BarChart
         accessibilityLayer
         data={chartData}
@@ -90,13 +90,13 @@ const FeatureChart = ({
 export function PropertyFeaturesPanel({ data, isLoading, openDetailsModal }: PropertyFeaturesPanelProps) {
   if (isLoading) {
     return (
-      <Card className="border-2">
-        <CardHeader>
-          <CardTitle>Características de Imóveis</CardTitle>
+      <Card className="bg-card border border-border/40 shadow-sm">
+        <CardHeader className="p-3 sm:p-4">
+          <CardTitle className="text-sm sm:text-base">Características de Imóveis</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex h-[300px] items-center justify-center">
-            <Spinner className="h-8 w-8" />
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex h-[200px] items-center justify-center">
+            <Spinner className="h-6 w-6" />
           </div>
         </CardContent>
       </Card>
@@ -104,24 +104,24 @@ export function PropertyFeaturesPanel({ data, isLoading, openDetailsModal }: Pro
   }
 
   return (
-    <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-      <CardHeader className="pb-4">
+    <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200">
+      <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
         <div className="flex items-center gap-2">
-          <Home className="h-5 w-5 text-primary" />
+          <Home className="h-4 w-4 text-primary" />
           <div>
-            <CardTitle>Características de Imóveis</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-sm sm:text-base">Características de Imóveis</CardTitle>
+            <CardDescription className="text-xs">
               Perfil dos imóveis mais procurados pelos seus visitantes
             </CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <CardContent className="p-3 sm:p-4 pt-0">
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-4">
           {/* Quartos */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Bed className="h-4 w-4" />
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-muted-foreground">
+              <Bed className="h-3.5 w-3.5" />
               <span>Quartos</span>
             </div>
             <FeatureChart
@@ -149,9 +149,9 @@ export function PropertyFeaturesPanel({ data, isLoading, openDetailsModal }: Pro
           </div>
 
           {/* Banheiros */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Bath className="h-4 w-4" />
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-muted-foreground">
+              <Bath className="h-3.5 w-3.5" />
               <span>Banheiros</span>
             </div>
             <FeatureChart
@@ -164,9 +164,9 @@ export function PropertyFeaturesPanel({ data, isLoading, openDetailsModal }: Pro
           </div>
 
           {/* Vagas */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Car className="h-4 w-4" />
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-muted-foreground">
+              <Car className="h-3.5 w-3.5" />
               <span>Vagas</span>
             </div>
             <FeatureChart

@@ -41,7 +41,7 @@ const RangeChart = ({
   } satisfies ChartConfig
 
   return (
-    <ChartContainer config={config} className="h-[250px] w-full">
+    <ChartContainer config={config} className="h-[180px] sm:h-[200px] w-full">
       <BarChart
         accessibilityLayer
         data={chartData}
@@ -83,13 +83,13 @@ const RangeChart = ({
 export function PriceAreaPanel({ data, isLoading, openDetailsModal }: PriceAreaPanelProps) {
   if (isLoading) {
     return (
-      <Card className="border-2">
-        <CardHeader>
-          <CardTitle>Faixas de Preço e Área</CardTitle>
+      <Card className="bg-card border border-border/40 shadow-sm">
+        <CardHeader className="p-3 sm:p-4">
+          <CardTitle className="text-sm sm:text-base">Faixas de Preço e Área</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex h-[300px] items-center justify-center">
-            <Spinner className="h-8 w-8" />
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex h-[200px] items-center justify-center">
+            <Spinner className="h-6 w-6" />
           </div>
         </CardContent>
       </Card>
@@ -102,29 +102,27 @@ export function PriceAreaPanel({ data, isLoading, openDetailsModal }: PriceAreaP
   ].sort((a, b) => b.count - a.count)
 
   return (
-    <Card className="border-2 hover:border-primary/50 transition-all duration-200">
-      <CardHeader className="pb-4">
+    <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200">
+      <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
         <div className="flex items-center gap-2">
-          <DollarSign className="h-5 w-5 text-primary" />
+          <DollarSign className="h-4 w-4 text-primary" />
           <div>
-            <CardTitle>Faixas de Preço e Área</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-sm sm:text-base">Faixas de Preço e Área</CardTitle>
+            <CardDescription className="text-xs">
               Poder de compra e preferências de tamanho dos seus visitantes
             </CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="grid gap-8 md:grid-cols-2">
+      <CardContent className="p-3 sm:p-4 pt-0">
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
           {/* Faixas de Preço */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-md bg-green-500/10">
-                  <DollarSign className="h-4 w-4 text-green-600" />
-                </div>
-                <h3 className="font-semibold text-sm">Faixas de Preço</h3>
+          <div className="space-y-2 sm:space-y-3">
+            <div className="flex items-center gap-1.5">
+              <div className="p-1 rounded-md bg-green-500/10">
+                <DollarSign className="h-3.5 w-3.5 text-green-600" />
               </div>
+              <h3 className="font-semibold text-xs sm:text-sm">Faixas de Preço</h3>
             </div>
             <RangeChart
               data={prices}
@@ -133,14 +131,12 @@ export function PriceAreaPanel({ data, isLoading, openDetailsModal }: PriceAreaP
           </div>
 
           {/* Faixas de Área */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-md bg-blue-500/10">
-                  <Ruler className="h-4 w-4 text-blue-600" />
-                </div>
-                <h3 className="font-semibold text-sm">Faixas de Área</h3>
+          <div className="space-y-2 sm:space-y-3">
+            <div className="flex items-center gap-1.5">
+              <div className="p-1 rounded-md bg-blue-500/10">
+                <Ruler className="h-3.5 w-3.5 text-blue-600" />
               </div>
+              <h3 className="font-semibold text-xs sm:text-sm">Faixas de Área</h3>
             </div>
             <RangeChart
               data={data?.areaRanges || []}

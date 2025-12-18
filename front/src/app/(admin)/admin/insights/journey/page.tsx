@@ -57,18 +57,18 @@ export default function JourneyAnalyticsPage() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
+    <div className="space-y-4 sm:space-y-6 pb-4 sm:pb-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
-        <div className="space-y-2 sm:space-y-3">
-          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
-            <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
+        <div className="space-y-1.5 sm:space-y-2">
+          <Badge variant="secondary" className="px-2.5 py-0.5 text-xs">
+            <Globe className="w-3 h-3 mr-1.5" />
             Jornada do Usuário
           </Badge>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
             Comportamento e Navegação
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
             Entenda como os visitantes navegam pelo seu site e quanto tempo
             passam explorando imóveis.
           </p>
@@ -77,7 +77,7 @@ export default function JourneyAnalyticsPage() {
       </div>
 
       {/* Detailed Metrics */}
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
         <EnhancedMetricCard
           title="Tempo Médio no Site"
           value={journeyData ? formatTime(journeyData.avgTimeOnSite) : '0m 0s'}

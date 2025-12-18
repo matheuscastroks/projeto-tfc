@@ -34,8 +34,8 @@ export function LeadDNACard({ data, isLoading }: LeadDNACardProps) {
 
   if (isLoading) {
     return (
-      <Card className="h-full min-h-[400px] flex items-center justify-center">
-        <Spinner className="h-8 w-8" />
+      <Card className="bg-card border border-border/40 shadow-sm h-full min-h-[300px] flex items-center justify-center">
+        <Spinner className="h-6 w-6" />
       </Card>
     )
   }
@@ -45,45 +45,47 @@ export function LeadDNACard({ data, isLoading }: LeadDNACardProps) {
   const maxInterestCount = data?.topInterests?.[0]?.count || 1
 
   return (
-    <Card className="h-full shadow-sm border-border/60">
-      <CardHeader className="pb-4 border-b">
+    <Card className="bg-card border border-border/40 shadow-sm">
+      <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
-          <div className="space-y-1">
+          <div className="space-y-0.5 sm:space-y-1">
             <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-primary" />
-              <CardTitle className="text-lg">DNA do Lead</CardTitle>
+              <Users className="h-4 w-4 text-primary" />
+              <CardTitle className="text-sm sm:text-base">
+                DNA do Lead
+              </CardTitle>
             </div>
-            <CardDescription>
+            <CardDescription className="text-xs">
               Perfil comportamental e demográfico do seu cliente ideal
             </CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="grid lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x">
+        <div className="grid lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-border/40">
           {/* Coluna 1: Financeiro & Categorias */}
-          <div className="p-6 space-y-8">
+          <div className="p-3 sm:p-4 space-y-4 sm:space-y-5">
             <div>
-              <h4 className="flex items-center gap-2 font-semibold text-sm text-muted-foreground mb-4">
-                <Wallet className="h-4 w-4" />
+              <h4 className="flex items-center gap-1.5 sm:gap-2 font-semibold text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">
+                <Wallet className="h-3.5 w-3.5" />
                 Capacidade Financeira
               </h4>
-              <div className="space-y-4">
-                <div className="p-3 rounded-lg bg-muted/30 border space-y-1">
+              <div className="space-y-2 sm:space-y-3">
+                <div className="p-2 sm:p-2.5 rounded-lg bg-muted/30 border border-border/40 space-y-0.5 sm:space-y-1">
                   <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                     Ticket Médio (Venda)
                   </span>
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-lg sm:text-xl font-bold text-foreground">
                     {data?.averageSaleValue
                       ? formatCurrency(data.averageSaleValue)
                       : 'R$ 0'}
                   </div>
                 </div>
-                <div className="p-3 rounded-lg bg-muted/30 border space-y-1">
+                <div className="p-2 sm:p-2.5 rounded-lg bg-muted/30 border border-border/40 space-y-0.5 sm:space-y-1">
                   <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                     Ticket Médio (Aluguel)
                   </span>
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-lg sm:text-xl font-bold text-foreground">
                     {data?.averageRentalValue
                       ? formatCurrency(data.averageRentalValue)
                       : 'R$ 0'}
@@ -93,8 +95,8 @@ export function LeadDNACard({ data, isLoading }: LeadDNACardProps) {
             </div>
 
             <div>
-              <h4 className="flex items-center gap-2 font-semibold text-sm text-muted-foreground mb-4">
-                <Tag className="h-4 w-4" />
+              <h4 className="flex items-center gap-1.5 sm:gap-2 font-semibold text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">
+                <Tag className="h-3.5 w-3.5" />
                 Preferência de Categoria
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -121,12 +123,12 @@ export function LeadDNACard({ data, isLoading }: LeadDNACardProps) {
           </div>
 
           {/* Coluna 2: Localização (Heatmap List) */}
-          <div className="p-6">
-            <h4 className="flex items-center gap-2 font-semibold text-sm text-muted-foreground mb-6">
-              <MapPin className="h-4 w-4" />
+          <div className="p-3 sm:p-4">
+            <h4 className="flex items-center gap-1.5 sm:gap-2 font-semibold text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
+              <MapPin className="h-3.5 w-3.5" />
               Top Localizações
             </h4>
-            <div className="space-y-4">
+            <div className="space-y-2.5 sm:space-y-3">
               {data?.topCities.slice(0, 8).map((city) => {
                 const percent = (city.count / maxCityCount) * 100
                 return (
@@ -184,19 +186,17 @@ export function LeadDNACard({ data, isLoading }: LeadDNACardProps) {
             </div>
 
             <div>
-              <h4 className="flex items-center gap-2 font-semibold text-sm text-muted-foreground mb-4">
-                <Building2 className="h-4 w-4" />
+              <h4 className="flex items-center gap-1.5 sm:gap-2 font-semibold text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">
+                <Building2 className="h-3.5 w-3.5" />
                 Tipos de Imóvel
               </h4>
-              <div className="space-y-2">
+              <div className="space-y-1.5 sm:space-y-2">
                 {data?.topPropertyTypes.slice(0, 5).map((type, i) => (
                   <div
                     key={type.type}
                     className="flex items-center gap-2 text-sm"
                   >
-                    <div
-                      className="flex items-center justify-center w-6 h-6 rounded bg-muted text-xs font-medium text-muted-foreground"
-                    >
+                    <div className="flex items-center justify-center w-6 h-6 rounded bg-muted text-xs font-medium text-muted-foreground">
                       {i + 1}
                     </div>
                     <span className="flex-1 truncate">{type.type}</span>
