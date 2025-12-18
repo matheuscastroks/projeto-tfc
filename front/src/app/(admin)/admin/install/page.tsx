@@ -55,12 +55,12 @@ export default function InstallPage() {
 
   if (error) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
             Código de Instalação
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-sm sm:text-base text-muted-foreground">
             Integre o rastreamento de analytics ao seu site
           </p>
         </div>
@@ -78,16 +78,16 @@ export default function InstallPage() {
 
   if (!firstSite) {
     return (
-      <div className="space-y-5">
-        <div className="space-y-2">
-          <Badge variant="secondary" className="px-3 py-1">
-            <Code className="w-3.5 h-3.5 mr-1.5" />
+      <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
+        <div className="space-y-2 sm:space-y-3">
+          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
+            <Code className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
             Código de Instalação
           </Badge>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
             Instale o InsightHouse em 5 minutos
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
             Integre o rastreamento de analytics ao seu site e comece a coletar
             dados dos seus visitantes
           </p>
@@ -115,35 +115,35 @@ export default function InstallPage() {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="space-y-2">
-        <Badge variant="secondary" className="px-3 py-1">
-          <Settings className="w-3.5 h-3.5 mr-1.5" />
+    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
+      <div className="space-y-2 sm:space-y-3">
+        <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
+          <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
           Configuração
         </Badge>
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
           Instale o InsightHouse em 5 minutos
         </h1>
-        <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
           Cole uma linha de código no seu site e comece a coletar dados dos
           visitantes automaticamente
         </p>
       </div>
 
       {/* Installation snippet */}
-      <Card className="border-2">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Code className="h-5 w-5 text-primary" />
+      <Card className="bg-card border border-border/40 shadow-sm">
+        <CardHeader className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="space-y-1 sm:space-y-2">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Code className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 </div>
-                <CardTitle className="text-2xl">
+                <CardTitle className="text-lg sm:text-xl md:text-2xl font-semibold">
                   Script de Rastreamento
                 </CardTitle>
               </div>
-              <CardDescription className="text-base">
+              <CardDescription className="text-xs sm:text-sm md:text-base">
                 Copie e cole este código no{' '}
                 <code className="bg-muted px-1.5 py-0.5 rounded font-mono">
                   {'<head>'}
@@ -151,10 +151,12 @@ export default function InstallPage() {
                 do seu site
               </CardDescription>
             </div>
-            <Badge className="font-semibold px-3 py-1">{firstSite.name}</Badge>
+            <Badge className="font-semibold px-3 py-1 text-xs sm:text-sm">
+              {firstSite.name}
+            </Badge>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-4 sm:p-6 space-y-4">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -178,24 +180,28 @@ export default function InstallPage() {
       </Card>
 
       {/* Installation instructions - Steps like landing page */}
-      <div className="space-y-6">
+      <div className="space-y-6 sm:space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold mb-3">Simples como deve ser</h2>
-          <p className="text-muted-foreground text-lg">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">
+            Simples como deve ser
+          </h2>
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
             Não precisa de desenvolvedor. Não precisa de integração complexa.
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
           {/* Step 1 */}
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200 text-center">
-            <CardContent className="pt-6 space-y-4">
-              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto text-3xl font-bold">
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out text-center">
+            <CardContent className="p-4 sm:p-6 pt-6 space-y-3 sm:space-y-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary text-primary-foreground rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto text-2xl sm:text-3xl font-bold">
                 1
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">Cole o código</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2">
+                  Cole o código
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                   Adicione o script no{' '}
                   <code className="bg-muted px-1.5 py-0.5 rounded font-mono">
                     {'<head>'}
@@ -207,7 +213,7 @@ export default function InstallPage() {
           </Card>
 
           {/* Step 2 */}
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200 text-center">
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out text-center">
             <CardContent className="pt-6 space-y-4">
               <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto text-3xl font-bold">
                 2
@@ -223,7 +229,7 @@ export default function InstallPage() {
           </Card>
 
           {/* Step 3 */}
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200 text-center">
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out text-center">
             <CardContent className="pt-6 space-y-4">
               <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto text-3xl font-bold">
                 3
@@ -240,22 +246,24 @@ export default function InstallPage() {
       </div>
 
       {/* Detailed methods */}
-      <Card className="border-2">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <CheckCircle2 className="h-5 w-5 text-primary" />
+      <Card className="bg-card border border-border/40 shadow-sm">
+        <CardHeader className="p-4 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-2xl">Métodos de Instalação</CardTitle>
-              <CardDescription className="text-base mt-1">
+              <CardTitle className="text-lg sm:text-xl md:text-2xl font-semibold">
+                Métodos de Instalação
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm md:text-base mt-1">
                 Escolha o método que melhor se adequa ao seu site
               </CardDescription>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-8">
+        <CardContent className="p-4 sm:p-6">
+          <div className="space-y-6 sm:space-y-8">
             {/* Method 1: Direct HTML */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -273,7 +281,7 @@ export default function InstallPage() {
                 </code>{' '}
                 do seu site, preferencialmente logo após a abertura da tag.
               </p>
-              <pre className="ml-11 p-4 bg-muted border-2 rounded-xl text-xs overflow-auto font-mono">
+              <pre className="ml-11 p-4 bg-muted border border-border/40 rounded-xl text-xs overflow-auto font-mono">
                 {`<!DOCTYPE html>
 <html>
   <head>
@@ -317,20 +325,22 @@ export default function InstallPage() {
       </Card>
 
       {/* Benefits Grid */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="border-2 text-center">
-          <CardContent className="pt-6 space-y-3">
-            <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto">
-              <Zap className="h-6 w-6 text-green-600" />
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
+        <Card className="bg-card border border-border/40 shadow-sm text-center">
+          <CardContent className="p-4 sm:p-6 pt-6 space-y-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto">
+              <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
             </div>
-            <h3 className="font-semibold">Sem impacto na performance</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="text-sm sm:text-base font-semibold">
+              Sem impacto na performance
+            </h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Script assíncrono não afeta a velocidade do seu site
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-2 text-center">
+        <Card className="bg-card border border-border/40 shadow-sm text-center">
           <CardContent className="pt-6 space-y-3">
             <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto">
               <Timer className="h-6 w-6 text-blue-600" />
@@ -342,7 +352,7 @@ export default function InstallPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-2 text-center">
+        <Card className="bg-card border border-border/40 shadow-sm text-center">
           <CardContent className="pt-6 space-y-3">
             <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mx-auto">
               <CheckCircle2 className="h-6 w-6 text-purple-600" />
@@ -356,14 +366,19 @@ export default function InstallPage() {
       </div>
 
       {/* Quick actions */}
-      <div className="flex gap-3">
-        <Button asChild variant="outline" size="lg">
+      <div className="flex flex-col sm:flex-row gap-3">
+        <Button
+          asChild
+          variant="outline"
+          size="lg"
+          className="w-full sm:w-auto"
+        >
           <Link href="/admin/sites">
             <Globe className="h-4 w-4 mr-2" />
             Gerenciar Sites
           </Link>
         </Button>
-        <Button asChild size="lg">
+        <Button asChild size="lg" className="w-full sm:w-auto">
           <Link href="/admin/insights">
             Ver Análises
             <CheckCircle2 className="ml-2 h-4 w-4" />

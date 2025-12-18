@@ -62,12 +62,16 @@ export default function EditSitePage({
 
   if (error || !site) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Editar Site</h1>
-          <p className="text-muted-foreground text-lg">Site não encontrado</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+            Editar Site
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Site não encontrado
+          </p>
         </div>
-        <Card>
+        <Card className="bg-card border border-border/40 shadow-sm">
           <CardContent className="pt-6">
             <div className="text-sm text-destructive mb-4">
               Não foi possível carregar as informações do site.
@@ -85,11 +89,13 @@ export default function EditSitePage({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Editar Site</h1>
-          <p className="text-muted-foreground text-lg">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+            Editar Site
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Atualize as configurações e informações do site
           </p>
         </div>
@@ -101,17 +107,17 @@ export default function EditSitePage({
         </Button>
       </div>
 
-      <Card className="shadow-layer-4">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Globe className="h-5 w-5" />
+      <Card className="bg-card border border-border/40 shadow-sm">
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl md:text-2xl font-semibold">
+            <Globe className="h-4 w-4 sm:h-5 sm:w-5" />
             Informações do Site
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm md:text-base mt-1">
             Atualize o nome e o status do site conforme necessário
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-6">
           <EditSiteForm
             site={{
               id: site.id,

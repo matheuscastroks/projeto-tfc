@@ -87,7 +87,7 @@ export default function PropertiesAnalyticsPage() {
   if (!selectedSiteKey) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground px-4 text-center">
           Por favor, selecione um site para visualizar as análises
         </p>
       </div>
@@ -101,18 +101,18 @@ export default function PropertiesAnalyticsPage() {
     totalViews > 0 ? ((totalFavorites / totalViews) * 100).toFixed(2) : '0'
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <Badge variant="secondary" className="px-3 py-1">
-            <Building2 className="w-3.5 h-3.5 mr-1.5" />
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
+        <div className="space-y-2 sm:space-y-3">
+          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
+            <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
             Análise de Imóveis
           </Badge>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
             Descubra seus imóveis mais populares
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
             Identifique quais imóveis geram mais interesse, visualizações e
             favoritos para priorizar suas estratégias de venda
           </p>
@@ -121,7 +121,7 @@ export default function PropertiesAnalyticsPage() {
       </div>
 
       {/* Metrics and Chart Grid */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
         {/* Left Column: Metrics Cards */}
         <div className="space-y-4 col-span-1">
           <EnhancedMetricCard
@@ -162,7 +162,7 @@ export default function PropertiesAnalyticsPage() {
         </div>
 
         {/* Right Column: Top Properties Chart */}
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200 col-span-2 h-full flex flex-col">
+        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out col-span-2 h-full flex flex-col group">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle>Top 5 Imóveis Mais Populares</CardTitle>
@@ -208,12 +208,12 @@ export default function PropertiesAnalyticsPage() {
       </div>
 
       {/* Properties Table with Funnel */}
-      <div className="space-y-4">
+      <div className="space-y-4 sm:space-y-6">
         <SectionHeader
           title="Lista Completa de Imóveis"
           description="Todos os imóveis com métricas de engajamento e leads"
         />
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200">
+        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out">
           <CardContent>
             {popularLoading ? (
               <div className="space-y-2">

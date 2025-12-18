@@ -57,10 +57,12 @@ export function SitesClient() {
 
   if (error) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Gerenciar Sites</h1>
-          <p className="text-muted-foreground text-lg">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+            Gerenciar Sites
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Configure e monitore seus sites imobiliários
           </p>
         </div>
@@ -80,20 +82,22 @@ export function SitesClient() {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <Badge variant="secondary" className="px-3 py-1">
-            <Globe className="w-3.5 h-3.5 mr-1.5" />
+    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
+        <div className="space-y-2 sm:space-y-3">
+          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
+            <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
             Gerenciamento de Sites
           </Badge>
-          <h1 className="text-3xl font-bold tracking-tight">Gerenciar Sites</h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+            Gerenciar Sites
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
             Cadastre seus domínios e comece a rastrear visitantes para gerar
             insights poderosos sobre suas campanhas
           </p>
         </div>
-        <Button asChild size="default" className="font-semibold">
+        <Button asChild size="default" className="font-semibold w-full sm:w-auto">
           <Link href="/admin/sites/new">
             <Plus className="h-4 w-4 mr-2" />
             Adicionar Novo Site
@@ -112,48 +116,50 @@ export function SitesClient() {
           }}
         />
       ) : (
-        <div className="grid gap-6">
+        <div className="grid gap-4 sm:gap-6">
           {sites?.map((s) => (
             <Card
               key={s.id}
-              className="border-2 hover:border-primary/50 transition-all duration-200 hover:shadow-lg"
+              className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out"
             >
-              <CardHeader>
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                        <Globe className="h-6 w-6 text-primary" />
+              <CardHeader className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
+                  <div className="flex-1 space-y-3 sm:space-y-4 w-full">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Globe className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <CardTitle className="text-2xl">{s.name}</CardTitle>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-1">
+                          <CardTitle className="text-lg sm:text-xl md:text-2xl font-semibold">
+                            {s.name}
+                          </CardTitle>
                           <Badge
                             variant={
                               s.status === 'active' ? 'default' : 'secondary'
                             }
-                            className="flex items-center gap-1"
+                            className="flex items-center gap-1 text-xs sm:text-sm"
                           >
                             <CheckCircle2 className="h-3 w-3" />
                             {s.status === 'active' ? 'Ativo' : 'Inativo'}
                           </Badge>
                         </div>
-                        <CardDescription className="flex items-center gap-2 text-sm">
+                        <CardDescription className="flex flex-wrap items-center gap-2 text-xs sm:text-sm mt-2">
                           <Key className="h-3.5 w-3.5" />
-                          <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
+                          <code className="bg-muted px-2 py-1 rounded font-mono text-xs break-all">
                             {s.siteKey}
                           </code>
                         </CardDescription>
                       </div>
                     </div>
                     {s.domains && s.domains.length > 0 && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground pl-[60px]">
+                      <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-muted-foreground pl-0 sm:pl-[60px]">
                         <ExternalLink className="h-4 w-4" />
                         <a
                           href={`https://${s.domains.find((d) => d.isPrimary)?.host || s.domains[0]?.host}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="hover:text-primary transition-colors"
+                          className="hover:text-primary transition-colors break-all"
                         >
                           {s.domains.find((d) => d.isPrimary)?.host ||
                             s.domains[0]?.host}
@@ -166,13 +172,14 @@ export function SitesClient() {
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 self-start sm:self-center">
                     <Button
                       asChild
                       variant="outline"
                       size="icon"
                       aria-label="Editar site"
                       title="Editar site"
+                      className="h-8 w-8 sm:h-9 sm:w-9"
                     >
                       <Link href={`/admin/sites/${s.id}/edit`}>
                         <Pencil className="h-4 w-4" />
@@ -182,21 +189,21 @@ export function SitesClient() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  <Button asChild variant="outline" size="sm">
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
                     <Link
                       href="/admin/install"
-                      className="flex items-center gap-2"
+                      className="flex items-center justify-center gap-2"
                     >
                       <Key className="h-4 w-4" />
                       Ver Código de Instalação
                     </Link>
                   </Button>
-                  <Button asChild variant="default" size="sm">
+                  <Button asChild variant="default" size="sm" className="w-full sm:w-auto">
                     <Link
                       href="/admin/insights"
-                      className="flex items-center gap-2"
+                      className="flex items-center justify-center gap-2"
                     >
                       <BarChart3 className="h-4 w-4" />
                       Ver Análises

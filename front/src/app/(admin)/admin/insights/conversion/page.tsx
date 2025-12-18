@@ -97,7 +97,7 @@ export default function ConversionAnalyticsPage() {
   if (!selectedSiteKey) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground px-4 text-center">
           Por favor, selecione um site para visualizar as análises
         </p>
       </div>
@@ -113,18 +113,18 @@ export default function ConversionAnalyticsPage() {
   const totalSessions = summaryData?.totalSessions || 0
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <Badge variant="secondary" className="px-3 py-1">
-            <Target className="w-3.5 h-3.5 mr-1.5" />
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
+        <div className="space-y-2 sm:space-y-3">
+          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
+            <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
             Análise de Conversões
           </Badge>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
             Acompanhe suas conversões e leads
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
             Entenda de onde vêm seus leads, quais ações geram mais conversões e
             o perfil dos seus visitantes que se tornam clientes
           </p>
@@ -143,7 +143,7 @@ export default function ConversionAnalyticsPage() {
       )}
 
       {/* Quick Metrics Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
         <EnhancedMetricCard
           title="Taxa de Conversão"
           value={`${conversionRate.toFixed(2)}%`}
@@ -199,10 +199,7 @@ export default function ConversionAnalyticsPage() {
 
       {/* Lead DNA Panel */}
       <div className="min-h-[500px]">
-        <LeadDNACard
-          data={leadProfileData}
-          isLoading={leadProfileLoading}
-        />
+        <LeadDNACard data={leadProfileData} isLoading={leadProfileLoading} />
       </div>
 
       {/* Details Modal */}

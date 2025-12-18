@@ -54,11 +54,13 @@ export default function NewSitePage() {
     : ''
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Novo Site</h1>
-          <p className="text-muted-foreground text-lg">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+            Novo Site
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Adicione um novo site para começar a rastrear visitantes e gerar
             insights
           </p>
@@ -71,17 +73,17 @@ export default function NewSitePage() {
         </Button>
       </div>
 
-      <Card className="shadow-layer-4">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Globe className="h-5 w-5" />
+      <Card className="bg-card border border-border/40 shadow-sm">
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl md:text-2xl font-semibold">
+            <Globe className="h-4 w-4 sm:h-5 sm:w-5" />
             Informações do Site
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm md:text-base mt-1">
             Preencha os dados abaixo para criar um novo site
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -135,18 +137,18 @@ export default function NewSitePage() {
       </Card>
 
       {loaderUrl && (
-        <Card className="shadow-layer-4 border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary">
-              <CheckCircle2 className="h-5 w-5" />
+        <Card className="bg-card border border-primary/20 shadow-sm">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-primary text-lg sm:text-xl md:text-2xl font-semibold">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" />
               Site Criado com Sucesso!
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm md:text-base mt-1">
               Seu site foi criado com sucesso! Você será redirecionado para a
               lista de sites em alguns segundos.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             <Alert className="bg-primary/5 border-primary/20">
               <AlertDescription>
                 Copie o snippet abaixo e adicione ao seu site para começar a
@@ -174,10 +176,11 @@ export default function NewSitePage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 pt-2 border-t">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 border-t border-border/50 dark:border-border/30">
               <Button
                 variant="outline"
                 onClick={() => router.push('/admin/sites')}
+                className="w-full sm:w-auto"
               >
                 Ver Lista de Sites
               </Button>
@@ -189,6 +192,7 @@ export default function NewSitePage() {
                   setLoaderUrl(null)
                   setSiteKey(null)
                 }}
+                className="w-full sm:w-auto"
               >
                 Criar Outro Site
               </Button>

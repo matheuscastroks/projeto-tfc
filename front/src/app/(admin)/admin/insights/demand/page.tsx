@@ -105,7 +105,7 @@ export default function SearchAnalyticsPage() {
   if (!selectedSiteKey) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground px-4 text-center">
           Por favor, selecione um site para visualizar as análises
         </p>
       </div>
@@ -113,18 +113,18 @@ export default function SearchAnalyticsPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <Badge variant="secondary" className="px-3 py-1">
-            <Search className="w-3.5 h-3.5 mr-1.5" />
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
+        <div className="space-y-2 sm:space-y-3">
+          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
+            <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
             Análise de Buscas
           </Badge>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
             Descubra o que seus clientes procuram
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
             Use estes insights para ajustar seu inventário e criar campanhas
             segmentadas para as localidades e características mais procuradas
           </p>
@@ -133,7 +133,7 @@ export default function SearchAnalyticsPage() {
       </div>
 
       {/* Quick Metrics Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
         <EnhancedMetricCard
           title="Total de Buscas"
           value={searchData?.totalSearches.toLocaleString() || '0'}
@@ -151,19 +151,19 @@ export default function SearchAnalyticsPage() {
         />
 
         <div className="md:col-span-2">
-           <DevicesChart data={devicesData} isLoading={devicesLoading} />
+          <DevicesChart data={devicesData} isLoading={devicesLoading} />
         </div>
       </div>
 
       {/* Section: Location Analysis */}
-      <div className="space-y-4">
+      <div className="space-y-4 sm:space-y-6">
         <SectionHeader
           icon={MapPin}
           title="Análise Geográfica"
           description="Entenda quais cidades e bairros seus visitantes mais procuram"
         />
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out group">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Cidades Mais Buscadas</CardTitle>
@@ -207,7 +207,7 @@ export default function SearchAnalyticsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out group">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Bairros Mais Buscados</CardTitle>
@@ -244,7 +244,7 @@ export default function SearchAnalyticsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-2 hover:border-primary/50 transition-all duration-200">
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out group">
             <CardHeader className="flex flex-row items-center justify-between">
               <div className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-primary" />
@@ -294,19 +294,27 @@ export default function SearchAnalyticsPage() {
       </div>
 
       {/* Section: Property Features & Price/Area */}
-      <div className="space-y-6">
-        <PropertyFeaturesPanel data={searchData} isLoading={searchLoading} openDetailsModal={openDetailsModal} />
-        <PriceAreaPanel data={searchData} isLoading={searchLoading} openDetailsModal={openDetailsModal} />
+      <div className="space-y-4 sm:space-y-6">
+        <PropertyFeaturesPanel
+          data={searchData}
+          isLoading={searchLoading}
+          openDetailsModal={openDetailsModal}
+        />
+        <PriceAreaPanel
+          data={searchData}
+          isLoading={searchLoading}
+          openDetailsModal={openDetailsModal}
+        />
       </div>
 
       {/* Section: Top Converting Filters */}
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <SectionHeader
           icon={TrendingUp}
           title="Filtros que Mais Convertem"
           description="Combinações de filtros com maior taxa de conversão"
         />
-        <Card className="border-2 hover:border-primary/50 transition-all duration-200">
+        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out">
           <CardContent>
             {topConvertingFiltersLoading ? (
               <div className="flex items-center justify-center h-48">
