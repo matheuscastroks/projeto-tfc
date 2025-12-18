@@ -121,9 +121,9 @@ export default function PropertiesAnalyticsPage() {
       </div>
 
       {/* Metrics and Chart Grid */}
-      <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
-        {/* Left Column: Metrics Cards */}
-        <div className="space-y-3 col-span-1">
+      <div className="space-y-3 sm:space-y-4">
+        {/* Top Row: Metrics Cards */}
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
           <EnhancedMetricCard
             title="Total de Visualizações"
             value={totalViews.toLocaleString()}
@@ -161,8 +161,8 @@ export default function PropertiesAnalyticsPage() {
           />
         </div>
 
-        {/* Right Column: Top Properties Chart */}
-        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out col-span-2 h-full flex flex-col group">
+        {/* Bottom Row: Top Properties Chart */}
+        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out group">
           <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4">
             <div>
               <CardTitle className="text-sm sm:text-base">Top 5 Imóveis Mais Populares</CardTitle>
@@ -198,7 +198,7 @@ export default function PropertiesAnalyticsPage() {
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </CardHeader>
-          <CardContent className="flex-1 min-h-[250px] sm:min-h-[280px] p-3 sm:p-4">
+          <CardContent className="min-h-[250px] sm:min-h-[280px] p-3 sm:p-4">
             <PopularPropertiesChart
               data={popularData}
               isLoading={popularLoading}
@@ -208,28 +208,30 @@ export default function PropertiesAnalyticsPage() {
       </div>
 
       {/* Properties Table with Funnel */}
-      <div className="space-y-3 sm:space-y-4">
-        <SectionHeader
-          title="Lista Completa de Imóveis"
-          description="Todos os imóveis com métricas de engajamento e leads"
-        />
-        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out">
-          <CardContent className="p-3 sm:p-4">
-            {popularLoading ? (
-              <div className="space-y-2">
-                {[...Array(10)].map((_, i) => (
-                  <Skeleton key={i} className="h-16 w-full" />
-                ))}
-              </div>
-            ) : popularData?.properties && popularData.properties.length > 0 ? (
-              <PopularPropertiesTable data={popularData.properties} />
-            ) : (
-              <p className="text-center text-muted-foreground py-8">
-                Nenhum dado disponível
-              </p>
-            )}
-          </CardContent>
-        </Card>
+      <div className="pt-6 border-t border-border/30">
+        <div className="space-y-3 sm:space-y-4">
+          <SectionHeader
+            title="Lista Completa de Imóveis"
+            description="Todos os imóveis com métricas de engajamento e leads"
+          />
+          <Card className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out">
+            <CardContent className="p-3 sm:p-4">
+              {popularLoading ? (
+                <div className="space-y-2">
+                  {[...Array(10)].map((_, i) => (
+                    <Skeleton key={i} className="h-16 w-full" />
+                  ))}
+                </div>
+              ) : popularData?.properties && popularData.properties.length > 0 ? (
+                <PopularPropertiesTable data={popularData.properties} />
+              ) : (
+                <p className="text-center text-muted-foreground py-8">
+                  Nenhum dado disponível
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* Details Modal */}

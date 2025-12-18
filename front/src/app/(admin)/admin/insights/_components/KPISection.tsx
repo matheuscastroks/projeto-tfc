@@ -4,7 +4,6 @@ import {
   MousePointerClick,
   TrendingUp,
   Building2,
-  Heart,
 } from 'lucide-react'
 import { GlobalKPIsResponse } from '@/lib/types/insights'
 
@@ -15,7 +14,7 @@ interface KPISectionProps {
 
 export function KPISection({ data, isLoading }: KPISectionProps) {
   return (
-    <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+    <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
       <EnhancedMetricCard
         title="Visitantes Únicos"
         value={data?.uniqueVisitors?.toLocaleString() || '0'}
@@ -47,13 +46,6 @@ export function KPISection({ data, isLoading }: KPISectionProps) {
         value={data?.avgPropertiesViewed?.toFixed(1) || '0'}
         subtitle="Imóveis vistos por sessão"
         icon={Building2}
-        isLoading={isLoading}
-      />
-      <EnhancedMetricCard
-        title="Favoritos"
-        value={data?.totalFavorites?.toLocaleString() || '0'}
-        subtitle="Total de imóveis favoritados"
-        icon={Heart}
         isLoading={isLoading}
       />
     </div>

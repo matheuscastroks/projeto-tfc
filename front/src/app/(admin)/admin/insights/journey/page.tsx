@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useSiteContext } from '@/lib/providers/SiteProvider'
 import { useJourneyStats } from '@/lib/hooks/useInsights'
-import { JourneySection } from '../_components/JourneySection'
 import { PeriodSelector } from '@/lib/components/insights/PeriodSelector'
 import { Badge } from '@ui/badge'
 import { Globe, Clock, Layers, Users } from 'lucide-react'
@@ -139,9 +138,6 @@ export default function JourneyAnalyticsPage() {
           }
         />
       </div>
-
-      {/* Journey Section */}
-      <JourneySection data={journeyData} isLoading={journeyLoading} />
     </div>
   )
 }

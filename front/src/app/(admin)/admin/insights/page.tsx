@@ -68,7 +68,7 @@ export default function InsightsOverviewPage() {
     })
   }
 
-  // --- NEW HOOKS ---
+  // --- DATA HOOKS ---
   const { data: kpiData, isLoading: isLoadingKPI } = useGlobalKPIs(
     selectedSiteKey || '',
     dateQuery
@@ -90,8 +90,6 @@ export default function InsightsOverviewPage() {
     dateQuery
   )
 
-
-  // --- EXISTING HOOKS (Keep for recommendations and other charts) ---
   const { data: searchData, isLoading: searchLoading } = useSearchSummary(
     selectedSiteKey || '',
     { limit: 10, ...dateQuery }
@@ -149,230 +147,274 @@ export default function InsightsOverviewPage() {
         <PeriodSelector onPeriodChange={handlePeriodChange} />
       </div>
 
-      {/* 1. Global KPIs */}
+      {/* 1. Top KPI Cards */}
       <KPISection data={kpiData} isLoading={isLoadingKPI} />
 
-      {/* 2. Quick Links to Detailed Sections */}
-      <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
-        <Card
-          className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out cursor-pointer group"
-          onClick={() => (window.location.href = '/admin/insights/funnel')}
-        >
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Target className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-              <CardTitle className="text-sm sm:text-base font-semibold">
-                Funil de Vendas
+      {/* 2. Primary Chart - Devices Timeline */}
+      <div className="pt-6 border-t border-border/30">
+        <Card className="bg-card border border-border/40 shadow-sm hover:shadow-lg transition-all duration-200 ease-out">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-primary" />
+              <CardTitle className="text-lg font-semibold">
+                Acessos por Dispositivo
               </CardTitle>
             </div>
-            <CardDescription className="text-xs mb-3">
-              Visualize a jornada completa do cliente
+            <CardDescription className="text-xs">
+              Evolução temporal dos visitantes por tipo de dispositivo
             </CardDescription>
-            {funnelLoading ? (
-              <Spinner className="h-4 w-4" />
-            ) : funnelData ? (
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Buscas</span>
-                  <span className="font-medium">
-                    {funnelData.searches.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Leads</span>
-                  <span className="font-medium">
-                    {funnelData.leads.toLocaleString()}
-                  </span>
-                </div>
+          </CardHeader>
+          <CardContent>
+            {isLoadingDevices ? (
+              <div className="flex items-center justify-center py-12">
+                <Spinner className="h-6 w-6" />
               </div>
+            ) : devicesData ? (
+              <DevicesChart data={devicesData} isLoading={false} />
             ) : (
-              <p className="text-xs text-muted-foreground">Sem dados</p>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card
-          className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out cursor-pointer group"
-          onClick={() => (window.location.href = '/admin/insights/properties')}
-        >
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Building2 className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-              <CardTitle className="text-sm sm:text-base font-semibold">
-                Imóveis
-              </CardTitle>
-            </div>
-            <CardDescription className="text-xs mb-3">
-              Performance dos seus anúncios
-            </CardDescription>
-            {isLoadingProperty ? (
-              <Spinner className="h-4 w-4" />
-            ) : propertiesData ? (
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">
-                    Imóveis rastreados
-                  </span>
-                  <span className="font-medium">
-                    {propertiesData.properties.length}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Mais popular</span>
-                  <span className="font-medium">
-                    #{propertiesData.properties[0]?.codigo || 'N/A'}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <p className="text-xs text-muted-foreground">Sem dados</p>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card
-          className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out cursor-pointer group"
-          onClick={() => (window.location.href = '/admin/insights/demand')}
-        >
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Search className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-              <CardTitle className="text-sm sm:text-base font-semibold">
-                Demanda
-              </CardTitle>
-            </div>
-            <CardDescription className="text-xs mb-3">
-              O que seus clientes procuram
-            </CardDescription>
-            {searchLoading ? (
-              <Spinner className="h-4 w-4" />
-            ) : searchData ? (
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Total de buscas</span>
-                  <span className="font-medium">
-                    {searchData.totalSearches.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">
-                    Cidade mais buscada
-                  </span>
-                  <span className="font-medium">
-                    {searchData.topCidades[0]?.cidade || 'N/A'}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <p className="text-xs text-muted-foreground">Sem dados</p>
+              <p className="text-sm text-muted-foreground py-8 text-center">
+                Sem dados disponíveis
+              </p>
             )}
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-        <Card
-          className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out cursor-pointer group"
-          onClick={() => (window.location.href = '/admin/insights/journey')}
-        >
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Globe className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-              <CardTitle className="text-sm sm:text-base font-semibold">
-                Jornada
-              </CardTitle>
-            </div>
-            <CardDescription className="text-xs mb-3">
-              Comportamento dos visitantes
-            </CardDescription>
-            {isLoadingJourney ? (
-              <Spinner className="h-4 w-4" />
-            ) : journeyData ? (
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">
-                    Tempo médio no site
-                  </span>
-                  <span className="font-medium">
-                    {Math.floor(journeyData.avgTimeOnSite / 60)}m{' '}
-                    {Math.floor(journeyData.avgTimeOnSite % 60)}s
-                  </span>
+      {/* 3. Quick Access Navigation Cards - Grid Layout */}
+      <div className="pt-6 border-t border-border/30">
+        <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {/* Funnel Card */}
+          <Card
+            className="bg-card border border-border/40 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
+            onClick={() => (window.location.href = '/admin/insights/funnel')}
+          >
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Target className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
                 </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">
-                    Páginas por sessão
-                  </span>
-                  <span className="font-medium">
-                    {journeyData.avgPageDepth.toFixed(1)}
-                  </span>
-                </div>
+                <CardTitle className="text-base font-semibold">
+                  Funil de Vendas
+                </CardTitle>
               </div>
-            ) : (
-              <p className="text-xs text-muted-foreground">Sem dados</p>
-            )}
-          </CardContent>
-        </Card>
+              <CardDescription className="text-xs mb-4">
+                Visualize a jornada completa do cliente
+              </CardDescription>
+              {funnelLoading ? (
+                <Spinner className="h-4 w-4" />
+              ) : funnelData ? (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Buscas</span>
+                    <span className="font-semibold">
+                      {funnelData.searches.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Leads</span>
+                    <span className="font-semibold">
+                      {funnelData.leads.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">Sem dados</p>
+              )}
+            </CardContent>
+          </Card>
 
-        <Card
-          className="bg-card border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 ease-out cursor-pointer group"
-          onClick={() => (window.location.href = '/admin/insights/conversion')}
-        >
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Target className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-              <CardTitle className="text-sm sm:text-base font-semibold">
-                Conversões
-              </CardTitle>
-            </div>
-            <CardDescription className="text-xs mb-3">
-              Leads e taxa de conversão
-            </CardDescription>
-            {conversionLoading ? (
-              <Spinner className="h-4 w-4" />
-            ) : conversionData ? (
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">
-                    Total de conversões
-                  </span>
-                  <span className="font-medium">
-                    {conversionData.totalConversions.toLocaleString()}
-                  </span>
+          {/* Properties Card */}
+          <Card
+            className="bg-card border border-border/40 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
+            onClick={() => (window.location.href = '/admin/insights/properties')}
+          >
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Building2 className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
                 </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">
-                    Taxa de conversão
-                  </span>
-                  <span className="font-medium">
-                    {conversionData.conversionRate.toFixed(2)}%
-                  </span>
-                </div>
+                <CardTitle className="text-base font-semibold">
+                  Imóveis
+                </CardTitle>
               </div>
-            ) : (
-              <p className="text-xs text-muted-foreground">Sem dados</p>
-            )}
-          </CardContent>
-        </Card>
+              <CardDescription className="text-xs mb-4">
+                Performance dos seus anúncios
+              </CardDescription>
+              {isLoadingProperty ? (
+                <Spinner className="h-4 w-4" />
+              ) : propertiesData ? (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">
+                      Imóveis rastreados
+                    </span>
+                    <span className="font-semibold">
+                      {propertiesData.properties.length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Mais popular</span>
+                    <span className="font-semibold">
+                      #{propertiesData.properties[0]?.codigo || 'N/A'}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">Sem dados</p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Demand Card */}
+          <Card
+            className="bg-card border border-border/40 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
+            onClick={() => (window.location.href = '/admin/insights/demand')}
+          >
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Search className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
+                </div>
+                <CardTitle className="text-base font-semibold">
+                  Demanda
+                </CardTitle>
+              </div>
+              <CardDescription className="text-xs mb-4">
+                O que seus clientes procuram
+              </CardDescription>
+              {searchLoading ? (
+                <Spinner className="h-4 w-4" />
+              ) : searchData ? (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Total de buscas</span>
+                    <span className="font-semibold">
+                      {searchData.totalSearches.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">
+                      Cidade mais buscada
+                    </span>
+                    <span className="font-semibold">
+                      {searchData.topCidades[0]?.cidade || 'N/A'}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">Sem dados</p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Journey Card */}
+          <Card
+            className="bg-card border border-border/40 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
+            onClick={() => (window.location.href = '/admin/insights/journey')}
+          >
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Globe className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
+                </div>
+                <CardTitle className="text-base font-semibold">
+                  Jornada
+                </CardTitle>
+              </div>
+              <CardDescription className="text-xs mb-4">
+                Comportamento dos visitantes
+              </CardDescription>
+              {isLoadingJourney ? (
+                <Spinner className="h-4 w-4" />
+              ) : journeyData ? (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">
+                      Tempo médio no site
+                    </span>
+                    <span className="font-semibold">
+                      {Math.floor(journeyData.avgTimeOnSite / 60)}m{' '}
+                      {Math.floor(journeyData.avgTimeOnSite % 60)}s
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">
+                      Páginas por sessão
+                    </span>
+                    <span className="font-semibold">
+                      {journeyData.avgPageDepth.toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">Sem dados</p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Conversions Card */}
+          <Card
+            className="bg-card border border-border/40 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
+            onClick={() => (window.location.href = '/admin/insights/conversion')}
+          >
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Target className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200" />
+                </div>
+                <CardTitle className="text-base font-semibold">
+                  Conversões
+                </CardTitle>
+              </div>
+              <CardDescription className="text-xs mb-4">
+                Leads e taxa de conversão
+              </CardDescription>
+              {conversionLoading ? (
+                <Spinner className="h-4 w-4" />
+              ) : conversionData ? (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">
+                      Total de conversões
+                    </span>
+                    <span className="font-semibold">
+                      {conversionData.totalConversions.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">
+                      Taxa de conversão
+                    </span>
+                    <span className="font-semibold">
+                      {conversionData.conversionRate.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">Sem dados</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
-
-      {/* 3. Devices Chart */}
-      <DevicesChart data={devicesData} isLoading={isLoadingDevices} />
 
       {/* 4. Campaign Recommendations */}
       {recommendations.length > 0 && (
-        <div className="space-y-3 sm:space-y-4">
-          <SectionHeader
-            icon={Lightbulb}
-            title="Recomendações de Campanhas"
-            description="Insights acionáveis baseados no comportamento dos visitantes do seu site"
-          />
-          <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-            {recommendations.map((recommendation) => (
-              <RecommendationCard
-                key={recommendation.id}
-                recommendation={recommendation}
-              />
-            ))}
+        <div className="pt-8 border-t border-border/30">
+          <div className="space-y-3 sm:space-y-4">
+            <SectionHeader
+              icon={Lightbulb}
+              title="Recomendações de Campanhas"
+              description="Insights acionáveis baseados no comportamento dos visitantes do seu site"
+            />
+            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+              {recommendations.map((recommendation) => (
+                <RecommendationCard
+                  key={recommendation.id}
+                  recommendation={recommendation}
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}

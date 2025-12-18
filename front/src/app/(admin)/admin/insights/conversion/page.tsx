@@ -189,17 +189,21 @@ export default function ConversionAnalyticsPage() {
       </div>
 
       {/* Acquisition & Conversion Panel */}
-      <div className="h-[350px] sm:h-[400px]">
-        <AcquisitionPanel
-          summaryData={summaryData}
-          sourcesData={sourcesData}
-          isLoading={summaryLoading || sourcesLoading}
-        />
+      <div className="pt-6 border-t border-border/30">
+        <div className="h-[350px] sm:h-[400px]">
+          <AcquisitionPanel
+            summaryData={summaryData}
+            sourcesData={sourcesData}
+            isLoading={summaryLoading || sourcesLoading}
+          />
+        </div>
       </div>
 
       {/* Lead DNA Panel */}
-      <div className="min-h-[400px] sm:min-h-[450px]">
-        <LeadDNACard data={leadProfileData} isLoading={leadProfileLoading} />
+      <div className="pt-6 border-t border-border/30">
+        <div className="min-h-[400px] sm:min-h-[450px]">
+          <LeadDNACard data={leadProfileData} isLoading={leadProfileLoading} />
+        </div>
       </div>
 
       {/* Details Modal */}

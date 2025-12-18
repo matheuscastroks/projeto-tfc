@@ -115,7 +115,9 @@ export default function FunnelAnalyticsPage() {
       )}
 
       {/* Funnel Chart */}
-      <FunnelSection data={funnelData} isLoading={funnelLoading} />
+      <div className={insights.length > 0 ? "pt-6 border-t border-border/30" : ""}>
+        <FunnelSection data={funnelData} isLoading={funnelLoading} />
+      </div>
     </div>
   )
 }

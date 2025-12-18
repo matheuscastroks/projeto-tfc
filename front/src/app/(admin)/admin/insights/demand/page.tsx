@@ -156,7 +156,8 @@ export default function SearchAnalyticsPage() {
       </div>
 
       {/* Section: Location Analysis */}
-      <div className="space-y-3 sm:space-y-4">
+      <div className="pt-6 border-t border-border/30">
+        <div className="space-y-3 sm:space-y-4">
         <SectionHeader
           icon={MapPin}
           title="Análise Geográfica"
@@ -291,10 +292,12 @@ export default function SearchAnalyticsPage() {
             </CardContent>
           </Card>
         </div>
+        </div>
       </div>
 
       {/* Section: Property Features & Price/Area */}
-      <div className="space-y-3 sm:space-y-4">
+      <div className="pt-6 border-t border-border/30">
+        <div className="space-y-3 sm:space-y-4">
         <PropertyFeaturesPanel
           data={searchData}
           isLoading={searchLoading}
@@ -305,10 +308,12 @@ export default function SearchAnalyticsPage() {
           isLoading={searchLoading}
           openDetailsModal={openDetailsModal}
         />
+        </div>
       </div>
 
       {/* Section: Top Converting Filters */}
-      <div className="space-y-3 sm:space-y-4">
+      <div className="pt-6 border-t border-border/30">
+        <div className="space-y-3 sm:space-y-4">
         <SectionHeader
           icon={TrendingUp}
           title="Filtros que Mais Convertem"
@@ -328,6 +333,7 @@ export default function SearchAnalyticsPage() {
             )}
           </CardContent>
         </Card>
+        </div>
       </div>
 
       {/* Details Modal */}
