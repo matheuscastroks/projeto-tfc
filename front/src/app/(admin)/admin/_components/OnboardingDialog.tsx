@@ -104,35 +104,42 @@ export function OnboardingDialog({ open, onComplete }: OnboardingDialogProps) {
   return (
     <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Icon className="h-6 w-6 text-primary" />
+        <DialogHeader className="px-4 sm:px-6 pt-6">
+          <div className="flex items-center gap-3 sm:gap-4 mb-2">
+            <div className="p-2 sm:p-3 bg-primary/10 rounded-lg transition-all duration-200 ease-out">
+              <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             </div>
             <div className="flex-1">
-              <DialogTitle className="text-xl">{step.title}</DialogTitle>
-              <DialogDescription className="text-sm mt-1">
+              <DialogTitle className="text-lg sm:text-xl md:text-2xl font-semibold">
+                {step.title}
+              </DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm md:text-base mt-1 text-muted-foreground">
                 {step.description}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
-        <div className="space-y-4 py-6">
+        <div className="space-y-3 sm:space-y-4 py-4 sm:py-6 px-4 sm:px-6">
           {step.content.map((item, index) => (
-            <div key={index} className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-muted-foreground">{item}</p>
+            <div
+              key={index}
+              className="flex items-start gap-2 sm:gap-3 transition-all duration-200 ease-out"
+            >
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 dark:text-green-400 mt-0.5 flex-shrink-0" />
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                {item}
+              </p>
             </div>
           ))}
         </div>
 
-        <div className="flex items-center justify-between pt-4 border-t">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 sm:pt-6 border-t border-border/50 dark:border-border/30 px-4 sm:px-6 pb-4 sm:pb-6">
           <div className="flex items-center gap-2">
             {steps.map((_, index) => (
               <div
                 key={index}
-                className={`h-2 w-2 rounded-full transition-colors ${
+                className={`h-2 w-2 rounded-full transition-all duration-200 ease-out ${
                   index === currentStep
                     ? 'bg-primary'
                     : index < currentStep
@@ -146,22 +153,36 @@ export function OnboardingDialog({ open, onComplete }: OnboardingDialogProps) {
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
             {currentStep > 0 && (
-              <Button variant="ghost" size="sm" onClick={handlePrevious}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handlePrevious}
+                className="flex-1 sm:flex-initial"
+              >
                 Voltar
               </Button>
             )}
 
             {!isLastStep && (
-              <Button variant="ghost" size="sm" onClick={handleSkip}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSkip}
+                className="flex-1 sm:flex-initial"
+              >
                 Pular
               </Button>
             )}
 
-            <Button onClick={handleNext} size="sm">
+            <Button
+              onClick={handleNext}
+              size="sm"
+              className="group flex-1 sm:flex-initial transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+            >
               {isLastStep ? 'Começar' : 'Próximo'}
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Button>
           </div>
         </div>

@@ -48,6 +48,7 @@ import {
 } from 'lucide-react'
 import { ThemeToggle } from '@/lib/components/ThemeToggle'
 import { Spinner } from '@ui/spinner'
+import { Button } from '@ui/button'
 import { SiteProvider, useSiteContext } from '@/lib/providers/SiteProvider'
 import { useUser, useLogout, useSites } from '@/lib/hooks'
 import { useRouter } from 'next/navigation'
@@ -95,7 +96,9 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
                   height={24}
                   className="w-4 h-4 flex-shrink-0 dark:invert-0 invert"
                 />
-                <span className="text-md font-bold">Insight House</span>
+                <span className="text-sm sm:text-base font-semibold">
+                  InsightHouse
+                </span>
               </Link>
             </SidebarMenuButton>
           </div>
@@ -104,14 +107,18 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
           {/* Dashboard Principal */}
           <SidebarGroup>
             <SidebarGroupLabel asChild>
-              <span className="text-xs">Dashboard</span>
+              <span className="text-xs font-medium">Dashboard</span>
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Visão Geral">
-                    <Link href="/admin/insights">
-                      <LayoutGrid /> <span>Visão Geral</span>
+                    <Link
+                      href="/admin/insights"
+                      className="transition-all duration-200"
+                    >
+                      <LayoutGrid className="w-4 h-4" />
+                      <span className="text-sm">Visão Geral</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -119,52 +126,67 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
             </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarSeparator />
+          <SidebarSeparator className="bg-border/50 dark:bg-border/30" />
 
           {/* Insights Categorizados */}
           <SidebarGroup>
             <SidebarGroupLabel asChild>
-              <span className="text-xs">Análises</span>
+              <span className="text-xs font-medium">Análises</span>
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Funil de Vendas">
-                    <Link href="/admin/insights/funnel">
+                    <Link
+                      href="/admin/insights/funnel"
+                      className="transition-all duration-200"
+                    >
                       <Target className="w-4 h-4" />
-                      <span>Funil de Vendas</span>
+                      <span className="text-sm">Funil de Vendas</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Imóveis">
-                    <Link href="/admin/insights/properties">
+                    <Link
+                      href="/admin/insights/properties"
+                      className="transition-all duration-200"
+                    >
                       <Building2 className="w-4 h-4" />
-                      <span>Imóveis</span>
+                      <span className="text-sm">Imóveis</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Demanda">
-                    <Link href="/admin/insights/demand">
+                    <Link
+                      href="/admin/insights/demand"
+                      className="transition-all duration-200"
+                    >
                       <Search className="w-4 h-4" />
-                      <span>Demanda</span>
+                      <span className="text-sm">Demanda</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Jornada">
-                    <Link href="/admin/insights/journey">
+                    <Link
+                      href="/admin/insights/journey"
+                      className="transition-all duration-200"
+                    >
                       <Globe className="w-4 h-4" />
-                      <span>Jornada</span>
+                      <span className="text-sm">Jornada</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Conversões">
-                    <Link href="/admin/insights/conversion">
+                    <Link
+                      href="/admin/insights/conversion"
+                      className="transition-all duration-200"
+                    >
                       <Target className="w-4 h-4" />
-                      <span>Conversões</span>
+                      <span className="text-sm">Conversões</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -172,43 +194,52 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
             </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarSeparator />
+          <SidebarSeparator className="bg-border/50 dark:bg-border/30" />
 
           {/* Gerenciamento */}
           <SidebarGroup>
             <SidebarGroupLabel asChild>
-              <span className="text-xs">Gerenciamento</span>
+              <span className="text-xs font-medium">Gerenciamento</span>
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Gerenciar Sites">
-                    <Link href="/admin/sites">
+                    <Link
+                      href="/admin/sites"
+                      className="transition-all duration-200"
+                    >
                       <Building2 className="w-4 h-4" />
-                      <span>Gerenciar Sites</span>
+                      <span className="text-sm">Gerenciar Sites</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Configurações">
-                    <Link href="/admin/install">
+                    <Link
+                      href="/admin/install"
+                      className="transition-all duration-200"
+                    >
                       <Settings className="w-4 h-4" />
-                      <span>Configurações</span>
+                      <span className="text-sm">Configurações</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Minha Conta">
-                    <Link href="/admin/account">
+                    <Link
+                      href="/admin/account"
+                      className="transition-all duration-200"
+                    >
                       <User className="w-4 h-4" />
-                      <span>Minha Conta</span>
+                      <span className="text-sm">Minha Conta</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-          <SidebarSeparator />
+          <SidebarSeparator className="bg-border/50 dark:bg-border/30" />
         </SidebarContent>
         <SidebarFooter>
           <SidebarMenu>
@@ -223,10 +254,10 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col text-left">
-                      <span className="text-xs font-medium leading-tight">
+                      <span className="text-xs sm:text-sm font-medium leading-tight">
                         {isLoading ? 'Carregando...' : user?.name || 'Usuário'}
                       </span>
-                      <span className="text-[10px] text-sidebar-foreground/70 leading-tight">
+                      <span className="text-[10px] sm:text-xs text-sidebar-foreground/70 leading-tight">
                         {isLoading ? '...' : user?.email || 'user@example.com'}
                       </span>
                     </div>
@@ -260,43 +291,51 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
         <SidebarRail />
       </Sidebar>
       <SidebarInset className="m-0 p-0">
-        <div className="sticky top-0 z-50 flex h-12 items-center justify-between border-b px-4 bg-sidebar">
-          <div className="flex items-center gap-2">
+        <div className="sticky top-0 z-50 flex h-14 sm:h-16 items-center justify-between border-b border-border/50 dark:border-border/30 px-4 sm:px-6 bg-sidebar backdrop-blur-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
             <SidebarTrigger />
             {sites && sites.length > 1 && (
               <SiteSelector
                 value={selectedSiteKey}
                 onValueChange={setSelectedSiteKey}
-                className="min-w-[250px] max-w-[350px]"
+                className="min-w-[200px] sm:min-w-[250px] max-w-[300px] sm:max-w-[350px]"
               />
             )}
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 sm:gap-2">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   {siteUrl ? (
-                    <a
-                      href={siteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      asChild
+                      className="h-8 w-8 sm:h-9 sm:w-9 hover:scale-105 transition-transform"
                     >
-                      <Globe className="h-4 w-4" />
-                      <span className="sr-only">Visitar meu site</span>
-                    </a>
+                      <a
+                        href={siteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Globe className="h-4 w-4" />
+                        <span className="sr-only">Visitar meu site</span>
+                      </a>
+                    </Button>
                   ) : (
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       disabled
-                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
+                      className="h-8 w-8 sm:h-9 sm:w-9"
                     >
                       <Globe className="h-4 w-4" />
                       <span className="sr-only">Visitar meu site</span>
-                    </button>
+                    </Button>
                   )}
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>
+                  <p className="text-xs sm:text-sm">
                     {siteUrl ? 'Visitar meu site' : 'Nenhum site selecionado'}
                   </p>
                 </TooltipContent>
@@ -304,30 +343,36 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <a
-                    href="/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    asChild
+                    className="h-8 w-8 sm:h-9 sm:w-9 hover:scale-105 transition-transform"
                   >
-                    <ExternalLink className="h-4 w-4" />
-                    <span className="sr-only">Landing page</span>
-                  </a>
+                    <a href="/" target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="h-4 w-4" />
+                      <span className="sr-only">Landing page</span>
+                    </a>
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Landing page</p>
+                  <p className="text-xs sm:text-sm">Landing page</p>
                 </TooltipContent>
               </Tooltip>
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 sm:h-9 sm:w-9 hover:scale-105 transition-transform"
+                  >
                     <HelpCircle className="h-4 w-4" />
                     <span className="sr-only">Ajuda</span>
-                  </button>
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Ajuda</p>
+                  <p className="text-xs sm:text-sm">Ajuda</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -335,7 +380,9 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
             </TooltipProvider>
           </div>
         </div>
-        <div className="flex-1 overflow-auto p-6 bg-sidebar">{children}</div>
+        <div className="flex-1 overflow-auto p-4 sm:p-6 bg-sidebar">
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )

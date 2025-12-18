@@ -122,7 +122,7 @@ export default function InsightsOverviewPage() {
   if (!selectedSiteKey) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground px-4 text-center">
           Por favor, selecione um site para visualizar as análises
         </p>
       </div>
@@ -130,18 +130,18 @@ export default function InsightsOverviewPage() {
   }
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <Badge variant="secondary" className="px-3 py-1">
-            <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
+        <div className="space-y-2 sm:space-y-3">
+          <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm">
+            <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
             Dashboard Analytics
           </Badge>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
             Visão Geral do Negócio
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
             Acompanhe os principais indicadores de performance, funil de vendas
             e oportunidades de mercado.
           </p>
@@ -153,32 +153,34 @@ export default function InsightsOverviewPage() {
       <KPISection data={kpiData} isLoading={isLoadingKPI} />
 
       {/* 2. Quick Links to Detailed Sections */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
         <Card
-          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
           onClick={() => (window.location.href = '/admin/insights/funnel')}
         >
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              <CardTitle>Funil de Vendas</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Target className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
+              <CardTitle className="text-base sm:text-lg font-semibold">
+                Funil de Vendas
+              </CardTitle>
             </div>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm mt-1">
               Visualize a jornada completa do cliente
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6 pt-0">
             {funnelLoading ? (
-              <Spinner className="h-6 w-6" />
+              <Spinner className="h-5 w-5 sm:h-6 sm:w-6" />
             ) : funnelData ? (
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">Buscas</span>
                   <span className="font-medium">
                     {funnelData.searches.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">Leads</span>
                   <span className="font-medium">
                     {funnelData.leads.toLocaleString()}
@@ -186,28 +188,34 @@ export default function InsightsOverviewPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">Sem dados</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Sem dados
+              </p>
             )}
           </CardContent>
         </Card>
 
         <Card
-          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
           onClick={() => (window.location.href = '/admin/insights/properties')}
         >
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Building2 className="h-5 w-5 text-primary" />
-              <CardTitle>Imóveis</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
+              <CardTitle className="text-base sm:text-lg font-semibold">
+                Imóveis
+              </CardTitle>
             </div>
-            <CardDescription>Performance dos seus anúncios</CardDescription>
+            <CardDescription className="text-xs sm:text-sm mt-1">
+              Performance dos seus anúncios
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6 pt-0">
             {isLoadingProperty ? (
-              <Spinner className="h-6 w-6" />
+              <Spinner className="h-5 w-5 sm:h-6 sm:w-6" />
             ) : propertiesData ? (
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">
                     Imóveis rastreados
                   </span>
@@ -215,7 +223,7 @@ export default function InsightsOverviewPage() {
                     {propertiesData.properties.length}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">Mais popular</span>
                   <span className="font-medium">
                     #{propertiesData.properties[0]?.codigo || 'N/A'}
@@ -223,34 +231,40 @@ export default function InsightsOverviewPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">Sem dados</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Sem dados
+              </p>
             )}
           </CardContent>
         </Card>
 
         <Card
-          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
           onClick={() => (window.location.href = '/admin/insights/demand')}
         >
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Search className="h-5 w-5 text-primary" />
-              <CardTitle>Demanda</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Search className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
+              <CardTitle className="text-base sm:text-lg font-semibold">
+                Demanda
+              </CardTitle>
             </div>
-            <CardDescription>O que seus clientes procuram</CardDescription>
+            <CardDescription className="text-xs sm:text-sm mt-1">
+              O que seus clientes procuram
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6 pt-0">
             {searchLoading ? (
-              <Spinner className="h-6 w-6" />
+              <Spinner className="h-5 w-5 sm:h-6 sm:w-6" />
             ) : searchData ? (
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">Total de buscas</span>
                   <span className="font-medium">
                     {searchData.totalSearches.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">
                     Cidade mais buscada
                   </span>
@@ -260,30 +274,36 @@ export default function InsightsOverviewPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">Sem dados</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Sem dados
+              </p>
             )}
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
         <Card
-          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
           onClick={() => (window.location.href = '/admin/insights/journey')}
         >
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Globe className="h-5 w-5 text-primary" />
-              <CardTitle>Jornada</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
+              <CardTitle className="text-base sm:text-lg font-semibold">
+                Jornada
+              </CardTitle>
             </div>
-            <CardDescription>Comportamento dos visitantes</CardDescription>
+            <CardDescription className="text-xs sm:text-sm mt-1">
+              Comportamento dos visitantes
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6 pt-0">
             {isLoadingJourney ? (
-              <Spinner className="h-6 w-6" />
+              <Spinner className="h-5 w-5 sm:h-6 sm:w-6" />
             ) : journeyData ? (
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">
                     Tempo médio no site
                   </span>
@@ -292,7 +312,7 @@ export default function InsightsOverviewPage() {
                     {Math.floor(journeyData.avgTimeOnSite % 60)}s
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">
                     Páginas por sessão
                   </span>
@@ -302,28 +322,34 @@ export default function InsightsOverviewPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">Sem dados</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Sem dados
+              </p>
             )}
           </CardContent>
         </Card>
 
         <Card
-          className="border-2 hover:border-primary/50 transition-all duration-200 cursor-pointer"
+          className="bg-card border border-border/40 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-out cursor-pointer group"
           onClick={() => (window.location.href = '/admin/insights/conversion')}
         >
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              <CardTitle>Conversões</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Target className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
+              <CardTitle className="text-base sm:text-lg font-semibold">
+                Conversões
+              </CardTitle>
             </div>
-            <CardDescription>Leads e taxa de conversão</CardDescription>
+            <CardDescription className="text-xs sm:text-sm mt-1">
+              Leads e taxa de conversão
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6 pt-0">
             {conversionLoading ? (
-              <Spinner className="h-6 w-6" />
+              <Spinner className="h-5 w-5 sm:h-6 sm:w-6" />
             ) : conversionData ? (
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">
                     Total de conversões
                   </span>
@@ -331,7 +357,7 @@ export default function InsightsOverviewPage() {
                     {conversionData.totalConversions.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">
                     Taxa de conversão
                   </span>
@@ -341,7 +367,9 @@ export default function InsightsOverviewPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">Sem dados</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Sem dados
+              </p>
             )}
           </CardContent>
         </Card>
@@ -352,13 +380,13 @@ export default function InsightsOverviewPage() {
 
       {/* 4. Campaign Recommendations */}
       {recommendations.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-4 sm:space-y-6">
           <SectionHeader
             icon={Lightbulb}
             title="Recomendações de Campanhas"
             description="Insights acionáveis baseados no comportamento dos visitantes do seu site"
           />
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
             {recommendations.map((recommendation) => (
               <RecommendationCard
                 key={recommendation.id}
