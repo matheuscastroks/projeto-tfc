@@ -67,37 +67,6 @@ export default {
           ring: 'hsl(var(--sidebar-ring))',
         },
       },
-      boxShadow: {
-        'layer-0': 'none',
-        'layer-1':
-          'inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 1px rgba(0, 0, 0, 0.1), ' +
-          '0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.02)',
-        'layer-2':
-          'inset 0 1px 2px rgba(255, 255, 255, 0.7), inset 0 -2px 2px rgba(0, 0, 0, 0.12), ' +
-          '0 2px 4px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.03)',
-        'layer-3':
-          'inset 0 2px 3px rgba(255, 255, 255, 0.75), inset 0 -3px 3px rgba(0, 0, 0, 0.15), ' +
-          '0 3px 6px rgba(0, 0, 0, 0.06), 0 6px 12px rgba(0, 0, 0, 0.04)',
-        'layer-4':
-          'inset 0 2px 4px rgba(255, 255, 255, 0.8), inset 0 -4px 4px rgba(0, 0, 0, 0.18), ' +
-          '0 4px 8px rgba(0, 0, 0, 0.07), 0 8px 16px rgba(0, 0, 0, 0.05)',
-        'layer-5':
-          'inset 0 3px 5px rgba(255, 255, 255, 0.85), inset 0 -5px 5px rgba(0, 0, 0, 0.2), ' +
-          '0 5px 10px rgba(0, 0, 0, 0.08), 0 10px 20px rgba(0, 0, 0, 0.06)',
-
-        'inner-0': 'none',
-        'inner-1':
-          'inset 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.06)',
-        'inner-2':
-          'inset 0 3px 6px rgba(0, 0, 0, 0.12), inset 0 2px 4px rgba(0, 0, 0, 0.08)',
-        'inner-3':
-          'inset 0 4px 8px rgba(0, 0, 0, 0.15), inset 0 3px 6px rgba(0, 0, 0, 0.1)',
-        'inner-4':
-          'inset 0 5px 10px rgba(0, 0, 0, 0.18), inset 0 4px 8px rgba(0, 0, 0, 0.12)',
-        'inner-5':
-          'inset 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 5px 10px rgba(0, 0, 0, 0.15)',
-
-      },
       keyframes: {
         'accordion-down': {
           from: {

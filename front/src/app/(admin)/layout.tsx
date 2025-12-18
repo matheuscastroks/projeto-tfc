@@ -1,6 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import {
   SidebarProvider,
@@ -50,12 +51,17 @@ import { ThemeToggle } from '@/lib/components/ThemeToggle'
 import { Spinner } from '@ui/spinner'
 import { Button } from '@ui/button'
 import { SiteProvider, useSiteContext } from '@/lib/providers/SiteProvider'
+import {
+  SettingsModalProvider,
+  useSettingsModal,
+} from '@/lib/providers/SettingsModalProvider'
 import { useUser, useLogout, useSites } from '@/lib/hooks'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import logo from '@/assets/logo-insighthouse-fundo-preto.png'
 import favicon from '@/assets/favicon.png'
 import { SiteSelector } from '@/lib/components/SiteSelector'
+import { SettingsModal } from './admin/_components/SettingsModal'
 
 function AdminLayoutContent({ children }: { children: ReactNode }) {
   const { data: user, isLoading } = useUser()
@@ -63,6 +69,12 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
   const router = useRouter()
   const { selectedSiteKey, setSelectedSiteKey } = useSiteContext()
   const { data: sites } = useSites()
+  const {
+    open: settingsOpen,
+    section: settingsSection,
+    openModal,
+    closeModal,
+  } = useSettingsModal()
 
   // Encontrar o site selecionado e obter o domínio
   const selectedSite = sites?.find((site) => site.siteKey === selectedSiteKey)
@@ -204,36 +216,13 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Gerenciar Sites">
-                    <Link
-                      href="/admin/sites"
-                      className="transition-all duration-200"
-                    >
-                      <Building2 className="w-4 h-4" />
-                      <span className="text-sm">Gerenciar Sites</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Configurações">
-                    <Link
-                      href="/admin/install"
-                      className="transition-all duration-200"
-                    >
-                      <Settings className="w-4 h-4" />
-                      <span className="text-sm">Configurações</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Minha Conta">
-                    <Link
-                      href="/admin/account"
-                      className="transition-all duration-200"
-                    >
-                      <User className="w-4 h-4" />
-                      <span className="text-sm">Minha Conta</span>
-                    </Link>
+                  <SidebarMenuButton
+                    tooltip="Configurações"
+                    onClick={() => openModal('profile')}
+                    className="transition-all duration-200"
+                  >
+                    <Settings className="w-4 h-4" />
+                    <span className="text-sm">Configurações</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -384,6 +373,11 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
           {children}
         </div>
       </SidebarInset>
+      <SettingsModal
+        open={settingsOpen}
+        onOpenChange={closeModal}
+        defaultSection={settingsSection}
+      />
     </SidebarProvider>
   )
 }
@@ -391,7 +385,9 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <SiteProvider>
-      <AdminLayoutContent>{children}</AdminLayoutContent>
+      <SettingsModalProvider>
+        <AdminLayoutContent>{children}</AdminLayoutContent>
+      </SettingsModalProvider>
     </SiteProvider>
   )
 }

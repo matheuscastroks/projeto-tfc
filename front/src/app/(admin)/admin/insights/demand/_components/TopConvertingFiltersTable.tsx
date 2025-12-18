@@ -172,6 +172,7 @@ export function TopConvertingFiltersTable({
 
   const tableData = React.useMemo(() => data?.filters || [], [data?.filters])
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: tableData,
     columns,

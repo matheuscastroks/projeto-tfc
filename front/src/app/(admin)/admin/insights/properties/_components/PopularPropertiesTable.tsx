@@ -217,6 +217,7 @@ export function PopularPropertiesTable({ data }: PopularPropertiesTableProps) {
     pageSize: 10,
   })
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
